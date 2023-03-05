@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Мафия</title>
+        <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .top_profile {
+            float: right;
+        }
+
+        .avatar {
+            margin: 0 0;
+            padding: 0px 0px;
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: greenyellow;
+        }
+
+        .inline {
+            display: inline-block;
+        }
+
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 30px;
+        }
+
+        .topnav p {
+            color: #f2f2f2;
+            margin: 0 0;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 30px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .info_blocks {
+            border-width:1;
+            border-color: rgb(190,190,190);
+            border-style: solid;
+            width: 100%;
+            height: 100%;
+            flex-direction: row;
+            flex-grow: 1;
+        }
+
+        .page {
+            display: flex;
+            flex-wrap: nowrap;
+            height: 850px;
+        }
+
+    
+        </style>
+    </head>
+    <body>
+
+        <div class="topnav">
+            <span>
+                <a href="#play">Играть</a>
+                <a href="#create_game">Создать игру</a>
+                <a href="#list_of_game">Список доступных игр</a>
+            </span>
+            
+            <span class="top_profile">
+                <div class="avatar"></div>
+                <div class="inline"><p>Nickname</p></div>
+            </span>
+        </div>
+
+        <div class="page">
+            <div class="info_blocks">
+                <p>Блоки с информацией</p>
+            </div>
+            <div class="info_blocks">
+            
+            </div>
+        </div>
+    </body>
+</html>
