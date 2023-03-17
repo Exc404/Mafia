@@ -1,42 +1,55 @@
 # Mafia
+
+## Для Разработчиков
 ____
-**mafia**
-*mafia*
-***mafia***
-~~mafia~~
-:sob:
+### __Для запуска проэкта нужно__
+1. __Установить все пакеты python__
+    1. Запустить консоль в папке проэкта
+    2. Выполнить команду ```pip install -r requirements.txt```
+2. __Запустить сервер__
+    1. Запустить консоль в папке  Mafia\Site\mafia
+    2. Выполнить команду ```python manage.py runserver```
+    3. Зайдите на сайт http://127.0.0.1:8000/mainpage/
+    4. По оканчанию работы нажать в консоле CTRL + BREAKE (или CTRL + C)
+3. __Открывать проэкт можно в PyCharm__ в папке Mafia\Site\mafia
 
->gr
+____
 
-`#include mafia`
-# aBOBUS
-```c
-void main(int argc, char* argv)
-{
-  return 0;
-}
-```
-+ ferferf
-+ gre
-+ reg
-  + gregrg
-  + gregrgf
-  + e
-+ r
+### __Структура файлов сайта__
 
-1. gregrg
-2. frgg
-    1. gregrg
-    2. reg
 
-+ [ ] frgg
-+ [X] rerg
- + [ ] fre
+📂mafia\
+┣ 📂.idea\
+┃ ┗ ... \
+┣ 📂mafia\
+┃ ┣ 📂⚪\_\_pycache\_\_\
+┃ ┣ 📄⚪\_\_init\_\_.py\
+┃ ┣ 📄asgi.py \
+┃ ┣ 📄🔴settings.py __-файл, настройки вашего проекта__ \
+┃ ┣ 📄🔴urls.py __-файл, содержит URL'ы__ \
+┃ ┗ 📄wsgi.py \
+┃ \
+┣ 📂mainpage\
+┃ ┣ 📂⚪\_\_pycache\_\_\
+┃ ┃ ┗ ... \
+┃ ┣ 📂⚪migrations __-папка, сфалами по меграций БД__\
+┃ ┃ ┗ ... \
+┃ ┣ 📂🔴templates __-папка, с html шаблонами и jinja__\
+┃ ┃ ┗ 📂mainpage __-шаблоны для главной страницы__ \
+┃ ┃&nbsp;&nbsp;&nbsp;&nbsp; ┗ 📜index.html \
+┃ ┃ \
+┃ ┣ 📄⚪\_\_init_\_\.py\
+┃ ┣ 📄⚪admin.py __-файл, содержит модель для админ-го интерфейса__ \
+┃ ┣ 📄apps.py \
+┃ ┣ 📄🔷models.py \
+┃ ┣ 📄tests.py __-будет содержать модульные и интеграционные тесты__ \
+┃ ┣ 📄🔴urls.py __-файл, содержит URL'ы главной страницы__\
+┃ ┗ 📄🔴views.py __-файл, содержит функции представлений__ \
+┃ \
+┣ 📋🔷db.sqlite3 __-файл, для хранения БД__\
+┗ 📄⚪manage.py  __-файл, с предустановленными переменными окружения.__
 
-[GitHub](https://github.com/Exc404/Mafia/)
-
-![Logo](https://wp-s.ru/wallpapers/14/12/328071538127623/bessmertnaya-mafiya-sobralas-za-stolom-i-obsuzhdaet-raznye-ch-rnye-dela.jpg "LOL")
-
-| LEFT | CENTER | RIGHT |
-|-------------|:-------------:|------------:|
-| a | b | c |
+🔴- Основные файлы для создания страницы сайта\
+⚪- Желательно пока не трогать\
+🔷- файлы БД
+___
