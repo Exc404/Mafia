@@ -1,99 +1,44 @@
 <!DOCTYPE html>
-<html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <title>Мафия</title>
-        <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .topnav {
-            overflow: hidden;
-            background-color: black;
-        }
-
-        .top_profile {
-            float: right;
-        }
-
-        .avatar {
-            margin: 0 0;
-            padding: 0px 0px;
-            display: inline-block;
-            height: 40px;
-            width: 40px;
-            background-color: greenyellow;
-        }
-
-        .inline {
-            display: inline-block;
-        }
-
-        .topnav a {
-            float: left;
-            color: #f2f2f2;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 30px;
-        }
-
-        .topnav p {
-            color: #f2f2f2;
-            margin: 0 0;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 30px;
-        }
-
-        .topnav a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
-        .info_blocks {
-            border-width:1;
-            border-color: rgb(190,190,190);
-            border-style: solid;
-            width: 100%;
-            height: 100%;
-            flex-direction: row;
-            flex-grow: 1;
-        }
-
-        .page {
-            display: flex;
-            flex-wrap: nowrap;
-            height: 850px;
-        }
-
-    
-        </style>
-    </head>
-    <body>
-
-        <div class="topnav">
-            <span>
-                <a href="#play">Играть</a>
-                <a href="#create_game">Создать игру</a>
-                <a href="#list_of_game">Список доступных игр</a>
-            </span>
-            
-            <span class="top_profile">
-                <div class="avatar"></div>
-                <div class="inline"><p>Nickname</p></div>
-            </span>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="index.css">
+    <title></title>
+  </head>
+  <body>
+    <header>
+      <div id="header-main">
+        <img id="logo" src="logo.png" alt="Logo">
+        <div id="logo-text"><p style="color:#d93030">Mafia</p>&nbsp;Online</div>
+        <div id="buttons-block">
+        <a href="#" class="button">Главная</a>
+        <a href="#" class="button">FAQ</a>
+        <a href="#" class="button">Создать игру</a>
+        <a href="#" class="button">Выбрать игру</a>
         </div>
-
-        <div class="page">
-            <div class="info_blocks">
-                <p>Блоки с информацией</p>
-            </div>
-            <div class="info_blocks">
-            
-            </div>
+        <div id="authentication-block">
+          <a href="#" class="button">Вход</a>
+          <a href="#" class="button">Регистрация</a>
         </div>
-    </body>
+      </div>
+      <div id="header-play">
+        <a href="#" id="button-game-now">Играть сейчас!</a>
+      </div>
+    </header>
+    <main>
+      <div class="page">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+         sunt in culpa qui officia deserunt mollit anim id est laborum.<br>
+         <img src="https://mews.biggeek.ru/wp-content/uploads/2020/09/8klfwbpsj7m.jpg"
+         style="display: block; margin-left: auto; margin-right: auto; width: 50%;"><br>
+         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </div>
+      <div class="page">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+      </div>
+    </main>
+  </body>
 </html>
