@@ -20,7 +20,8 @@ from mainpage.views import pageNotFound
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('mainpage/', include('mainpage.urls')),
+    path('', include('mainpage.urls')),
+    path('login/', include('registration.urls'))
 ]
 
 handler404 = pageNotFound

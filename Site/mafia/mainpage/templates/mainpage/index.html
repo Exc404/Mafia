@@ -1,14 +1,15 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="{% static "css/index.css" %}">
     <title></title>
   </head>
   <body>
     <header>
       <div id="header-main">
-        <img id="logo" src="logo.png" alt="Logo">
+        <img id="logo" src="{% static "img/logo.png" %}" alt="Logo">
         <div id="logo-text"><p style="color:#d93030">Mafia</p>&nbsp;Online</div>
         <div id="buttons-block">
         <a href="#" class="button">Главная</a>
@@ -18,7 +19,7 @@
         </div>
         <div id="authentication-block">
           <a href="#" class="button">Вход</a>
-          <a href="#" class="button">Регистрация</a>
+          <a href="login/registration" class="button">Регистрация</a>
         </div>
       </div>
       <div id="header-play">
