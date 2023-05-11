@@ -4,12 +4,11 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 # Подключаем модель User
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 # Создаём класс формы
 class RegistrForm(UserCreationForm):
-    # Добавляем новое поле Email
-    email = forms.EmailField(max_length=254, help_text='Это поле обязательно')
 
     # Создаём класс Meta
     class Meta:
@@ -17,3 +16,9 @@ class RegistrForm(UserCreationForm):
         model = User
         # Свойство назначения полей
         fields = ('username', 'email', 'password1', 'password2',)
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].strip()
+        if User.objects.filter(email__iexact=email).exists():
+            raise ValidationError('Эта почта уже используется!')
+        return email

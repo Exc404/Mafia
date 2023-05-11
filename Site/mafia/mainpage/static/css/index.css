@@ -62,6 +62,17 @@ header{
   justify-content: flex-end;
   align-items:center;
 }
+
+#profile-block{
+  grid-column: 5;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.text-profile{
+  color: white;
+}
+
 #authentication-block :last-child{
   margin-right: 30px;
 }

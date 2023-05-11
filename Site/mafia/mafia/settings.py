@@ -123,3 +123,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'mainpage'
+LOGOUT_REDIRECT_URL = 'mainpage'
+
+EMAIL_USE_TSL = False
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smpt.yandex.ru'
+EMAIL_HOST_USER = 'MafiaOnlineByG4m3dev@yandex.ru'
+EMAIL_HOST_PASSWORD = 'edutcverqtcnvpil'
+EMAIL_PORT = 465
+
+DEFAULT_FROM_EMAIL = 'MafiaOnlineByG4m3dev@yandex.ru'

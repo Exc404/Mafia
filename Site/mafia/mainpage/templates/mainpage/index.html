@@ -17,10 +17,17 @@
         <a href="#" class="button">Создать игру</a>
         <a href="#" class="button">Выбрать игру</a>
         </div>
-        <div id="authentication-block">
-          <a href="#" class="button">Вход</a>
-          <a href="login/registration" class="button">Регистрация</a>
+        {% if request.user.is_authenticated %}
+        <div id="profile-block">
+          <p class="text-profile">{{request.user.username}}</p>
+          <a href="account/logout/" class="button">Выход</a>
         </div>
+        {% else %}
+        <div id="authentication-block">
+          <a href="account/login/" class="button">Вход</a>
+          <a href="account/registration" class="button">Регистрация</a>
+        </div>
+        {% endif %}
       </div>
       <div id="header-play">
         <a href="#" id="button-game-now">Играть сейчас!</a>
