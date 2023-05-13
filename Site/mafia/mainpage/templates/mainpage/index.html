@@ -18,8 +18,8 @@
         <a href="#" class="button">Выбрать игру</a>
         </div>
         {% if request.user.is_authenticated %}
-        <div id="profile-block">
-          <p class="text-profile">{{request.user.username}}</p>
+        <div id="authentication-block">
+          <p id="text-profile">{{request.user.username}}</p>
           <a href="account/logout/" class="button">Выход</a>
         </div>
         {% else %}
