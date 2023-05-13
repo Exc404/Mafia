@@ -4,8 +4,7 @@ from django.template.loader import render_to_string
 
 
 def index(request):
-    return render(request, 'mainpage/mainpage.html', {'request': request})
-
+    return render(request, 'mainpage/mainpage.html')
 
 
 def pageNotFound(request, exception):
