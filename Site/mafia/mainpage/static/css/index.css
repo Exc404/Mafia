@@ -18,7 +18,7 @@ header{
   grid-row: 1;
 
   display: grid;
-  grid-template-rows: 2.5fr 1fr;
+  grid-template-rows: 2.9fr 1fr;
   position: fixed;
   width: 100%;
 }
@@ -87,7 +87,7 @@ header{
 
     background:
     linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
-    #464556; center;
+    #464556;
     background-size:300% 100%,cover;
 
     text-align: center;
@@ -121,7 +121,7 @@ header{
   padding-right: 60px;
   background:
   linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
-  linear-gradient(to right,#5D020C,#FD1834,#5D020C); center;
+  linear-gradient(to right,#5D020C,#FD1834,#5D020C);
   background-size:300% 100%,cover;
 
   text-align: center;
