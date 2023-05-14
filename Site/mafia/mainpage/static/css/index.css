@@ -87,7 +87,7 @@ header{
 
     background:
     linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
-    #464556; center;
+    #464556;
     background-size:300% 100%,cover;
 
     text-align: center;
@@ -121,7 +121,7 @@ header{
   padding-right: 60px;
   background:
   linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
-  linear-gradient(to right,#5D020C,#FD1834,#5D020C); center;
+  linear-gradient(to right,#5D020C,#FD1834,#5D020C);
   background-size:300% 100%,cover;
 
   text-align: center;
@@ -149,12 +149,21 @@ main{
   grid-row: 2;
   color: #E5E4E8;
   background-color: #272C34;
+	background-image: 
+	linear-gradient(135deg, rgba(0,0,0, 0.2) 0%, rgba(0,0,0, 0.1) 25%, rgba(0,0,0, 0.2) 50%, rgba(0,0,0, 0.1) 75%, rgba(0,0,0, 0.2) 100%), 
+	linear-gradient(90deg, #24303b, #292f39, #5a616b);
+	background-size: 8px 8px, 150%;
   font-size: 20px;
 }
 .page{
+  
   margin: 10px;
   margin-left: 5%;
   margin-right: 5%;
   background-color: #21252C;
+
   padding: 20px;
+
+ 
+
 }
