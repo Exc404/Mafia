@@ -132,7 +132,7 @@ LOGIN_REDIRECT_URL = 'mainpage'
 LOGOUT_REDIRECT_URL = 'mainpage'
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smpt.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TSL = False
 EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.yandex.ru'

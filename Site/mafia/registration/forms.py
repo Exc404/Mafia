@@ -10,6 +10,8 @@ from django.core.exceptions import ValidationError
 # Создаём класс формы
 class RegistrForm(UserCreationForm):
     # Создаём класс Meta
+    email = forms.EmailField(max_length=165,help_text="Это поле обязательно. Введите существующий адрес электронной почты.")
+
     class Meta:
         # Свойство модели User
         model = User
