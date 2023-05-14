@@ -20,12 +20,12 @@
         {% if request.user.is_authenticated %}
         <div id="profile-block">
           <p class="text-profile">{{request.user.username}}</p>
-          <a href="account/logout/" class="button">Выход</a>
+          <a href="{% url "logout" %}" class="button">Выход</a>
         </div>
         {% else %}
         <div id="authentication-block">
-          <a href="account/login/" class="button">Вход</a>
-          <a href="account/registration" class="button">Регистрация</a>
+          <a href="{% url "login" %}" class="button">Вход</a>
+          <a href="{% url "regist" %}" class="button">Регистрация</a>
         </div>
         {% endif %}
       </div>

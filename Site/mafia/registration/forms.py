@@ -9,7 +9,6 @@ from django.core.exceptions import ValidationError
 
 # Создаём класс формы
 class RegistrForm(UserCreationForm):
-
     # Создаём класс Meta
     class Meta:
         # Свойство модели User
@@ -21,4 +20,5 @@ class RegistrForm(UserCreationForm):
         email = self.cleaned_data['email'].strip()
         if User.objects.filter(email__iexact=email).exists():
             raise ValidationError('Эта почта уже используется!')
+
         return email

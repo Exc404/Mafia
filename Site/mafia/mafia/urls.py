@@ -21,7 +21,7 @@ from mainpage.views import pageNotFound
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mainpage.urls')),
-    path('account/', include('registration.urls'))
+    path('accounts/', include('registration.urls'))
 ]
 
 handler404 = pageNotFound

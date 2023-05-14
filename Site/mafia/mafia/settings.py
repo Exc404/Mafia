@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'mainpage.apps.MainpageConfig',
     'registration.apps.RegistrationConfig'
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,14 +127,16 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'mainpage'
 LOGOUT_REDIRECT_URL = 'mainpage'
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smpt.EmailBackend'
 EMAIL_USE_TSL = False
 EMAIL_USE_SSL = True
-EMAIL_HOST = 'smpt.yandex.ru'
+EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_HOST_USER = 'MafiaOnlineByG4m3dev@yandex.ru'
-EMAIL_HOST_PASSWORD = 'edutcverqtcnvpil'
+EMAIL_HOST_PASSWORD = 'fopddjkmppyluocd'
 EMAIL_PORT = 465
-
 DEFAULT_FROM_EMAIL = 'MafiaOnlineByG4m3dev@yandex.ru'

@@ -4,3 +4,4 @@ pip==23.0.1
 setuptools==65.5.0 
 sqlparse==0.4.3  
 tzdata==2022.7
+django-utils-six==2.0
