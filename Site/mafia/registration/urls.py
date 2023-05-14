@@ -4,8 +4,6 @@ from django.contrib.auth.views import LoginView, PasswordResetView, \
 from django.urls import path
 from .views import *
 
-# restore password urls
-
 urlpatterns = [
     path('registration/', regist, name='regist'),
     path('login/', LoginView.as_view(template_name = 'registration/login.html') , name = 'login'),
