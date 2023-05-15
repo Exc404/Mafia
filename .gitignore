@@ -3,3 +3,4 @@ Site/.idea
 Site/mafia/.idea
 Site/mafia/mainpage/__pycache__
 Site/mafia/registration/__pycache__
+Site/mafia/db.sqlite3
