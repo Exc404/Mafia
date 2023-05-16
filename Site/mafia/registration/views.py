@@ -8,9 +8,9 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMessage
-
+from user_profile.models import Profile
 from .forms import RegistrForm
-from  django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from .token import account_activation_token
 
 
@@ -93,8 +93,13 @@ def activate(request, uidb64, token):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
+        user_profile = Profile()
+        user_profile.nickname = user.username
+        user_profile.related_user = user
+
         user.save()
+        user_profile.save()
+
         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
     else:
         return HttpResponse('Activation link is invalid!')
-
