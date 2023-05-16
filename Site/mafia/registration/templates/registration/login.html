@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+ 
+{% block title %}Вход{% endblock %}
+ 
+{% block content %}
+    
+    <form action="." method="post">
+        {% csrf_token %}
+        <div id="head">
+            <a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+            <h2>Вход</h2>
+        </div>
+    
+        <div id="content">
+        
+            {% for field in form %}
+            <p>
+                
+                {{ field.label_tag }} <br> {{ field }} 
+               
+            </p>
+            {% endfor %}
+            {{ form.non_field_errors }}
+            <div id="SendBox"><input type="submit" value="Войти"/></div>
+            <a id="LogIn" href="{% url "regist" %}">У меня нет аккаунта</a>
+        </div>
+
+    </form>
+{% endblock %}
