@@ -22,6 +22,6 @@ def profile(request):
                     request.user.profile.form_nick = form_nick.nickname
                     request.user.profile.save()
 
-        return render(request, 'html профиля', {'request': request})
+        return render(request, 'profile/profile.html', {'request': request})
     else:
         return render_to_string('ЭЭЭЭЭ, залогинся!')

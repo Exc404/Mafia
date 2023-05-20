@@ -12,7 +12,7 @@ class ImageForm(forms.ModelForm):
 
 
 class NicknameForm(forms.ModelForm):
-    nickname = forms.ImageField
+    nickname = forms.CharField
 
     class Meta:
         model = Profile
