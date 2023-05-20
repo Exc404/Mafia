@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+ 
+{% block title %}Редактирование профиля{% endblock %}
+ 
+{% block content %}
+<form method="POST" enctype="multipart/form-data" novalidate>
+	{% csrf_token %}
+
+    <div id="content">
+    
+		<h1>Фото профиля:</h1>
+		<img src="{{form_obj.profile_img.url}}" height="300" width="300"> <br>
+		{{form}}
+		<input type="submit" >
+    </div>
+</form>
+{% endblock content%}
