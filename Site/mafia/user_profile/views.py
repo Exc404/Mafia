@@ -59,7 +59,7 @@ def edit_profile(request):
                 form.save()
                 return HttpResponse('Нормально отредачил')
 
-        form = EditProfileForm()
+        form = EditProfileForm(instance=get_profile)
         data['form'] = form
         data['form_obj'] = get_profile
         return render(request, 'edit_profile.html', data)

@@ -1,17 +1,38 @@
 {% extends 'base.html' %}
- 
 {% block title %}Редактирование профиля{% endblock %}
- 
+{% block head %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+{% endblock %}
 {% block content %}
 <form method="POST" enctype="multipart/form-data" novalidate>
 	{% csrf_token %}
 
     <div id="content">
-    
-		<h1>Фото профиля:</h1>
-		<img src="{{form_obj.profile_img.url}}" height="300" width="300"> <br>
-		{{form}}
+
+		<img id="output" src="{{form_obj.profile_img.url}}" width="300" height="300" />
+		<div class="input-group mb-3">
+  		<div class="input-group-prepend">
+    		<span class="input-group-text">Upload</span>
+  		</div>
+  		<div class="custom-file">
+    		<input type="file" class="custom-file-input" accept="image/*" id="picture_img" onchange="loadFile(event)" name="profile_img"/>
+    		<label class="custom-file-label" for="inputGroupFile01">Выберете картинку</label>
+  		</div>
+		</div>
+
+		{{ form.nickname }}
 		<input type="submit" >
     </div>
+
+	<script>
+  		var loadFile = function(event) {
+			var reader = new FileReader();
+    		reader.onload = function(){
+      			var output = document.getElementById('output');
+      			output.src = reader.result;
+    		};
+    		reader.readAsDataURL(event.target.files[0]);
+  		};
+	</script>
 </form>
 {% endblock content%}
