@@ -1,1 +1,241 @@
-/*да*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body{
+    font-family: sans-serif;
+    font-size: 20px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #272C34;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    background: rgb(228,34,34);
+    background: linear-gradient(135deg, rgb(243, 46, 46) 0%, rgb(78, 9, 16) 100%);
+  }
+  main{
+    background-color: #21252C;
+    padding: 1.5%;
+    margin: 30px;
+    color: white;
+    box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+    border-radius: 1em;
+  }
+  #head{
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    margin-bottom: 0.2em;
+  }
+  .ExitButton {
+    display: block;
+    padding-top: 13px;
+    padding-left: 13px;
+    background: #464556;
+  
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    #464556;
+    background-size:300% 100%,cover;
+  
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+  
+    
+    text-align: center;
+    justify-content: center;
+    color: white;
+    line-height: 25px;
+    text-decoration:none;
+    white-space:nowrap;
+    columns: 2;
+  }
+  .ExitButton:hover{
+    animation:button-game-animation 3s ease;
+  }
+  
+  hr{
+    margin-bottom: 0.5em;
+    width: 50%;
+    margin: 0.5em auto;
+  }
+  h2, h1{
+    columns: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 50px;
+    padding-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  .content{
+    padding: 0.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  #ProfileCard{
+    background-color:#313844;
+    border-radius: 1em;
+    padding: 0.5em;
+    display: flex;
+    margin-bottom: 0.5em;
+    width: 100%;
+  }
+  #profile-Icon{
+    object-fit: contain;
+    width: 200px;
+    
+    background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(45deg, rgb(3, 25, 151), #0b9ef9) border-box;
+    border: 8px solid transparent;
+    border-radius: 10px;
+    
+  }
+  #ProfileData{
+    padding-left: 1em;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+  #Nickname{
+    font-size: 2em;
+    padding-right: 0.5em;
+  }
+  #LogName{
+    font-style: italic;
+    padding-right: 0.5em;
+  }
+  #EditProfile{
+    display: block;
+    margin-top: auto;
+    align-self:flex-end;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    padding: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    linear-gradient(45deg, rgb(20, 185, 20) 0%, rgb(50, 169, 112) 60%);
+    background-size:300% 100%,cover;
+
+    
+
+    border-radius: 10px;
+    border: 0px;
+    text-decoration:none;
+  }
+  #EditProfile:hover{
+    animation:button-game-animation 3s ease;
+  }
+
+
+  #GamesHistory{
+    width: 600px;
+    height: 250px;
+
+    background-color:#313844;
+    border-radius: 1em;
+    padding: 0.5em;
+    display: flex;
+    margin-bottom: 0.5em; 
+  }
+  #Test-Video
+  {
+    display: grid;
+    padding: 0;
+    width: 400px;
+    height: 300px;
+    background-color:#313844;
+    border-radius: 1em;
+ 
+    overflow: hidden;
+  }
+  #iconVideo{
+    font-size: 60px; 
+    z-index: 1;
+    grid-column: 1;
+    grid-row: 1; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    filter: grayscale(100%);
+    opacity: 0.4;
+  }
+  #videoElement{
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 2;
+    border-radius: 1em;
+    width: 400px;
+    height: 300px;
+  }
+  .VideoBut{
+    margin: 0;
+    margin-top: 0.5em;
+    display: block;
+    align-self:flex-end;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    padding: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    linear-gradient(45deg, rgb(55, 62, 157) 0%, rgb(59, 119, 209) 60%);
+    background-size:300% 100%,cover;
+
+    border-radius: 10px;
+    border: 0px;
+    text-decoration:none;
+  }
+  .VideoBut:hover{
+    animation:button-game-animation 3s ease;
+  }
+  #stop, #stopAudeo{
+    margin-left: 1em;
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    linear-gradient(-45deg, rgb(55, 62, 157) 0%, rgb(59, 119, 209) 60%);
+    background-size:300% 100%,cover;
+  }
+
+
+  #AudeoBox
+  {
+    background-color:#313844;
+    border-radius: 1em;
+    padding: 0.1em;
+    width: 400px;
+    display: flex; 
+    flex-direction: row; 
+    align-items: center;
+  }
+  #Test-Audeo{
+    width: 340px;
+    height: 60px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .logo {
+    margin: 2px;
+    border-radius: 30px;
+  }
+  @keyframes button-game-animation {
+  
+    0%{
+        background-position:right,center;
+     }
+     30%{background-position:0 0;}
+  }

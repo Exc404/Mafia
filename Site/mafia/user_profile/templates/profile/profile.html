@@ -1,34 +1,52 @@
 {% extends 'profile_base.html' %}
  
-{% block title %}Регистрация{% endblock %}
+{% block title %}Профиль{% endblock %}
  
 {% block content %}
-<form method="POST" novalidate>
-	{% csrf_token %}
-    
-    <div id="head">
-        <a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
-	    <h2>Регистрация</h2>
-    </div>
-
-    <div id="content">
-    
-	    {% for field in form %}
-	    <p>
-
-            {{ field.label_tag }} <br> {{ field }}
-
-		    {% if field.errors %}
-		    <ul class="errorlist">
-			    {% for error in field.errors %}
-			    <li>{{ error }}</li>
-			    {% endfor %}
-		    </ul>
-		    {% endif %}
-	    </p>
-	    {% endfor %}
-        <div id="SendBox"><input type="submit" value="Отправить"/></div>
-        <a id="LogIn" href="{% url "login" %}">Я уже зарегистрирован.</a>
-    </div>
-</form>
+<div id="head">
+	<a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+	<h1>Профиль</h1>
+</div>
+<div class="content">
+	<div id="ProfileCard">
+		<img id="profile-Icon" src="{{request.user.profile.profile_img.url}}" alt="Icon">
+		<div id="ProfileData">
+			<p id ="Nickname">{{request.user.profile.nickname}}</p>
+			<p id ="LogName">@{{request.user.username}}</p>
+			<a id ="EditProfile" href="">Изменить</a>
+		</div>
+	</div>
+</div>
+<div style="display: flex; justify-content: center; margin-left: 50px;">
+	<h2>История игр</h2>
+</div>
+<hr>
+<div class="content">
+	<div id="GamesHistory">
+	</div>
+</div>
+<div style="display: flex; justify-content: center; margin-left: 50px;">
+	<h2>Тест Видео & Аудео</h2>
+</div>
+<hr style="width: 70%;">
+<div class="content">
+	<div id="Test-Video">
+		<p id="iconVideo">🎥</p>
+		<video autoplay id="videoElement"></video>
+	</div>
+	<div style="display: flex; flex-direction: row;">
+		<button id="start" class="VideoBut">Включить камеру</button>
+		<button id="stop" class="VideoBut">Выключить камеру</button>
+	</div>
+	<br>
+	<div id="AudeoBox">
+		<audio id="AudeoStreem" autoplay loop></audio>
+		<p style="font-size: 60px;">🎙</p>
+		<div id="Test-Audeo"></div>
+	</div>
+	<div style="display: flex; flex-direction: row;">
+		<button id="startAudeo" class="VideoBut">Включить микрофон</button>
+		<button id="stopAudeo" class="VideoBut">Выключить микрофон</button>
+	</div>
+</div>
 {% endblock content%}

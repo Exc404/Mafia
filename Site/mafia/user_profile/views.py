@@ -12,7 +12,7 @@ from .forms import EditProfileForm
 
 def profile(request):
     if request.user.is_authenticated:
-        return HttpResponse('Профиль!')
+        #return HttpResponse('Профиль!')
 
         return render(request, 'profile/profile.html', {'request': request})
     else:
