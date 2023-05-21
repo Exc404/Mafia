@@ -12,8 +12,6 @@ from .forms import EditProfileForm
 
 def profile(request):
     if request.user.is_authenticated:
-        #return HttpResponse('Профиль!')
-
         return render(request, 'profile/profile.html', {'request': request})
     else:
         return HttpResponse('ЭЭЭЭЭ, залогинся!')
@@ -60,7 +58,7 @@ def edit_profile(request):
                 form.save()
                 return HttpResponse('Нормально отредачил')
 
-        form = EditProfileForm()
+        form = EditProfileForm(instance=get_profile)
         data['form'] = form
         data['form_obj'] = get_profile
         return render(request, 'edit_profile.html', data)

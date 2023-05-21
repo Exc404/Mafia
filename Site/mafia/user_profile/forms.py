@@ -16,7 +16,3 @@ class EditProfileForm(forms.ModelForm):
         fields = ('profile_img', 'nickname')
 
 
-
-class NicknameForm(forms.ModelForm):
-    nickname = forms.CharField
-

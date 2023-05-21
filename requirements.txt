@@ -7,3 +7,4 @@ tzdata==2022.7
 django-utils-six==2.0
 pillow==9.5.0
 mysqlclient==2.1.1
+django_cleanup==7.0.0

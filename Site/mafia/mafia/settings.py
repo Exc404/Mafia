@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mainpage.apps.MainpageConfig',
     'registration.apps.RegistrationConfig',
-    'user_profile.apps.UserProfileConfig'
+    'user_profile.apps.UserProfileConfig',
+    'django_cleanup.apps.CleanupConfig'
 ]
 
 SITE_ID = 1
