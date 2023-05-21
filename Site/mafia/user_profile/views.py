@@ -56,7 +56,7 @@ def edit_profile(request):
             form = EditProfileForm(request.POST, request.FILES, instance=get_profile)
             if form.is_valid():
                 form.save()
-                return HttpResponse('Нормально отредачил')
+                return render(request, 'profile/profile.html', {'request': request})
 
         form = EditProfileForm(instance=get_profile)
         data['form'] = form

@@ -1,33 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'profile_base.html' %}
 {% block title %}Редактирование профиля{% endblock %}
 {% block head %}
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {% endblock %}
 {% block content %}
+
 <form method="POST" enctype="multipart/form-data" novalidate>
 	{% csrf_token %}
 
+	<div id="head">
+		<a class="ExitButton" style="margin-bottom: 3em;" href="{% url "profile" %}">🡸</a>
+		<h2>Изменить профиль</h2>
+	</div>
+
+
+
+	
+
     <div id="content">
-
-		<img id="output" src="{{form_obj.profile_img.url}}" width="300" height="300" />
-		<div class="input-group mb-3">
-  		<div class="input-group-prepend">
-    		<span class="input-group-text">Upload</span>
-  		</div>
-  		<div class="custom-file">
-    		<input type="file" class="custom-file-input" accept="image/*" id="picture_img" onchange="loadFile(event)" name="profile_img"/>
-    		<label class="custom-file-label" for="picture_img">Выберете картинку</label>
-  		</div>
+		<div style="display: flex; flex-direction: column;">
+			<div style="display: flex;">
+				<div style="width: 200px; height: 200px;">
+					<img id="profile-Icon" width="200" height="200" h src="{{form_obj.profile_img.url}}" alt="Icon">
+				</div>
+				<div style="display: flex; flex-direction: column;">
+					<div class="example-1">
+						<div class="form-group">
+						  <label class="label">
+							<i class="material-icons">attach_file</i>
+							<span class="title">Изменить картинку</span>
+							<input type="file" accept="image/*"  onchange="loadFile(event)" name="profile_img"/>
+						  </label>
+						</div>
+					</div>
+				</div>	
+			</div>
+			<div style="display: flex; flex-direction: column;margin-top: 1em;">
+				{{ form.nickname.label_tag }}
+				{{ form.nickname }}
+			</div>	
 		</div>
-
-		{{ form.nickname }}
-		<input type="submit" >
+		<div style="display: flex; justify-content: flex-end;">
+			<input style="margin-left: auto; margin-top: 1em;" type="submit" >
+		</div>
     </div>
+	
 
 	<script>
   		var loadFile = function(event) {
 			var reader = new FileReader();
     		reader.onload = function(){
-      			var output = document.getElementById('output');
+      			var output = document.getElementById('profile-Icon');
       			output.src = reader.result;
     		};
     		reader.readAsDataURL(event.target.files[0]);
