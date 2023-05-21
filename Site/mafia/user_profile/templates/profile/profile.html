@@ -9,11 +9,13 @@
 </div>
 <div class="content">
 	<div id="ProfileCard">
-		<img id="profile-Icon" src="{{request.user.profile.profile_img.url}}" alt="Icon">
+		<div style="width: 200px; height: 200px;">
+			<img id="profile-Icon" width="200" height="200" h src="{{request.user.profile.profile_img.url}}" alt="Icon">
+		</div>
 		<div id="ProfileData">
 			<p id ="Nickname">{{request.user.profile.nickname}}</p>
 			<p id ="LogName">@{{request.user.username}}</p>
-			<a id ="EditProfile" href="">Изменить</a>
+			<a id ="EditProfile" href="{% url "edit_profile" %}">Изменить</a>
 		</div>
 	</div>
 </div>

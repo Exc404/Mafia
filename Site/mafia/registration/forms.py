@@ -12,6 +12,7 @@ class RegistrForm(UserCreationForm):
     # Создаём класс Meta
     email = forms.EmailField(max_length=165,help_text="Это поле обязательно. Введите существующий адрес электронной почты.")
 
+    username=forms.CharField(max_length=20)
     class Meta:
         # Свойство модели User
         model = User
@@ -24,3 +25,4 @@ class RegistrForm(UserCreationForm):
             raise ValidationError('Эта почта уже используется!')
 
         return email
+    

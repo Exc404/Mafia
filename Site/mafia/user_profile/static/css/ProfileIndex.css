@@ -90,9 +90,7 @@
     width: 100%;
   }
   #profile-Icon{
-    object-fit: contain;
-    width: 200px;
-    
+
     background: linear-gradient(#fff, #fff) padding-box,
     linear-gradient(45deg, rgb(3, 25, 151), #0b9ef9) border-box;
     border: 8px solid transparent;

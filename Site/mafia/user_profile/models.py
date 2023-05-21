@@ -8,7 +8,7 @@ from django.db import models
 
 class Profile(models.Model):
     profile_img = models.ImageField(upload_to='profileImg/', default='profileImg/AnonIcon.png')
-    nickname = models.CharField(max_length=100)
+    nickname = models.CharField(max_length=20)
     micro_value_lvl = models.IntegerField(validators=[MaxValueValidator(100), MinValueValidator(0)], default=50)
     micro_index = models.IntegerField(validators=[MinValueValidator(-1)], default=0)
     webcam_index = models.IntegerField(validators=[MinValueValidator(-1)], default=0)
