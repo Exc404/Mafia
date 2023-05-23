@@ -20,8 +20,9 @@
         {% if request.user.is_authenticated %}
           <div id="profile-block">
             <div id="profile-block-background">
-              <a href="{% url "profile" %}" style="margin-top: 0.4em;">
-                <img id="profile-Icon" width="45" height="45" src="{{request.user.profile.profile_img.url}}" alt="Icon">
+              <a href="{% url "profile" %}" style="margin-top: 0em; text-decoration: none; display: grid;">
+                <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"> 
+                <div id="profile-effect"></div>
               </a>
               <p class="text-profile">{{request.user.profile.nickname}}</p>
               <a href="{% url "settings_profile" %}" class="button button-settings">&#9881;</a>
