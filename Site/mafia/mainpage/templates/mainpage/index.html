@@ -20,9 +20,11 @@
         {% if request.user.is_authenticated %}
           <div id="profile-block">
             <div id="profile-block-background">
-              <img id="profile-Icon" width="40" height="40" src="{{request.user.profile.profile_img.url}}" alt="Icon">
+              <a href="{% url "profile" %}" style="margin-top: 0.4em;">
+                <img id="profile-Icon" width="45" height="45" src="{{request.user.profile.profile_img.url}}" alt="Icon">
+              </a>
               <p class="text-profile">{{request.user.profile.nickname}}</p>
-              <a href="{% url "profile" %}" class="button button-settings">&#9881;</a>
+              <a href="{% url "settings_profile" %}" class="button button-settings">&#9881;</a>
               <a href="{% url "logout" %}" class="button button-logout">✖</a>
             </div>
           </div>

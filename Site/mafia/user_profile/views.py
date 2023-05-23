@@ -66,3 +66,10 @@ def edit_profile(request):
     else:
         return HttpResponse('ЭЭЭЭЭ, залогинся!')
 
+
+def settings_profile(request):
+    if request.user.is_authenticated:
+        return render(request, 'profile/profile_settings.html', {'request': request})
+    else:
+        return HttpResponse('ЭЭЭЭЭ, залогинся!')
+

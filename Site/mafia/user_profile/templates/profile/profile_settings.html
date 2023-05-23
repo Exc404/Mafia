@@ -1,0 +1,30 @@
+{% extends 'profile_base.html' %}
+ 
+{% block title %}{% endblock %}
+ 
+{% block content %}
+<div id="head">
+	<a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+	<h1 style="margin-top: 1em;">Тест Видео & Аудио</h1>
+</div>
+<div class="content">
+	<div id="Test-Video">
+		<p id="iconVideo">🎥</p>
+		<video autoplay id="videoElement"></video>
+	</div>
+	<div style="display: flex; flex-direction: row;">
+		<button id="start" class="VideoBut">Включить камеру</button>
+		<button id="stop" class="VideoBut">Выключить камеру</button>
+	</div>
+	<br>
+	<div id="AudeoBox">
+		<audio id="AudeoStreem" autoplay loop></audio>
+		<p style="font-size: 60px;">🎙</p>
+		<div id="Test-Audeo"></div>
+	</div>
+	<div style="display: flex; flex-direction: row;">
+		<button id="startAudeo" class="VideoBut">Включить микрофон</button>
+		<button id="stopAudeo" class="VideoBut">Выключить микрофон</button>
+	</div>
+</div>
+{% endblock content%}
