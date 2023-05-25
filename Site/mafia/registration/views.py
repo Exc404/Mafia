@@ -96,12 +96,8 @@ def activate(request, uidb64, token):
         user_profile = Profile()
         user_profile.nickname = user.username
         user_profile.related_user = user
-
         user.save()
         user_profile.save()
-
-        user.login()
-
         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
     else:
         return HttpResponse('Activation link is invalid!')
