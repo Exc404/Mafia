@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'mainpage.apps.MainpageConfig',
     'registration.apps.RegistrationConfig',
     'user_profile.apps.UserProfileConfig',
+    'lobbypage.apps.LobbypageConfig',
     'django_cleanup.apps.CleanupConfig'
 ]
 

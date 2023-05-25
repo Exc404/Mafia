@@ -14,7 +14,7 @@
         <div id="buttons-block">
         <a href="#" class="button">Главная</a>
         <a href="#" class="button">FAQ</a>
-        <a href="#" class="button">Создать игру</a>
+        <a href="{% url "lobby" %}" class="button">Создать игру</a>
         <a href="#" class="button">Выбрать игру</a>
         </div>
         {% if request.user.is_authenticated %}
