@@ -93,16 +93,19 @@
     background: linear-gradient(#fff, #fff) padding-box,
     linear-gradient(45deg, rgb(3, 25, 151), #0b9ef9) border-box;
     border: 8px solid transparent;
-    border-radius: 10px;
+    border-radius: 20px;
+    margin-left: 0.5em;
     
   }
   #ProfileData{
-    padding-left: 1em;
     display: flex;
     width: 100%;
     flex-direction: column;
+    padding-left: 1em;
+    
   }
   #Nickname{
+    margin-top: auto;
     font-size: 2em;
     padding-right: 0.5em;
   }

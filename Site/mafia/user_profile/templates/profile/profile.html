@@ -9,8 +9,8 @@
 </div>
 <div class="content">
 	<div id="ProfileCard">
-		<div style="width: 200px; height: 200px;">
-			<img id="profile-Icon" width="200" height="200" h src="{{request.user.profile.profile_img.url}}" alt="Icon">
+		<div style="width: 200px; height: 200px; display: flex; justify-content: center;align-items:center;	"	>
+			<img id="profile-Icon" width="180" height="180" h src="{{request.user.profile.profile_img.url}}" alt="Icon">
 		</div>
 		<div id="ProfileData">
 			<p id ="Nickname">{{request.user.profile.nickname}}</p>

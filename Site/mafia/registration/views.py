@@ -98,7 +98,6 @@ def activate(request, uidb64, token):
         user_profile = Profile()
         user_profile.nickname = user.username
         user_profile.related_user = user
-
         user.save()
         user_profile.save()
 
