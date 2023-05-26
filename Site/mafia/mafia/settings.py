@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
     'user_profile.apps.UserProfileConfig',
     'lobbypage.apps.LobbypageConfig',
+    'lobbylistpage.apps.LobbylistpageConfig',
     'django_cleanup.apps.CleanupConfig',
     'channels'
 ]
@@ -84,6 +85,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mafia.wsgi.application'
 ASGI_APPLICATION = 'mafia.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default' : {
+        'BACKEND' : 'channels.layers.InMemoryChannelLayer'
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

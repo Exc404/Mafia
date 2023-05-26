@@ -4,7 +4,11 @@
         <meta charset="utf-8">
     </head>
     <body>
-        <h1>Тестовый билд №2</h1>
+        <h1>Тестовый билд №3</h1>
+        <form id = "messageInputForm">
+            <input type = "text" name = "messageForm"/>
+        </form>
+        <div id = "messages"></div>
         <script type = "text/javascript">
             let urlTemp = window.location.host
             let url = 'ws://' + urlTemp + '/ws/socket-server/'
@@ -12,7 +16,21 @@
             testSocket.onmessage = function(e){
                 let data = JSON.parse(e.data)
                 console.log('Data: ', data)
+                if(data.type === 'chat'){
+                    let messages = document.getElementById('messages')
+                    let htmlAdding = '<div><p>' + data.message + '</p></div>'
+                    messages.insertAdjacentHTML('beforeend', htmlAdding)
+                }
             }
+            let inputForm = document.getElementById('messageInputForm')
+            inputForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+                let message = e.target.messageForm.value
+                testSocket.send(JSON.stringify({
+                    'message' : message
+                }))
+                inputForm.reset()
+            })
         </script>
     </body>
 </html>
