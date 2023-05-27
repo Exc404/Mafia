@@ -1,10 +1,22 @@
 import json
+from django.shortcuts import render
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
+from user_profile.models import Profile
+from .models import Rooms
+from .views import GetNames
 
 class TestConsumer(WebsocketConsumer):
     def connect(self):
-        self.room_group_name = 'test'
+        self.Names = GetNames()
+        if self.Names[1]!=0 and self.Names[0]!=0:
+            self.NewRoom = Rooms()
+            self.NewRoom.RoomName = self.Names[0]
+            self.NewRoom.RoomHostName = self.Names[1]
+            self.NewRoom.RoomID = "01"
+            self.NewRoom.save()
+            self.room_group_name = 'test'
+        print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1", self.room_group_name)
         async_to_sync(self.channel_layer.group_add) (
             self.room_group_name,
             self.channel_name
@@ -28,3 +40,8 @@ class TestConsumer(WebsocketConsumer):
             'type' : 'chat',
             'message' : message
         }))
+
+    def disconnect(self, code):
+        if self.Names[1] != 0 and self.Names[0] != 0:
+            self.NewRoom.delete()
+        print("Disconnect")
