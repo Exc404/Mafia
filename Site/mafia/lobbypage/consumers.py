@@ -9,14 +9,13 @@ from .views import GetNames
 class TestConsumer(WebsocketConsumer):
     def connect(self):
         self.Names = GetNames()
-        if self.Names[1]!=0 and self.Names[0]!=0:
+        if self.Names[2]=="create":
             self.NewRoom = Rooms()
             self.NewRoom.RoomName = self.Names[0]
             self.NewRoom.RoomHostName = self.Names[1]
             self.NewRoom.RoomID = "01"
             self.NewRoom.save()
             self.room_group_name = 'test'
-        print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1", self.room_group_name)
         async_to_sync(self.channel_layer.group_add) (
             self.room_group_name,
             self.channel_name
@@ -42,6 +41,6 @@ class TestConsumer(WebsocketConsumer):
         }))
 
     def disconnect(self, code):
-        if self.Names[1] != 0 and self.Names[0] != 0:
+        if self.Names[2]=="create":
             self.NewRoom.delete()
         print("Disconnect")

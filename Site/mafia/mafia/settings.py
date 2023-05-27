@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
     'user_profile.apps.UserProfileConfig',
     'lobbypage.apps.LobbypageConfig',
-    'lobbylistpage.apps.LobbylistpageConfig',
     'django_cleanup.apps.CleanupConfig',
     'channels'
 ]
