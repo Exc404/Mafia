@@ -39,10 +39,10 @@ class TestConsumer(WebsocketConsumer):
         message = event['message']
         self.send(text_data = json.dumps({
             'type' : 'chat',
-            'message' : NamesMes[1] + message
+            'message' :  message
         }))
 
     def disconnect(self, code):
-        if self.Names[2]=="create":
+        if self.Names[1]==self.NewRoom.RoomHostName:
             self.NewRoom.delete()
         print("Disconnect")
