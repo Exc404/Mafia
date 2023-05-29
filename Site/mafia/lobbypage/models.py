@@ -7,7 +7,7 @@ class Rooms(models.Model):
     RoomName = models.CharField(max_length=40)
     RoomHostName = models.CharField(max_length=20)
     RoomID = models.CharField(max_length=8)
-    UsersAmount = models.IntegerField(validators=[MinValueValidator(-1), MaxValueValidator(10)], default = 1)
+    UsersAmount = models.IntegerField(validators=[MinValueValidator(-1), MaxValueValidator(10)], default = 0)
     IsGame = models.BooleanField(default=0)
 
     def __str__(self):

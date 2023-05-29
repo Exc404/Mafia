@@ -14,8 +14,9 @@ class TestConsumer(WebsocketConsumer):
             self.NewRoom.RoomName = self.Names[0]
             self.NewRoom.RoomHostName = self.Names[1]
             self.NewRoom.RoomID = "01"
+            self.NewRoom.UsersAmount += 1
             self.NewRoom.save()
-            self.room_group_name = 'test'
+        self.room_group_name = 'test'
         async_to_sync(self.channel_layer.group_add) (
             self.room_group_name,
             self.channel_name
@@ -34,10 +35,11 @@ class TestConsumer(WebsocketConsumer):
         )
 
     def test_sending(self, event):
+        NamesMes = GetNames()
         message = event['message']
         self.send(text_data = json.dumps({
             'type' : 'chat',
-            'message' : message
+            'message' : NamesMes[1] + message
         }))
 
     def disconnect(self, code):
