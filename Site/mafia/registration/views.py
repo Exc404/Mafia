@@ -14,6 +14,16 @@ from django.contrib.auth.forms import PasswordChangeForm
 from .token import account_activation_token
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
+import random
+
+nicknames_patterns = ['Мафиози', 'Аль Капоне', 'Гангстер', 'Дуче Дон', 'Вито Скалетта', 'Дон Корлеоне', 'Джо Барбаро',
+                      'Злодей британец', 'Буч', 'Винсент Вега', 'Джек Даймонд', 'Фрэнк Синтара', 'Счастливчик Лучано',
+                      'Коп', 'Шериф', 'Саша Белый', 'Кабан', 'Брат', 'Томас Шелби', 'Клайд', 'Пират', 'Бандит', 'Вор',
+                      'Злодей', 'Робин Гуд', 'Плут', 'Авантюрист', 'Кидала', 'Аферист', 'Прохвост', 'Ловкач', 'Япончик',
+                      'Япошка', 'Шельмец', 'Остап Бендер', 'Махинатор', 'Пабло Эскобар', 'Фрэнк Костелло', 'Джон Готти',
+                      'Микки Коэн', 'Генри Хилл', 'Джеймс Балджер', 'Дмитрий Давыдов', 'Крыса', 'Лео Галанте']
+
+
 
 
 # регистрация без подтверждения почты
@@ -96,7 +106,7 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user_profile = Profile()
-        user_profile.nickname = user.username
+        user_profile.nickname = random.choice(nicknames_patterns)
         user_profile.related_user = user
         user.save()
         user_profile.save()
@@ -135,7 +145,7 @@ def password_reset(request):
                     send_mail(subject, 'ссылка', 'admin@django-protect-site', [user.email], fail_silently=True,
                               html_message=msg_html)
                 except BadHeaderError:
-                    return HttpResponse('Обнаружен недопустимый заголовок!')
+                    return HttpResponse('Ошибка отправки ссылки для активации! Обратитесь по почте MafiaOnlineByG4m3dev@yandex.ru для ручной активации аккаунта!')
                 return redirect("password_reset_success")
 
     return render(request, 'registration/password_reset.html', data)
