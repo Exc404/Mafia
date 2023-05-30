@@ -69,6 +69,7 @@ input[type="submit"]
   color: white;
   padding: 2%;
   margin-top: 1em;
+  margin-bottom: 0.5em;
   background:
   linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
   linear-gradient(45deg, rgba(24,171,253,1) 0%, rgba(50,80,169,1) 60%);
@@ -119,10 +120,14 @@ input[type="submit"]:hover{
    }
    30%{background-position:0 0;}
 }
-#LogIn{
+.Links{
   font-size:16px;
-  margin-top: 1em;
-  color:rgba(50,80,169,1);
+  margin-top: 0.3em;
+  color:rgb(50, 92, 244);
   display: flex;
   justify-content: center;
+  text-decoration: none;
+}
+.Links:hover{
+  text-decoration: underline;
 }

@@ -72,7 +72,7 @@ def regist(request):
                 mail_subject, message, "<MafiaOnlineByG4m3dev@yandex.ru>", to=[to_email]
             )
             email.send()
-            return HttpResponse('Please confirm your email address to complete the registration')
+            return render(request, 'registration/register_confirm.html')
         else:
             data['form'] = form
             data['res'] = "Форма заполнена неверно"
@@ -103,9 +103,9 @@ def activate(request, uidb64, token):
 
         login(request, user)
 
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        return render(request, 'registration/register_complete.html')
     else:
-        return HttpResponse('Activation link is invalid!')
+        return render(request, 'registration/register_error.html')
 
 
 def password_reset(request):

@@ -15,14 +15,13 @@
         
             {% for field in form %}
             <p>
-                
                 {{ field.label_tag }} <br> {{ field }} 
-               
             </p>
             {% endfor %}
             {{ form.non_field_errors }}
             <div id="SendBox"><input type="submit" value="Войти"/></div>
-            <a id="LogIn" href="{% url "regist" %}">У меня нет аккаунта</a>
+            <a class="Links" href="{% url "regist" %}">У меня нет аккаунта!</a>
+            <a class="Links" href="{% url "password_reset" %}">Я забыл пароль!</a>
         </div>
 
     </form>
