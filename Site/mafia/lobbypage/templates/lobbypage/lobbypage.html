@@ -10,9 +10,9 @@
         </form>
         <div id = "messages"></div>
         <script type = "text/javascript">
-			var roomName = JSON.parse({{room_name_json}}.replace(/&quot;/g,""));
+			let user_name = {{user_nickname_json}}
             let urlTemp = window.location.host
-            let url = 'ws://' + urlTemp + '/ws/' + roomName
+            let url = 'ws://' + urlTemp + '/ws/socket-server/'
             const testSocket = new WebSocket(url)
             testSocket.onmessage = function(e){
                 let data = JSON.parse(e.data)

@@ -6,6 +6,7 @@ from .forms import CreateTheRoom
 from django.http import HttpResponse
 from django.shortcuts import redirect
 import mysql.connector
+from django.utils.safestring import mark_safe
 # Create your views here.
 
 Names = ["","","null"]
@@ -40,7 +41,9 @@ def lobbylist(request):
 def TheLobby(request, room_name):
     username = request.user.profile.nickname
     print(request.user.profile.nickname)
+    text = "Rewrwwrw"
     return render(request, 'lobbypage/lobbypage.html',
                   {'request': request,
-                   'room_name_json': json.dumps(room_name),
+                   'room_name_json': mark_safe(json.dumps(room_name)),
+                   'user_nickname_json': mark_safe(json.dumps(username))
                    })
