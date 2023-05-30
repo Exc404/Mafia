@@ -14,5 +14,9 @@ class Profile(models.Model):
     webcam_index = models.IntegerField(validators=[MinValueValidator(-1)], default=0)
     related_user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "Профиль"
+        verbose_name_plural = "Профили"
+
     def __str__(self):
-        return self.nickname
+        return self.nickname + ' @' + self.related_user.username
