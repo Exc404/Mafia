@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Активация{% endblock %}
+
+{% block content %}
+    <div id="head" style="display: flex;justify-content:center; ">
+        <h2 style="padding-top: 0;padding: 0;margin: 0;">Активация прошла успешно</h2>
+    </div>
+
+    <div id="content">
+        <a class="Links" style="font-size: 1em;" href="{% url "mainpage" %}">вернуться к главной странице</a>
+    </div>
+{% endblock %}
