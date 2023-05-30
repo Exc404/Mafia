@@ -120,7 +120,7 @@ input[type="submit"]:hover{
    }
    30%{background-position:0 0;}
 }
-.Links{
+.links{
   font-size:16px;
   margin-top: 0.3em;
   color:rgb(50, 92, 244);
@@ -128,6 +128,6 @@ input[type="submit"]:hover{
   justify-content: center;
   text-decoration: none;
 }
-.Links:hover{
+.links:hover{
   text-decoration: underline;
 }
