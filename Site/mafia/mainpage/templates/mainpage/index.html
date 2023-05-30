@@ -12,8 +12,8 @@
         <img id="logo" src="{% static "img/logo.png" %}" alt="Logo">
         <div id="logo-text"><p style="color:#d93030">Mafia</p>&nbsp;Online</div>
         <div id="buttons-block">
-        <a href="#" class="button">Главная</a>
-        <a href="#" class="button">FAQ</a>
+        <a href="{% url "mainpage" %}" class="button">Главная</a>
+        <a href="{% url "faqpage" %}" class="button">FAQ</a>
         <a href="{% url "lobby" %}" class="button">Создать игру</a>
         <a href="#" class="button">Выбрать игру</a>
         </div>

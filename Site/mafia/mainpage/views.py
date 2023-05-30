@@ -6,6 +6,8 @@ from django.template.loader import render_to_string
 def index(request):
     return render(request, 'mainpage/mainpage.html', {'request': request})
 
+def faqpage(request):
+    return render(request, 'mainpage/faqpage.html', {'request':request})
 
 
 def pageNotFound(request, exception):
