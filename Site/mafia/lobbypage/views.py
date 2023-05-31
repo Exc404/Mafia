@@ -18,8 +18,6 @@ def lobby(request):
                 NewRoom = NewRoom.save(commit=False)
                 NewRoom.roomHostName = request.user.profile.nickname
                 NewRoom.save()
-                NewRoom.profile_set.add(request.user.profile, bulk=False)
-                NewRoom.save()
                 return redirect(TheLobby, NewRoom.roomname+"_"+NewRoom.roomID)
         data = {}
 
@@ -32,18 +30,27 @@ def lobby(request):
     else:
         return HttpResponse('ЭЭЭЭЭ, залогинся!')
 
+def TheLobby(request, room_name):
+    player = request.user.profile
+    for room in Rooms.objects.all():
+        print(room.roomname+"_"+room.roomID)
+        if room.roomname+"_"+room.roomID == room_name:
+            if room.UsersAmount<12:
+                print("!!!!!!!!ВЫБРАНА КОМНАТА", room.roomname)
+                room.AddPlayer(player.nickname)
+                room.CheckPlayers()
+                room.profile_set.add(player, bulk=False)
+                room.save()
+                for R in Rooms.objects.all():
+                    print(R.roomname, R.PlayerList)
+                return render(request, 'lobbypage/lobbypage.html',
+                              {'request': request,
+                               'room_name_json': mark_safe(json.dumps(room_name)),
+                               'user_nickname_json': mark_safe(json.dumps(player.nickname))
+                               })
+            else:
+                return HttpResponse('Народу многа....')
+    return HttpResponse('Куда прёшь? Не видишь? Такой комнаты вообще нет.')
 
 def lobbylist(request):
     return render(request, 'lobbypage/lobbylist.html', {'request': request})
-
-
-
-def TheLobby(request, room_name):
-    username = request.user.profile.nickname
-    print(request.user.profile.nickname)
-    text = "Rewrwwrw"
-    return render(request, 'lobbypage/lobbypage.html',
-                  {'request': request,
-                   'room_name_json': mark_safe(json.dumps(room_name)),
-                   'user_nickname_json': mark_safe(json.dumps(username))
-                   })

@@ -9,6 +9,7 @@ from .models import Rooms
 class TestConsumer(WebsocketConsumer):
 
     def connect(self):
+        self.username = ""
         self.room_group_name = 'test'
         async_to_sync(self.channel_layer.group_add) (
             self.room_group_name,
@@ -18,14 +19,20 @@ class TestConsumer(WebsocketConsumer):
         
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        async_to_sync(self.channel_layer.group_send) (
-            self.room_group_name,
-            {
-                'type' : 'test_sending',
-                'message' : message,
-            }
-        )
+        if 'message' in text_data_json:
+            message = text_data_json['message']
+            async_to_sync(self.channel_layer.group_send) (
+                self.room_group_name,
+                {
+                    'type' : 'test_sending',
+                    'message' : message,
+                }
+            )
+        if 'username' in text_data_json and self.username=="":
+            self.username = text_data_json['username']
+            print(self.username)
+        '''if 'username' in text_data_json:
+            print("1111111111111111111111111111111111111111111111111111111111111111111111")'''
 
     def test_sending(self, event):
         message = event['message']
@@ -35,4 +42,14 @@ class TestConsumer(WebsocketConsumer):
         }))
 
     def disconnect(self, code):
+        thisuser = Profile.objects.get(nickname=self.username)
+        thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
+        thisuser.related_lobby_id=None
+        thisuser.save()
+        thisroom.DelPlayer(self.username)
+        thisroom.save()
+        print("!!!!!!!!!!!!!!!!!!!!!!!!")
+        for R in Rooms.objects.all():
+            print(R.roomname, R.PlayerList)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!")
         print("Disconnect!")
