@@ -16,9 +16,9 @@ def lobby(request):
             NewRoom = CreateTheRoom(request.POST)
             if NewRoom.is_valid():
                 NewRoom = NewRoom.save(commit=False)
-                NewRoom.roomHostName = request.user.profile.nickname
+                NewRoom.roomhostid = request.user.profile.pk
                 NewRoom.save()
-                return redirect(TheLobby, NewRoom.roomname+"_"+NewRoom.roomID)
+                return redirect(TheLobby, NewRoom.roomname+"_"+NewRoom.room_id)
         data = {}
 
         form = CreateTheRoom()
@@ -32,25 +32,27 @@ def lobby(request):
 
 def TheLobby(request, room_name):
     player = request.user.profile
-    for room in Rooms.objects.all():
-        print(room.roomname+"_"+room.roomID)
-        if room.roomname+"_"+room.roomID == room_name:
-            if room.UsersAmount<12:
-                print("!!!!!!!!ВЫБРАНА КОМНАТА", room.roomname)
-                room.AddPlayer(player.nickname)
-                room.CheckPlayers()
-                room.profile_set.add(player, bulk=False)
-                room.save()
-                for R in Rooms.objects.all():
-                    print(R.roomname, R.PlayerList)
-                return render(request, 'lobbypage/lobbypage.html',
+    if player.related_lobby_id==None:
+        print("!!!!!!!!!!!!!!!!!!!!ПОЛЬЗОВАТЕЛЬ", player.nickname, " ЗАШЕЛ В ЗЭ ЛОББИ!!!!!!!!!!!!!!")
+        for room in Rooms.objects.all():
+            print(room.roomname+"_"+room.room_id)
+            if room.roomname+"_"+room.room_id == room_name:
+                if room.profile_set.count()<12:
+                    print("!!!!!!!!ВЫБРАНА КОМНАТА", room.roomname)
+                    room.profile_set.add(player, bulk=False)
+                    room.CheckPlayers()  #Cheking!!!!!
+                    #room.save()
+                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    return render(request, 'lobbypage/lobbypage.html',
                               {'request': request,
                                'room_name_json': mark_safe(json.dumps(room_name)),
                                'user_nickname_json': mark_safe(json.dumps(player.nickname))
                                })
-            else:
-                return HttpResponse('Народу многа....')
-    return HttpResponse('Куда прёшь? Не видишь? Такой комнаты вообще нет.')
+                else:
+                    return HttpResponse('Народу многа....')
+        return HttpResponse('Куда прёшь? Не видишь? Такой комнаты вообще нет.')
+    else:
+        return redirect(TheLobby, room_name)
 
 def lobbylist(request):
     return render(request, 'lobbypage/lobbylist.html', {'request': request})

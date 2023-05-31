@@ -30,7 +30,7 @@ class TestConsumer(WebsocketConsumer):
             )
         if 'username' in text_data_json and self.username=="":
             self.username = text_data_json['username']
-            print(self.username)
+            print(self.username + "$")
         '''if 'username' in text_data_json:
             print("1111111111111111111111111111111111111111111111111111111111111111111111")'''
 
@@ -44,12 +44,8 @@ class TestConsumer(WebsocketConsumer):
     def disconnect(self, code):
         thisuser = Profile.objects.get(nickname=self.username)
         thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
-        thisuser.related_lobby_id=None
+        thisroom.profile_set.remove(thisuser)
+        thisuser.related_lobby_id = None
         thisuser.save()
-        thisroom.DelPlayer(self.username)
-        thisroom.save()
-        print("!!!!!!!!!!!!!!!!!!!!!!!!")
-        for R in Rooms.objects.all():
-            print(R.roomname, R.PlayerList)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!")
+        thisroom.DelPlayer(thisuser.pk)
         print("Disconnect!")
