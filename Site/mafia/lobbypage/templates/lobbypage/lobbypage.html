@@ -11,11 +11,14 @@
         <div id = "messages"></div>
         <script type = "text/javascript">
 			let user_name = {{user_nickname_json}}
+            let room_name = {{room_name_json}}
             let urlTemp = window.location.host
-            let url = 'ws://' + urlTemp + '/ws/socket-server/'
+            let url = 'ws://' + urlTemp + '/ws/socket-server/' + room_name + '/'
+            console.log(url)
             const testSocket = new WebSocket(url)
 			testSocket.onopen = () => testSocket.send(JSON.stringify({
-				'username' : user_name
+				'username' : user_name,
+                'roomname' : room_name
 			}))
             testSocket.onmessage = function(e){
                 let data = JSON.parse(e.data)

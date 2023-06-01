@@ -23,9 +23,13 @@ class Rooms(models.Model):
             self.delete()
         print("WANNA DELETE:")
 
+    
+    def GetLink(self):
+        link = self.roomname + '_' + self.room_id
+        return link
 
     def CheckPlayers(self):  #debug thing
         print("CHECKING!!!", self.profile_set.count())
 
     def __str__(self):
-        return self.roomname
+        return self.roomname + ' ' + str(self.profile_set.count()) + '/12 '

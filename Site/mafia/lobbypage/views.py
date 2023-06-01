@@ -5,7 +5,6 @@ from .models import Rooms
 from .forms import CreateTheRoom
 from django.http import HttpResponse
 from django.shortcuts import redirect
-import mysql.connector
 from django.utils.safestring import mark_safe
 # Create your views here.
 
@@ -37,7 +36,7 @@ def TheLobby(request, room_name):
         for room in Rooms.objects.all():
             print(room.roomname+"_"+room.room_id)
             if room.roomname+"_"+room.room_id == room_name:
-                if room.profile_set.count()<12:
+                if room.profile_set.count() < 12:
                     print("!!!!!!!!ВЫБРАНА КОМНАТА", room.roomname)
                     room.profile_set.add(player, bulk=False)
                     room.CheckPlayers()  #Cheking!!!!!
@@ -55,4 +54,5 @@ def TheLobby(request, room_name):
         return redirect(TheLobby, room_name)
 
 def lobbylist(request):
-    return render(request, 'lobbypage/lobbylist.html', {'request': request})
+    allTable = Rooms.objects.all()
+    return render(request, 'lobbypage/lobbylist.html', {'rooms': allTable})

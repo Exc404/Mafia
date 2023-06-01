@@ -4,6 +4,6 @@ from .views import *
 
 urlpatterns = [
     path('create/', lobby, name="lobby"),
-    path('<str:room_name>/', TheLobby, name='TheLobby'),
-    path('enter/', lobbylist, name="lobbylist")
+    path('enter/', lobbylist, name="lobbylist"),
+    path('<str:room_name>/', TheLobby, name='TheLobby')
 ]
