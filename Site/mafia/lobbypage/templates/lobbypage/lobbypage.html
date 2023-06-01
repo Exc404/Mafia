@@ -17,8 +17,7 @@
             console.log(url)
             const testSocket = new WebSocket(url)
 			testSocket.onopen = () => testSocket.send(JSON.stringify({
-				'username' : user_name,
-                'roomname' : room_name
+				'username' : user_name
 			}))
             testSocket.onmessage = function(e){
                 let data = JSON.parse(e.data)

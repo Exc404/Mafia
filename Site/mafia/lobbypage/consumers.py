@@ -10,7 +10,8 @@ class TestConsumer(WebsocketConsumer):
 
     def connect(self):
         self.username = ""
-        self.room_group_name = 'lobby_'
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'lobby_%s' % self.room_name
         async_to_sync(self.channel_layer.group_add) (
             self.room_group_name,
             self.channel_name
@@ -30,11 +31,6 @@ class TestConsumer(WebsocketConsumer):
             )
         if 'username' in text_data_json and self.username=="":
             self.username = text_data_json['username']
-            self.room_group_name += text_data_json['roomname']
-            async_to_sync(self.channel_layer.group_add) (
-                self.room_group_name,
-                self.channel_name
-            )
             print(self.username + "$")
 
     def test_sending(self, event):
