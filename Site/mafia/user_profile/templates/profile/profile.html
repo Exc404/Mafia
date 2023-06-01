@@ -10,13 +10,19 @@
 <div class="content">
 	<div id="ProfileCard">
 		<div style="width: 200px; height: 200px; display: flex; justify-content: center;align-items:center;	"	>
-			<img id="profile-Icon" width="180" height="180" h src="{{request.user.profile.profile_img.url}}" alt="Icon">
+			<img id="profile-Icon" width="180" height="180" src="{{user_profile.profile_img.url}}" alt="Icon">
 		</div>
-		<div id="ProfileData">
-			<p id ="Nickname">{{request.user.profile.nickname}}</p>
-			<p id ="LogName">@{{request.user.username}}</p>
-			<a id ="EditProfile" href="{% url "edit_profile" %}">Изменить</a>
-		</div>
+			{% if edit %}
+				<div class="profile_data" >
+					<p id ="Nickname">{{user_profile.nickname}}</p>
+					<p id ="LogName">@{{login}}</p>
+					<a id ="EditProfile" href="{% url "edit_profile" %}">Изменить</a>
+				</div>
+			{%else%}
+				<div class="profile_data" style="align-items: center; margin-bottom: auto; margin-top: auto;">
+					<p id ="Nickname">{{user_profile.nickname}}</p>
+				</div>
+			{% endif %}
 	</div>
 </div>
 <div style="display: flex; justify-content: center; margin-left: 50px;">

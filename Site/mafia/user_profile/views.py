@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
@@ -12,10 +12,29 @@ from .forms import EditProfileForm
 
 def profile(request):
     if request.user.is_authenticated:
-        return render(request, 'profile/profile.html', {'request': request})
+        data = {
+            'user_profile': request.user.profile,
+            'login': request.user.username,
+            'edit': True
+        }
+        return render(request, 'profile/profile.html', data)
     else:
-        return HttpResponse('ЭЭЭЭЭ, залогинся!')
+        return redirect('login')
 
+
+def show_profile(request, slug):
+    showed_profile = get_object_or_404(Profile, slug=slug)
+    if request.user.is_authenticated:
+        user_profile = request.user.profile
+        if showed_profile.pk == user_profile.pk:
+            return redirect('profile')
+
+    data = {
+        'user_profile': showed_profile,
+        'login': '',
+        'edit': False
+    }
+    return render(request, 'profile/profile.html', data)
 
 # def edit_profile(request):
 #     if request.user.is_authenticated:
@@ -56,7 +75,7 @@ def edit_profile(request):
             form = EditProfileForm(request.POST, request.FILES, instance=get_profile)
             if form.is_valid():
                 form.save()
-                return render(request, 'profile/profile.html', {'request': request})
+                return redirect('profile')
 
         form = EditProfileForm(instance=get_profile)
         data['form'] = form
@@ -64,12 +83,11 @@ def edit_profile(request):
         return render(request, 'edit_profile.html', data)
 
     else:
-        return HttpResponse('ЭЭЭЭЭ, залогинся!')
+        return redirect('login')
 
 
 def settings_profile(request):
     if request.user.is_authenticated:
         return render(request, 'profile/profile_settings.html', {'request': request})
     else:
-        return HttpResponse('ЭЭЭЭЭ, залогинся!')
-
+        return redirect('login')
