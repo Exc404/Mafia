@@ -1,4 +1,3 @@
-console.log("CONNECTED")
 let urlTemp = window.location.host
 let url = 'ws://' + urlTemp + '/ws/socket-server/' + room_name + '/'
 console.log(url)
@@ -8,7 +7,6 @@ testSocket.onopen = () => testSocket.send(JSON.stringify({
 }))
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
-    console.log('Data: ', data)
     if (data.type === 'chat') {
         let messages = document.getElementById('messages')
         let htmlAdding = '<div><p>' + data.message + '</p></div>'
