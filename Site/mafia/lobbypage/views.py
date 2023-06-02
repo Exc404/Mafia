@@ -33,7 +33,7 @@ def lobby(request):
 
 def TheLobby(request, room_name):
     appId = '55fba11738094971a032a7ac307e10ed'
-    appCertificate = 'b006d5596a3c4c1eaa51f546abfad7ad' #Брать из диса!! и УДАЛЯТЬ!!!
+    appCertificate = '' #Брать из диса!! и УДАЛЯТЬ!!!
     player = request.user.profile
     uid = 0
     expirationTimeInSeconds = 3600 * 24
