@@ -3,60 +3,31 @@
 
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" media="screen" href="/./static/css/videos_styles.css">
 </head>
 
 <body>
-    <div id="chat" style="float: right">
+    <div id="users">
+        <section id = "room-name-wrapper">
+            <p>Комната: <span id = "room-name"></span></p>
+        </section>
+
+        <section id = "video-streams"></section>
+        <a id="startgame" href="#">Начать игру</a>
+    </div>
+    <div id="chat">
         <h2>Чат:</h2>
         <form id="messageInputForm">
             <input type="text" name="messageForm" />
         </form>
         <div id="messages"></div>
-        <script type="text/javascript">
-            let user_name = {{ user_nickname_json }}
-            let room_name = {{ room_name_json }}
-            let is_host = {{ the_host_json }}
-            console.log(is_host)
-            let urlTemp = window.location.host
-            let url = 'ws://' + urlTemp + '/ws/socket-server/' + room_name + '/'
-            console.log(url)
-            const testSocket = new WebSocket(url)
-            testSocket.onopen = () => testSocket.send(JSON.stringify({
-                'username': user_name
-            }))
-            testSocket.onmessage = function (e) {
-                let data = JSON.parse(e.data)
-                console.log('Data: ', data)
-                if (data.type === 'chat') {
-                    let messages = document.getElementById('messages')
-                    let htmlAdding = '<div><p>' + data.message + '</p></div>'
-                    messages.insertAdjacentHTML('beforeend', htmlAdding)
-                }
-            }
-            let inputForm = document.getElementById('messageInputForm')
-            inputForm.addEventListener('submit', (e) => {
-                e.preventDefault()
-                let message = e.target.messageForm.value
-                testSocket.send(JSON.stringify({
-                    'message': message
-                }))
-                inputForm.reset()
-            })
-            window.onload = function () {
-                let startButton = document.getElementById('startgame')
-                startButton.onclick = function () {
-                    if (is_host) alert("Вы начали игру")
-                    else alert("Вы не являетесь создателем комнаты")
-                    return false
-                }
-            }
-        </script>
-    </div>
-    <div id="users" style="float: left">
-        <h2>Пользователи в лобби:</h2>
-        <!-- Здесь должно быть добавление никнеймов подклчюенных пользователей -->
-        <a id="startgame" href="#">Начать игру</a>
     </div>
 </body>
-
+<script type="text/javascript" src = "/./static/assets/AgoraRTC_N-4.17.2.js"></script>
+<script type="text/javascript">
+    let user_name = {{ user_nickname_json }}
+    let room_name = {{ room_name_json }}
+    let is_host = {{ the_host_json }}
+</script>
+<script type="text/javascript" src = "/./static/js/streams.js"></script>
 </html>
