@@ -32,9 +32,9 @@ window.onload = function () {
 }
 
 const APP_ID = '55fba11738094971a032a7ac307e10ed'
-const CHANNEL = 'main'
-const TOKEN = '007eJxTYHizIqOJ2dBymtO61SurDvFdMnrQuHvhnsBJpbdiHrwJaKtXYDA1TUtKNDQ0N7YwsDSxNDdMNDA2SjRPTDY2ME81NEhNmcNeldIQyMigdiaBmZEBAkF8FobcxMw8BgYAmVUf8w=='
-let UID
+let CHANNEL = room_name
+let TOKEN = token
+let UID = 1
 
 const client = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'})
 
@@ -42,6 +42,7 @@ let localTracks = []
 let remoteUsers = {}
 
 let joinAndDisplayLocalStream = async () => {
+    document.getElementById('room-name').innerText = CHANNEL
     client.on('user-published', handleUserJoined)
     alert("Начался шпионаж за твоей жопой!")
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)

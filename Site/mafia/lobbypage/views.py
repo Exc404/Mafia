@@ -6,6 +6,8 @@ from .forms import CreateTheRoom
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
+from agora_token_builder import RtcTokenBuilder
+import time
 # Create your views here.
 
 Names = ["","","null"]
@@ -30,7 +32,14 @@ def lobby(request):
         return HttpResponse('ЭЭЭЭЭ, залогинся!')
 
 def TheLobby(request, room_name):
+    appId = '55fba11738094971a032a7ac307e10ed'
+    appCertificate = 'b006d5596a3c4c1eaa51f546abfad7ad' #Брать из диса!! и УДАЛЯТЬ!!!
     player = request.user.profile
+    uid = 0
+    expirationTimeInSeconds = 3600 * 24
+    currentTimeStamp = time.time()
+    privilegeExpiredTs = currentTimeStamp + expirationTimeInSeconds
+    role = 1
     if player.related_lobby_id==None:
         print("!!!!!!!!!!!!!!!!!!!!ПОЛЬЗОВАТЕЛЬ", player.nickname, " ЗАШЕЛ В ЗЭ ЛОББИ!!!!!!!!!!!!!!")
         for room in Rooms.objects.all():
@@ -42,11 +51,13 @@ def TheLobby(request, room_name):
                     room.CheckPlayers()  #Cheking!!!!!
                     #room.save()
                     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    channelName = str(room_name)
                     return render(request, 'lobbypage/lobbypage.html',
                               {'request': request,
                                'room_name_json': mark_safe(json.dumps(room_name)),
                                'user_nickname_json': mark_safe(json.dumps(player.nickname)),
-                               'the_host_json': mark_safe(json.dumps(request.user.profile.pk == room.roomhostid))
+                               'the_host_json': mark_safe(json.dumps(request.user.profile.pk == room.roomhostid)),
+                               'agora_token' : mark_safe(json.dumps(RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs)))
                                })
                 else:
                     return HttpResponse('Народу многа....')
