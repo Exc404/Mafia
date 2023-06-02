@@ -15,6 +15,9 @@ from .token import account_activation_token
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 import random
+from .tasks import delete_inactive_accounts
+from datetime import timedelta
+from django.utils import timezone
 
 nicknames_patterns = ['Мафиози', 'Аль Капоне', 'Гангстер', 'Дуче Дон', 'Вито Скалетта', 'Дон Корлеоне', 'Джо Барбаро',
                       'Злодей британец', 'Буч', 'Винсент Вега', 'Джек Даймонд', 'Фрэнк Синтара', 'Счастливчик Лучано',
@@ -22,8 +25,6 @@ nicknames_patterns = ['Мафиози', 'Аль Капоне', 'Гангстер
                       'Злодей', 'Робин Гуд', 'Плут', 'Авантюрист', 'Кидала', 'Аферист', 'Прохвост', 'Ловкач', 'Япончик',
                       'Япошка', 'Шельмец', 'Остап Бендер', 'Махинатор', 'Пабло Эскобар', 'Фрэнк Костелло', 'Джон Готти',
                       'Микки Коэн', 'Генри Хилл', 'Джеймс Балджер', 'Дмитрий Давыдов', 'Крыса', 'Лео Галанте']
-
-
 
 
 # регистрация без подтверждения почты
@@ -81,7 +82,11 @@ def regist(request):
             email = EmailMessage(
                 mail_subject, message, "<MafiaOnlineByG4m3dev@yandex.ru>", to=[to_email]
             )
-            email.send()
+            try:
+                email.send()
+                delete_inactive_accounts.apply_async(args=(user.pk,), eta=timezone.now() + timedelta(minutes=5))
+            except Exception:
+                return HttpResponse('Ошибка отправки письма!')
             return render(request, 'registration/register_confirm.html')
         else:
             data['form'] = form
@@ -119,6 +124,9 @@ def activate(request, uidb64, token):
 
 
 def password_reset(request):
+    return render(request, 'registration/send_mail_error.html', {'error_text': 'Ошибка отправки '
+                                                                               'ссылки для сброса '
+                                                                               'пароля!'})
     data = {"form": PasswordResetForm()}
     if request.method == "POST":
         form = PasswordResetForm(request.POST)
@@ -145,7 +153,9 @@ def password_reset(request):
                     send_mail(subject, 'ссылка', 'admin@django-protect-site', [user.email], fail_silently=True,
                               html_message=msg_html)
                 except BadHeaderError:
-                    return HttpResponse('Ошибка отправки ссылки для активации! Обратитесь по почте MafiaOnlineByG4m3dev@yandex.ru для ручной активации аккаунта!')
+                    return render(request, 'registration/send_mail_error.html', {'error_text': 'Ошибка отправки '
+                                                                                               'ссылки для сброса '
+                                                                                               'пароля!'})
                 return redirect("password_reset_success")
 
     return render(request, 'registration/password_reset.html', data)

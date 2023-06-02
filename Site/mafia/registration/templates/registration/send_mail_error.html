@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Ошибка отправки{% endblock %}
+
+{% block content %}
+    <div id="head" style="display: flex;justify-content:center; ">
+        <h2 style="padding-top: 0;padding: 0;margin: 0;">Ошибка отправки письма</h2>
+    </div>
+
+    <div id="content">
+        <p>{{ error_text }}</p>
+        <p>Для получения более подробной информации напишите на почту MafiaOnlineByG4m3dev@yandex.ru!</p>
+        <a class="links" style="font-size: 1em;" href="{% url "mainpage" %}">Вернуться на главную страницу</a>
+    </div>
+{% endblock %}
