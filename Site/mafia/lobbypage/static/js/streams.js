@@ -44,9 +44,10 @@ let remoteUsers = {}
 let joinAndDisplayLocalStream = async () => {
     document.getElementById('room-name').innerText = CHANNEL
     client.on('user-published', handleUserJoined)
+    client.on('user-left', handleUserLeft)
     alert("Начался шпионаж за твоей жопой!")
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
-
+    console.log(UID)
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
     let player = `<div class="video-container" id = "user-container-${UID}">
                     <div class="user-name-wrapper"><span class="user-name">Имя пользователя</span></div>
@@ -59,8 +60,6 @@ let joinAndDisplayLocalStream = async () => {
 
 let handleUserJoined = async (user, mediaType) => {
     remoteUsers[user.uid] = user
-    console.log("AJSNCOANJS")
-    console.log(mediaType)
     await client.subscribe(user, mediaType)
     if(mediaType === "video") {
         let player = document.getElementById(`user-container-${user.uid}`)
@@ -77,6 +76,11 @@ let handleUserJoined = async (user, mediaType) => {
     if(mediaType === "audio") {
         user.audioTrack.play()
     }
+}
+
+let handleUserLeft = async (user) => {
+    delete remoteUsers[user.uid]
+    document.getElementById(`user-container-${user.uid}`).remove()
 }
 
 joinAndDisplayLocalStream()
