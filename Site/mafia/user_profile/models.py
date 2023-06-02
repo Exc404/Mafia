@@ -18,7 +18,7 @@ class Profile(models.Model):
     micro_index = models.IntegerField(validators=[MinValueValidator(-1)], default=0, verbose_name='Выбранный микрофон')
     webcam_index = models.IntegerField(validators=[MinValueValidator(-1)], default=0, verbose_name='Выбранная камера')
     related_user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Аккаунт профиля')
-    related_lobby = models.ForeignKey(Rooms, on_delete=models.SET_NULL, null=True, verbose_name='Связанное лобби')
+    related_lobby = models.ForeignKey(Rooms, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Связанное лобби')
 
     class Meta:
         verbose_name = "Профиль"
