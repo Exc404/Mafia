@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Rooms</title>
+</head>
+<body>
+    Список комнат:</br>
+    {% if rooms %}
+        {% for room in rooms %}
+            {% if not room.is_game %}
+                <div>
+                    <h3>{{ room }}<a href = "{% url 'TheLobby' room.GetLink %}">Подключиться</a></h3>
+                </div>
+            {% endif %}   
+        {% endfor %}
+    {% else %}
+        <p>Создайте комнату</p>
+    {% endif %}
+</body>
+</html>

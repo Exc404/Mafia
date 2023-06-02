@@ -4,9 +4,11 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from pytils.translit import slugify
+from lobbypage.models import Rooms
 
 
 class Profile(models.Model):
+
     profile_img = models.ImageField(upload_to='profileImg/', default='profileImg/AnonIcon.jpg', blank=False,
                                     verbose_name='Фото профиля')
     nickname = models.CharField(max_length=20, blank=False, verbose_name='Никнейм')
@@ -16,10 +18,12 @@ class Profile(models.Model):
     micro_index = models.IntegerField(validators=[MinValueValidator(-1)], default=0, verbose_name='Выбранный микрофон')
     webcam_index = models.IntegerField(validators=[MinValueValidator(-1)], default=0, verbose_name='Выбранная камера')
     related_user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Аккаунт профиля')
+    related_lobby = models.ForeignKey(Rooms, on_delete=models.SET_NULL, null=True, verbose_name='Связанное лобби')
 
     class Meta:
         verbose_name = "Профиль"
         verbose_name_plural = "Профили"
+
 
     def __str__(self):
         return self.nickname + ' @' + self.related_user.username

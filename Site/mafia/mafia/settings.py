@@ -30,11 +30,12 @@ SECRET_KEY = 'django-insecure-gy69qla59c&4f147&(%s#morg_j4#dr-2ai2yjonngq^yckm5d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [] #"26.27.182.247 --- 26.18.69.65"
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -46,7 +47,8 @@ INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
     'user_profile.apps.UserProfileConfig',
     'lobbypage.apps.LobbypageConfig',
-    'django_cleanup.apps.CleanupConfig'
+    'django_cleanup.apps.CleanupConfig',
+    'channels'
 ]
 
 SITE_ID = 1
@@ -80,6 +82,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mafia.wsgi.application'
+ASGI_APPLICATION = 'mafia.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    'default' : {
+        'BACKEND' : 'channels.layers.InMemoryChannelLayer'
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
