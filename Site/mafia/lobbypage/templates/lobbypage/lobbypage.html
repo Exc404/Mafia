@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1>Тестовый билд №3,14</h1>
-        <form id = "messageInputForm">
-            <input type = "text" name = "messageForm"/>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div id="chat" style = "float: right">
+        <h2>Чат:</h2>
+        <form id="messageInputForm">
+            <input type="text" name="messageForm" />
         </form>
-        <div id = "messages"></div>
-        <script type = "text/javascript">
-			let user_name = {{user_nickname_json}}
-            let room_name = {{room_name_json}}
+        <div id="messages"></div>
+        <script type="text/javascript">
+            let user_name = {{ user_nickname_json }}
+            let room_name = {{ room_name_json }}
             let urlTemp = window.location.host
             let url = 'ws://' + urlTemp + '/ws/socket-server/' + room_name + '/'
             console.log(url)
             const testSocket = new WebSocket(url)
-			testSocket.onopen = () => testSocket.send(JSON.stringify({
-				'username' : user_name
-			}))
-            testSocket.onmessage = function(e){
+            testSocket.onopen = () => testSocket.send(JSON.stringify({
+                'username': user_name
+            }))
+            testSocket.onmessage = function (e) {
                 let data = JSON.parse(e.data)
                 console.log('Data: ', data)
-                if(data.type === 'chat'){
+                if (data.type === 'chat') {
                     let messages = document.getElementById('messages')
                     let htmlAdding = '<div><p>' + data.message + '</p></div>'
                     messages.insertAdjacentHTML('beforeend', htmlAdding)
@@ -33,10 +36,15 @@
                 e.preventDefault()
                 let message = e.target.messageForm.value
                 testSocket.send(JSON.stringify({
-                    'message' : message
+                    'message': message
                 }))
                 inputForm.reset()
             })
         </script>
-    </body>
+    </div>
+    <div id = "users" style = "float: left">
+        <h2>Пользователи в лобби:</h2>
+    </div>
+</body>
+
 </html>
