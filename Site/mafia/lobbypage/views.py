@@ -45,7 +45,8 @@ def TheLobby(request, room_name):
                     return render(request, 'lobbypage/lobbypage.html',
                               {'request': request,
                                'room_name_json': mark_safe(json.dumps(room_name)),
-                               'user_nickname_json': mark_safe(json.dumps(player.nickname))
+                               'user_nickname_json': mark_safe(json.dumps(player.nickname)),
+                               'the_host_json': mark_safe(json.dumps(request.user.profile.pk == room.roomhostid))
                                })
                 else:
                     return HttpResponse('Народу многа....')

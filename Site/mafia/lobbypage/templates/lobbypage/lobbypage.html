@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <div id="chat" style = "float: right">
+    <div id="chat" style="float: right">
         <h2>Чат:</h2>
         <form id="messageInputForm">
             <input type="text" name="messageForm" />
@@ -15,6 +15,8 @@
         <script type="text/javascript">
             let user_name = {{ user_nickname_json }}
             let room_name = {{ room_name_json }}
+            let is_host = {{ the_host_json }}
+            console.log(is_host)
             let urlTemp = window.location.host
             let url = 'ws://' + urlTemp + '/ws/socket-server/' + room_name + '/'
             console.log(url)
@@ -40,10 +42,20 @@
                 }))
                 inputForm.reset()
             })
+            window.onload = function () {
+                let startButton = document.getElementById('startgame')
+                startButton.onclick = function () {
+                    if (is_host) alert("Вы начали игру")
+                    else alert("Вы не являетесь создателем комнаты")
+                    return false
+                }
+            }
         </script>
     </div>
-    <div id = "users" style = "float: left">
+    <div id="users" style="float: left">
         <h2>Пользователи в лобби:</h2>
+        <!-- Здесь должно быть добавление никнеймов подклчюенных пользователей -->
+        <a id="startgame" href="#">Начать игру</a>
     </div>
 </body>
 
