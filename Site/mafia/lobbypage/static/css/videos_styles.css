@@ -1,11 +1,32 @@
 /* стили для камер */
 
+#room-name-wrapper {
+    text-align: center;
+    font-size: 18px;
+}
+
 #video-streams {
     display: flex;
     flex-wrap: wrap;
     height: 85vh;
     width: 75%;
     margin: 0 auto;
+}
+
+.video-player > * {
+    border-radius: 5px;
+}
+
+.user-name-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #fff;
 }
 
 .video-container {
@@ -17,9 +38,17 @@
     border-radius: 5px;
     margin: 2px;
     background-color: rgba(198, 202, 219, 1);
+    position: relative;
 }
 
 .video-player {
     height: 100%;
     width: 100%;
+}
+
+@media screen and (max-width: 1650px){
+    .video-container {
+        flex-basis: 300px;
+        min-height: 200px;
+    }
 }
