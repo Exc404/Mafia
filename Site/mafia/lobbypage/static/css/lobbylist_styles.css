@@ -81,35 +81,35 @@ main{
     justify-content: center;
     align-items: center;
   }
-  #list-lobby{
-    width: 20em;
-    height: 30em;
-    border-width: 4px;
-    border-radius: 4px;
-    border-style: solid;
-    border-color: #464556;
-    overflow-y: scroll;
-
-    scrollbar-width: thin;
-    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
-  }
-
   #list-empty{
     display: flex;
     justify-content: center;
     margin-top: 6em;
     height: 100%;
   }
+  #list-lobby{
+    width: 20em;
+    height: 30em;
+    background-color: #292e36;
+    overflow-y: scroll;
+    margin-bottom: 1em;
 
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+  }
 
-
+  
 
   html {
-    --scrollbarBG: #21252C;
+    --scrollbarBG: #363d48;
     --thumbBG: #90A4AE;
+  }
+  #list-lobby::-webkit-scrollbar-corner {
+    background: #363d48;
   }
   #list-lobby::-webkit-scrollbar {
     width: 11px;
+    height: 11px;
   }
   #list-lobby::-webkit-scrollbar-track {
     background: var(--scrollbarBG);
@@ -118,4 +118,13 @@ main{
     background-color: var(--thumbBG) ;
     border-radius: 6px;
     border: 3px solid var(--scrollbarBG);
+  }
+
+  .loddy{
+    width: 98.8%;
+    height: 2em;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: #464556 solid;
   }

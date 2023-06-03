@@ -14,17 +14,19 @@
         {% if rooms %}
             {% for room in rooms %}
                 {% if not room.is_game %}
-                    <div onclick="toggle_visibility('rightblock');">
-                        <h3>{{ room.roomname }} {{ room.profile_set.count }}<a href = "{% url 'TheLobby' room.GetLink %}">Подключиться</a></h3>
-                    </div>
+                    {% for hostprofile in room.profile_set.all %}
+                        {% if hostprofile.pk == room.roomhostid %}
+                            <div class="loddy" onclick="toggle_visibility('rightblock');">
+                                <h3>{{ room.roomname }} <img width="53" height="53" src="{{hostprofile.profile_img.url}}" alt="Icon"> {{ room.profile_set.count }} <a href = "{% url 'TheLobby' room.GetLink %}">Подключиться</a></h3>
+                            </div>
+                        {% endif %} 
+                    {% endfor %}
                 {% endif %}   
             {% endfor %}
         {% else %}
             <div id="list-empty">Список лобби пуст</div>
         {% endif %}
     </div>
-    
-    <button onclick="toggle_visibility('rightblock');">1234356</button>
 </div>
 <div class="block" id="rightblock" style="display: none;">
 </div>

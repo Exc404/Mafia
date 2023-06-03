@@ -84,7 +84,7 @@ def regist(request):
             )
             try:
                 email.send()
-                delete_inactive_accounts.apply_async(args=(user.pk,), eta=timezone.now() + timedelta(minutes=5))
+                #delete_inactive_accounts.apply_async(args=(user.pk,), eta=timezone.now() + timedelta(minutes=5))
             except Exception:
                 return HttpResponse('Ошибка отправки письма!')
             return render(request, 'registration/register_confirm.html')
