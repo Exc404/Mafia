@@ -23,7 +23,7 @@ main{
     border-radius: 1em;
 }
 #listblock{
-    width: 22em;
+    width: 26em;
     height: 33em;
     display: flex;
     flex-direction: column;
@@ -88,7 +88,7 @@ main{
     height: 100%;
   }
   #list-lobby{
-    width: 20em;
+    width: 25em;
     height: 30em;
     background-color: #292e36;
     overflow-y: scroll;
@@ -121,10 +121,54 @@ main{
   }
 
   .loddy{
-    width: 98.8%;
-    height: 2em;
+    width: auto;
+    height: 60px;
     display: flex;
     align-items: center;
     cursor: pointer;
-    border: #464556 solid;
+    background: #363d48;
+    padding: 0;
+    margin: 0;
+
+    animation:in 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+  .loddy:hover{
+    animation: out 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+
+  .lobby-img{
+    border-radius: 6px;
+    margin-right: 0.5em;
+  }
+  .name-lobby{
+    margin-left:auto;
+    margin-right: auto;
+  }
+  .count-lobby{
+    margin-left: 0.25em;
+  }
+
+  @keyframes button-game-animation {
+
+    0%{
+        background-position:right,center;
+     }
+     30%{background-position:0 0;}
+
+  }
+
+  @keyframes in {
+    0%{background-color:#68758b;}
+   100%{background-color:#363d48;}
+  }
+
+  @keyframes out {
+    0%{background-color:#363d48;}
+   100%{background-color:#68758b;}
+  }
+  @keyframes hasHovered {
+    0% { visibility: hidden; }     /* property has to be removed */
+    100% { visibility: visible; }  /* from the other animations! */
   }
