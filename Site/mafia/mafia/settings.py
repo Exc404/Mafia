@@ -140,7 +140,7 @@ EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'mafiaonlinebyg4m3dev@gmail.com'
 SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = 'pzizncrkqustsyix'
+EMAIL_HOST_PASSWORD = '' #на релизе введём
 EMAIL_PORT = 465
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
