@@ -1,21 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
-</head>
-<body>
-    Список комнат:</br>
-    {% if rooms %}
-        {% for room in rooms %}
-            {% if not room.is_game %}
-                <div>
-                    <h3>{{ room }}<a href = "{% url 'TheLobby' room.GetLink %}">Подключиться</a></h3>
-                </div>
-            {% endif %}   
-        {% endfor %}
-    {% else %}
-        <p>Создайте комнату</p>
-    {% endif %}
-</body>
-</html>
+{% extends 'lobby_base.html' %}
+ 
+{% block title %}Список Лобби{% endblock %}
+
+{% block css %}{% load static %}<link rel="stylesheet" href="{% static "/css/lobbylist_styles.css" %}">{% endblock %}
+
+{% block content %}
+<div class="block" id="listblock">
+    <div id="headblock">
+        <a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+	    <h2 id="h-head">Список лобби</h2>
+    </div>
+    <div id="list-lobby">
+        {% if rooms %}
+            {% for room in rooms %}
+                {% if not room.is_game %}
+                    <div onclick="toggle_visibility('rightblock');">
+                        <h3>{{ room.roomname }} {{ room.profile_set.count }}<a href = "{% url 'TheLobby' room.GetLink %}">Подключиться</a></h3>
+                    </div>
+                {% endif %}   
+            {% endfor %}
+        {% else %}
+            <div id="list-empty">Список лобби пуст</div>
+        {% endif %}
+    </div>
+    
+    <button onclick="toggle_visibility('rightblock');">1234356</button>
+</div>
+<div class="block" id="rightblock" style="display: none;">
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+     function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+   }
+</script>
+{% endblock %}

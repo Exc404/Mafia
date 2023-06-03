@@ -1,0 +1,121 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: sans-serif;
+    font-size: 20px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgb(243, 46, 46) 0%, rgb(78, 9, 16) 100%);
+}
+main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1.5em;
+}
+.block{
+    background-color: #21252C;
+    padding: 1em;
+    color: white;
+    box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+    border-radius: 1em;
+}
+#listblock{
+    width: 22em;
+    height: 33em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#rightblock{
+    width: 10em;
+    height: 33em;
+    margin-left: 0.5em;
+    box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+#headblock{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 0.2em;
+    align-items: flex-start;
+    width: 100%;
+}
+.ExitButton {
+    display: block;
+    padding-top: 13px;
+    padding-left: 13px;
+    background: #464556;
+  
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    #464556;
+    background-size:300% 100%,cover;
+  
+    width: 35px;
+    height: 35px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+  
+    text-align: center;
+    justify-content: center;
+    color: white;
+    line-height: 25px;
+    text-decoration:none;
+    white-space:nowrap;
+    columns: 2;
+  }
+  .ExitButton:hover{
+    animation:button-game-animation 3s ease;
+  }
+
+  #h-head{
+    margin: 0.25em auto 0.7em auto;
+    padding-right:50px;
+    columns: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #list-lobby{
+    width: 20em;
+    height: 30em;
+    border-width: 4px;
+    border-radius: 4px;
+    border-style: solid;
+    border-color: #464556;
+    overflow-y: scroll;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+  }
+
+  #list-empty{
+    display: flex;
+    justify-content: center;
+    margin-top: 6em;
+    height: 100%;
+  }
+
+
+
+
+  html {
+    --scrollbarBG: #21252C;
+    --thumbBG: #90A4AE;
+  }
+  #list-lobby::-webkit-scrollbar {
+    width: 11px;
+  }
+  #list-lobby::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+  }
+  #list-lobby::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+  }
