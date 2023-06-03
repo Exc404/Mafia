@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Упс!</title>
-</head>
-<body>
-    <div>
-        <h1>Страница не найдена</h1>
-        <a href="{%url 'mainpage'%}"><p>Вернуться на главную страницу</p></a>
+{% extends "base.html" %}
+
+{% block title %}Пароль сброшен{% endblock %}
+
+{% block content %}
+    <div id="head" style="display: flex;justify-content:center; ">
+        <h2 style="padding-top: 0;padding: 0;margin: 0;">404 СТРАНИЦА НЕ НАЙДЕНА!</h2>
     </div>
-</body>
-</html>
+
+    <div id="content">
+        <a class="links" style="font-size: 1em;" href="{% url "mainpage" %}">Вернуться на главную</a>
+    </div>
+{% endblock %}

@@ -71,22 +71,32 @@ def regist(request):
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
-            mail_subject = 'Подтвердите свой электронный адрес'
-            message = render_to_string('acc_active_email.html', {
-                'user': user,
+            subject = 'Confirm email address'
+
+            to_email = form.cleaned_data.get('email')
+            from_email = 'mafiaonlinebyg4m3dev@gmail.com'
+
+            context = {
+                'username': user.username,
                 'domain': current_site.domain,
+                'site_name': 'Mafia Online',
+                'from_email': 'mafiaonlinebyg4m3dev@gmail.com',
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, "<MafiaOnlineByG4m3dev@yandex.ru>", to=[to_email]
-            )
+                'protocol': 'htpp',
+            }
+            message = render_to_string('acc_active_email.html', context)
+
+            msg = EmailMessage(subject, message, to=[to_email], from_email=from_email,
+                               headers={'Unsubscribe': from_email})
+            msg.content_subtype = 'html'
             try:
-                email.send()
+                msg.send()
                 delete_inactive_accounts.apply_async(args=(user.pk,), eta=timezone.now() + timedelta(minutes=5))
             except Exception:
-                return HttpResponse('Ошибка отправки письма!')
+                return render(request, 'registration/send_mail_error.html', {'error_text': 'Ошибка отправки '
+                                                                                           'ссылки для сброса '
+                                                                                           'пароля!'})
             return render(request, 'registration/register_confirm.html')
         else:
             data['form'] = form
@@ -124,9 +134,6 @@ def activate(request, uidb64, token):
 
 
 def password_reset(request):
-    return render(request, 'registration/send_mail_error.html', {'error_text': 'Ошибка отправки '
-                                                                               'ссылки для сброса '
-                                                                               'пароля!'})
     data = {"form": PasswordResetForm()}
     if request.method == "POST":
         form = PasswordResetForm(request.POST)
@@ -137,22 +144,30 @@ def password_reset(request):
             except Exception:
                 user = False
             if user:
-                subject = 'Запрошен сброс пароля'
                 current_site = get_current_site(request)
-                email_template_name = "acc_password_reset.html"
-                cont = {
-                    'email': user.email,
+                subject = 'Password reset'
+
+                to_email = form.cleaned_data.get('email')
+                from_email = 'mafiaonlinebyg4m3dev@gmail.com'
+
+                context = {
+                    'username': user.username,
                     'domain': current_site.domain,
                     'site_name': 'Mafia Online',
+                    'from_email': 'mafiaonlinebyg4m3dev@gmail.com',
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': default_token_generator.make_token(user),
                     'protocol': 'htpp',
                 }
-                msg_html = render_to_string(email_template_name, cont)
+
+                message = render_to_string('acc_password_reset.html', context)
+                msg = EmailMessage(subject, message, to=[to_email], from_email=from_email,
+                                   headers={'Unsubscribe': from_email})
+                msg.content_subtype = 'html'
+
                 try:
-                    send_mail(subject, 'ссылка', 'admin@django-protect-site', [user.email], fail_silently=True,
-                              html_message=msg_html)
-                except BadHeaderError:
+                    msg.send()
+                except Exception:
                     return render(request, 'registration/send_mail_error.html', {'error_text': 'Ошибка отправки '
                                                                                                'ссылки для сброса '
                                                                                                'пароля!'})

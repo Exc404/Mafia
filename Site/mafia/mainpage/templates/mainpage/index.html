@@ -17,6 +17,9 @@
         <a href="{% url "faqpage" %}" class="button">FAQ</a>
         <a href="{% url "lobby" %}" class="button">Создать игру</a>
         <a href="{% url "lobbylist" %}" class="button">Выбрать игру</a>
+        {% if request.user.is_authenticated and request.user.is_staff %}
+          <a href="{% url "admin:index" %}" class="button">Админпанель</a>
+        {% endif %}
         </div>
         {% if request.user.is_authenticated %}
           <div id="profile-block">
