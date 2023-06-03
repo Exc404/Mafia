@@ -5,14 +5,7 @@ const testSocket = new WebSocket(url)
 testSocket.onopen = () => testSocket.send(JSON.stringify({
     'username': user_name
 }))
-testSocket.onmessage = function (e) {
-    let data = JSON.parse(e.data)
-    if (data.type === 'chat') {
-        let messages = document.getElementById('messages')
-        let htmlAdding = '<div><p>' + data.message + '</p></div>'
-        messages.insertAdjacentHTML('beforeend', htmlAdding)
-    }
-}
+
 let inputForm = document.getElementById('messageInputForm')
 inputForm.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -34,7 +27,8 @@ window.onload = function () {
 const APP_ID = '55fba11738094971a032a7ac307e10ed'
 let CHANNEL = room_name
 let TOKEN = token
-let UID = 1
+let UID
+let UID_ARR = []
 
 const client = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'})
 
@@ -49,7 +43,7 @@ let joinAndDisplayLocalStream = async () => {
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
     let player = `<div class="video-container" id = "user-container-${UID}">
-                    <div class="user-name-wrapper"><span class="user-name">Имя пользователя</span></div>
+                    <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
                 </div>`
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
@@ -66,11 +60,14 @@ let handleUserJoined = async (user, mediaType) => {
             player.remove()
         }
         player = `<div class="video-container" id = "user-container-${user.uid}">
-                    <div class="user-name-wrapper"><span class="user-name">Имя пользователя</span></div>
                     <div class="video-player" id = "user-${user.uid}"></div>
                 </div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
         user.videoTrack.play(`user-${user.uid}`)
+        setInterval(function() {testSocket.send(JSON.stringify({
+            'user_name' : user_name,
+            'uid' : UID
+        }))}, 1000)
     }
     if(mediaType === "audio") {
         user.audioTrack.play()
@@ -78,6 +75,8 @@ let handleUserJoined = async (user, mediaType) => {
 }
 
 let handleUserLeft = async (user) => {
+    UID_ARR = UID_ARR.map(el => el === user.uid ? 0 : el)
+    UID_ARR = UID_ARR.filter(el => el === 0 ? false : true)
     delete remoteUsers[user.uid]
     document.getElementById(`user-container-${user.uid}`).remove()
 }
@@ -112,6 +111,22 @@ let toggleMic = async (e) => {
     else {
         await localTracks[0].setMuted(true)
         e.target.style.backgroundColor = 'rgb(255, 80, 80, 1)'
+    }
+}
+
+testSocket.onmessage = function (e) {
+    let data = JSON.parse(e.data)
+    if (data.type === 'chat') {
+        let messages = document.getElementById('messages')
+        let htmlAdding = '<div><p>' + data.message + '</p></div>'
+        messages.insertAdjacentHTML('beforeend', htmlAdding)
+    }
+    if(data.type === 'user_info') {
+        let super_test = document.getElementById(`user-container-${data.uid}`)
+        if(`user-container-${data.uid}` != `user-container-${UID}` && UID_ARR.indexOf(data.uid) === -1) {
+            super_test.insertAdjacentHTML('afterbegin', `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
+            UID_ARR.push(data.uid)
+        }
     }
 }
 

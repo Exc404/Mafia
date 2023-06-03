@@ -32,6 +32,23 @@ class TestConsumer(WebsocketConsumer):
         if 'username' in text_data_json and self.username=="":
             self.username = text_data_json['username']
             print(self.username + "$")
+        if 'user_name' in text_data_json:
+            async_to_sync(self.channel_layer.group_send) (
+                self.room_group_name,
+                {
+                    'type' : 'user_info_sending',
+                    'user_name' : text_data_json['user_name'],
+                    'uid' : str(text_data_json['uid'])
+                }
+            )
+    def user_info_sending(self, event):
+        user_name = event['user_name']
+        uid = event['uid']
+        self.send(text_data = json.dumps({
+            'type' : 'user_info',
+            'user_name' : user_name,
+            'uid' : uid
+        }))
 
     def test_sending(self, event):
         message = event['message']
