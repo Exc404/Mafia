@@ -30,11 +30,14 @@ main{
     align-items: center;
 }
 #rightblock{
-    width: 10em;
+    width: 13em;
     height: 33em;
     margin-left: 0.5em;
     box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.5);
     display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 #headblock{
     display: flex;
@@ -87,7 +90,7 @@ main{
     margin-top: 6em;
     height: 100%;
   }
-  #list-lobby{
+  .list-lobby{
     width: 25em;
     height: 30em;
     background-color: #292e36;
@@ -104,24 +107,25 @@ main{
     --scrollbarBG: #27303f;
     --thumbBG: #90A4AE;
   }
-  #list-lobby::-webkit-scrollbar-corner {
+  .list-lobby::-webkit-scrollbar-corner {
     background: #27303f;
   }
-  #list-lobby::-webkit-scrollbar {
+  .list-lobby::-webkit-scrollbar {
     width: 11px;
     height: 11px;
   }
-  #list-lobby::-webkit-scrollbar-track {
+  .list-lobby::-webkit-scrollbar-track {
     background: var(--scrollbarBG);
   }
-  #list-lobby::-webkit-scrollbar-thumb {
+  .list-lobby::-webkit-scrollbar-thumb {
     background-color: var(--thumbBG) ;
     border-radius: 6px;
     border: 3px solid var(--scrollbarBG);
   }
 
   .activelobby{
-    width: auto;
+    width: max-content;
+    min-width: 98%;
     height: auto;
     display: flex;
     align-items: center;
@@ -141,7 +145,8 @@ main{
 
 
   .lobby{
-    width: auto;
+    width: max-content;
+    min-width: 98%;
     height: auto;
     display: flex;
     align-items: center;
@@ -161,6 +166,12 @@ main{
   .lobby-img{
     border-radius: 6px;
     margin-right: 0.5em;
+  }
+  .lobby-img-right{
+    border-radius: 6px;
+    display: flex;
+    align-self: center;
+    margin-bottom: 1em;
   }
   .name-lobby{
     margin-left:auto;
@@ -202,4 +213,26 @@ main{
   @keyframes hasHovered {
     0% { visibility: hidden; }     /* property has to be removed */
     100% { visibility: visible; }  /* from the other animations! */
+  }
+
+  .EditProfile{
+    display: block;
+    margin-top: auto;
+    align-self:flex-end;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    padding: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    linear-gradient(45deg, rgb(20, 185, 20) 0%, rgb(50, 169, 112) 60%);
+    background-size:300% 100%,cover;
+    border-radius: 10px;
+    border: 0px;
+    text-decoration:none;
+  }
+  .EditProfile:hover{
+    animation:button-game-animation 3s ease;
   }

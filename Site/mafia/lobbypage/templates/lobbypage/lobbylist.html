@@ -10,7 +10,7 @@
         <a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
 	    <h2 id="h-head">Список лобби</h2>
     </div>
-    <div id="list-lobby">
+    <div class="list-lobby">
         {% if rooms %}
             {% for room in rooms %}
                 {% if not room.is_game %}
@@ -19,15 +19,11 @@
                         
                             <div class="lobby" id="room-{{room.roomhostid}}" onclick="toggle_visibility('rightblock','room-{{room.roomhostid}}','{{room.roomname}}','{{hostprofile.profile_img.url}}','{{hostprofile.nickname}}',`{% url 'TheLobby' room.GetLink %}`,'{{ room.profile_set.count }}','{% for profile in room.profile_set.all %}{{ profile.nickname | safe}}<br>{% endfor %}');">
                                 <h2 style="margin-bottom: 10px;">👥</h2>
-                                <h3 class="count-lobby">{{ room.profile_set.count }}/12</h3> 
+                                <h3 class="count-lobby" style="margin-right:1em;">{{ room.profile_set.count }}/12</h3> 
                                 <h4 class="name-lobby">{{ room.roomname }}</h4>
                                 <h3>🔊</h3>
                                 <h3 style="margin-right: 1em;">📹</h3>
                                 <img width="40px" height="40px" class="lobby-img" src="{{hostprofile.profile_img.url}}" alt="Icon"> 
-                                
-                                    
-                                
-                                
                             </div>
                             
                         {% endif %} 
@@ -50,15 +46,22 @@
        var e = document.getElementById(id);
        var e2 = document.getElementById(id2);
 
-       str=''+roomname+'\
-       <img width="50px" height="50px" class="lobby-img" src="'+urlimg+'" alt="Icon">\
-       '+hostname+'\
-       '+countplayers+'/12\
-       <br>\
-       '+data+'\
-       <a href = "'+urllink+'">Подключиться</a>';
+       str='<h2 style="align-self:center">Выбранное</h2>\
+       <h2 style="align-self:center">Лобби</h2>\
+       <div style="width: 100%;margin-top:1em;display:flex;justify-content: center;">\
+            <img width="100px" height="100px" class="lobby-img-right" src="'+urlimg+'" alt="Icon">\
+        </div>\
+        <div>\
+            <h4 style="margin-bottom: 0.5em; max-height:50px;min-height:auto;text-overflow: ellipsis;overflow:hidden; width:260px;">Название:<i style="font-weight: lighter;">'+roomname+'</i></h4>\
+            <h4 style="margin-bottom: 0.5em; height:auto;text-overflow: ellipsis;overflow:hidden;white-space:nowrap; width:260px;">Админ:<i style="font-weight: lighter;">'+hostname+'</i></h4>\
+            <h4 style="margin-bottom: 0.5em;">Кол-во человек:<i style="font-weight: lighter;">'+countplayers+'/12</i></h4>\
+        </div>\
+       <div class="list-lobby" style="width:240px; padding:0.5em">\
+            '+data+'\
+       </div>\
+       <a class="EditProfile" href = "'+urllink+'">Подключиться</a>';
 
-       if(e.style.display == 'block')
+       if(e.style.display == 'flex')
        {
             if(e2.classList == 'activelobby')
             {
@@ -94,7 +97,7 @@
                 e2.classList.remove('lobby');
                 e2.classList.add('activelobby');
                 e.innerHTML=str;
-         e.style.display = 'block';  
+         e.style.display = 'flex';  
        }
           
    }
