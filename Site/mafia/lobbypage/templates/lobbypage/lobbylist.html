@@ -16,14 +16,20 @@
                 {% if not room.is_game %}
                     {% for hostprofile in room.profile_set.all %}
                         {% if hostprofile.pk == room.roomhostid %}
-                            <div class="loddy" onclick="toggle_visibility('rightblock');">
+                        
+                            <div class="lobby" id="room-{{room.roomhostid}}" onclick="toggle_visibility('rightblock','room-{{room.roomhostid}}','{{room.roomname}}','{{hostprofile.profile_img.url}}','{{hostprofile.nickname}}',`{% url 'TheLobby' room.GetLink %}`,'{{ room.profile_set.count }}','{% for profile in room.profile_set.all %}{{ profile.nickname | safe}}<br>{% endfor %}');">
                                 <h2 style="margin-bottom: 10px;">👥</h2>
                                 <h3 class="count-lobby">{{ room.profile_set.count }}/12</h3> 
-                                <h3 class="name-lobby">{{ room.roomname }}</h3>
+                                <h4 class="name-lobby">{{ room.roomname }}</h4>
                                 <h3>🔊</h3>
-                                <h3 style="margin-right: 1em;">🎦</h3>
-                                <img width="50px" height="50px" class="lobby-img" src="{{hostprofile.profile_img.url}}" alt="Icon"> 
+                                <h3 style="margin-right: 1em;">📹</h3>
+                                <img width="40px" height="40px" class="lobby-img" src="{{hostprofile.profile_img.url}}" alt="Icon"> 
+                                
+                                    
+                                
+                                
                             </div>
+                            
                         {% endif %} 
                     {% endfor %}
                 {% endif %}   
@@ -40,12 +46,57 @@
 
 {% block script %}
 <script>
-     function toggle_visibility(id) {
+     function toggle_visibility(id,id2,roomname,urlimg,hostname,urllink,countplayers,data) {
        var e = document.getElementById(id);
+       var e2 = document.getElementById(id2);
+
+       str=''+roomname+'\
+       <img width="50px" height="50px" class="lobby-img" src="'+urlimg+'" alt="Icon">\
+       '+hostname+'\
+       '+countplayers+'/12\
+       <br>\
+       '+data+'\
+       <a href = "'+urllink+'">Подключиться</a>';
+
        if(e.style.display == 'block')
-          e.style.display = 'none';
+       {
+            if(e2.classList == 'activelobby')
+            {
+                var lights = document.getElementsByClassName('activelobby');
+                while (lights.length)
+                {
+                    lights[0].classList.add('lobby');
+                    lights[0].classList.remove('activelobby');
+                }
+                e.style.display = 'none';
+            }
+            else
+            {
+                var lights = document.getElementsByClassName('activelobby');
+                while (lights.length)
+                {
+                    lights[0].classList.add('lobby');
+                    lights[0].classList.remove('activelobby');
+                }
+                e2.classList.remove('lobby');
+                e2.classList.add('activelobby');
+                e.innerHTML=str;
+            }
+       }
        else
-          e.style.display = 'block';
+       {
+        var lights = document.getElementsByClassName('activelobby');
+                while (lights.length)
+                {
+                    lights[0].classList.add('lobby');
+                    lights[0].classList.remove('activelobby');
+                }
+                e2.classList.remove('lobby');
+                e2.classList.add('activelobby');
+                e.innerHTML=str;
+         e.style.display = 'block';  
+       }
+          
    }
 </script>
 {% endblock %}

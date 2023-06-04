@@ -57,4 +57,4 @@ def TheLobby(request, room_name):
 
 def lobbylist(request):
     allTable = Rooms.objects.all()
-    return render(request, 'lobbypage/lobbylist.html', {'rooms': allTable})
+    return render(request, 'lobbypage/lobbylist.html',{'rooms': allTable} )

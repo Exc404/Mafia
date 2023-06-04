@@ -23,7 +23,7 @@ main{
     border-radius: 1em;
 }
 #listblock{
-    width: 26em;
+    width: 25em;
     height: 33em;
     display: flex;
     flex-direction: column;
@@ -93,7 +93,7 @@ main{
     background-color: #292e36;
     overflow-y: scroll;
     margin-bottom: 1em;
-
+    border-radius: 10px;
     scrollbar-width: thin;
     scrollbar-color: var(--thumbBG) var(--scrollbarBG);
   }
@@ -101,11 +101,11 @@ main{
   
 
   html {
-    --scrollbarBG: #363d48;
+    --scrollbarBG: #27303f;
     --thumbBG: #90A4AE;
   }
   #list-lobby::-webkit-scrollbar-corner {
-    background: #363d48;
+    background: #27303f;
   }
   #list-lobby::-webkit-scrollbar {
     width: 11px;
@@ -120,20 +120,40 @@ main{
     border: 3px solid var(--scrollbarBG);
   }
 
-  .loddy{
+  .activelobby{
     width: auto;
-    height: 60px;
+    height: auto;
     display: flex;
     align-items: center;
     cursor: pointer;
-    background: #363d48;
     padding: 0;
-    margin: 0;
+    margin: 5px 5px 0 5px;
+    border-radius: 10px;
+
+    background-color: #c8b35e;
+    animation:inA 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+  .activelobby:hover{
+    animation: outA 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+
+
+  .lobby{
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 5px 5px 0 5px;
+    border-radius: 10px;
 
     animation:in 1s, hasHovered 3s;
     animation-fill-mode: forwards;
   }
-  .loddy:hover{
+  .lobby:hover{
     animation: out 1s, hasHovered 3s;
     animation-fill-mode: forwards;
   }
@@ -168,6 +188,17 @@ main{
     0%{background-color:#363d48;}
    100%{background-color:#68758b;}
   }
+
+  @keyframes inA {
+    0%{background-color:#f9d857;}
+   100%{background-color:#c8b35e;}
+  }
+
+  @keyframes outA {
+    0%{background-color:#c8b35e;}
+   100%{background-color:#f9d857;}
+  }
+
   @keyframes hasHovered {
     0% { visibility: hidden; }     /* property has to be removed */
     100% { visibility: visible; }  /* from the other animations! */
