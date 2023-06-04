@@ -65,9 +65,7 @@ let joinAndDisplayLocalStream = async () => {
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
                     <div class = "icon-wrapper">
-                    AAAAAAAAAAAA
                     <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
-                    AAAAAAAAAAAAA
                     </div>
                     </div>`
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
