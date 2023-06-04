@@ -1,0 +1,238 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: sans-serif;
+    font-size: 20px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgb(243, 46, 46) 0%, rgb(78, 9, 16) 100%);
+}
+main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1.5em;
+}
+.block{
+    background-color: #21252C;
+    padding: 1em;
+    color: white;
+    box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+    border-radius: 1em;
+}
+#listblock{
+    width: 25em;
+    height: 33em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#rightblock{
+    width: 13em;
+    height: 33em;
+    margin-left: 0.5em;
+    box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.5);
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+#headblock{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 0.2em;
+    align-items: flex-start;
+    width: 100%;
+}
+.ExitButton {
+    display: block;
+    padding-top: 13px;
+    padding-left: 13px;
+    background: #464556;
+  
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    #464556;
+    background-size:300% 100%,cover;
+  
+    width: 35px;
+    height: 35px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+  
+    text-align: center;
+    justify-content: center;
+    color: white;
+    line-height: 25px;
+    text-decoration:none;
+    white-space:nowrap;
+    columns: 2;
+  }
+  .ExitButton:hover{
+    animation:button-game-animation 3s ease;
+  }
+
+  #h-head{
+    margin: 0.25em auto 0.7em auto;
+    padding-right:50px;
+    columns: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #list-empty{
+    display: flex;
+    justify-content: center;
+    margin-top: 6em;
+    height: 100%;
+  }
+  .list-lobby{
+    width: 25em;
+    height: 30em;
+    background-color: #292e36;
+    overflow-y: scroll;
+    margin-bottom: 1em;
+    border-radius: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+  }
+
+  
+
+  html {
+    --scrollbarBG: #27303f;
+    --thumbBG: #90A4AE;
+  }
+  .list-lobby::-webkit-scrollbar-corner {
+    background: #27303f;
+  }
+  .list-lobby::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  .list-lobby::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+  }
+  .list-lobby::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+  }
+
+  .activelobby{
+    width: max-content;
+    min-width: 98%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 5px 5px 0 5px;
+    border-radius: 10px;
+
+    background-color: #c8b35e;
+    animation:inA 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+  .activelobby:hover{
+    animation: outA 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+
+
+  .lobby{
+    width: max-content;
+    min-width: 98%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 5px 5px 0 5px;
+    border-radius: 10px;
+
+    animation:in 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+  .lobby:hover{
+    animation: out 1s, hasHovered 3s;
+    animation-fill-mode: forwards;
+  }
+
+  .lobby-img{
+    border-radius: 6px;
+    margin-right: 0.5em;
+  }
+  .lobby-img-right{
+    border-radius: 6px;
+    display: flex;
+    align-self: center;
+    margin-bottom: 1em;
+  }
+  .name-lobby{
+    margin-left:auto;
+    margin-right: auto;
+  }
+  .count-lobby{
+    margin-left: 0.25em;
+  }
+
+  @keyframes button-game-animation {
+
+    0%{
+        background-position:right,center;
+     }
+     30%{background-position:0 0;}
+
+  }
+
+  @keyframes in {
+    0%{background-color:#68758b;}
+   100%{background-color:#363d48;}
+  }
+
+  @keyframes out {
+    0%{background-color:#363d48;}
+   100%{background-color:#68758b;}
+  }
+
+  @keyframes inA {
+    0%{background-color:#f9d857;}
+   100%{background-color:#c8b35e;}
+  }
+
+  @keyframes outA {
+    0%{background-color:#c8b35e;}
+   100%{background-color:#f9d857;}
+  }
+
+  @keyframes hasHovered {
+    0% { visibility: hidden; }     /* property has to be removed */
+    100% { visibility: visible; }  /* from the other animations! */
+  }
+
+  .EditProfile{
+    display: block;
+    margin-top: auto;
+    align-self:flex-end;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    padding: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    linear-gradient(45deg, rgb(20, 185, 20) 0%, rgb(50, 169, 112) 60%);
+    background-size:300% 100%,cover;
+    border-radius: 10px;
+    border: 0px;
+    text-decoration:none;
+  }
+  .EditProfile:hover{
+    animation:button-game-animation 3s ease;
+  }
