@@ -84,13 +84,21 @@ class TestConsumer(WebsocketConsumer):
 
         if 'vote_uid' in text_data_json:
             vote = text_data_json['vote_uid']
+            vote = vote.replace("vote-", "")
             async_to_sync(self.channel_layer.group_send) (
                 self.room_group_name,
                 {
-                    'type' : 'test_sending',
-                    'message' : vote,
+                    'type' : 'vote_sending',
+                    'vote' : vote,
                 }
             )
+    def vote_sending(self, event):
+        vote = event['vote']
+        self.send(text_data = json.dumps({
+            'type' : 'vote_sending',
+            'vote' : vote
+        }))
+
 
     def roles_sending(self, event):
         roleslist = event['players_roles']

@@ -45,6 +45,9 @@ let UID
 let UID_ARR = []
 let chatlock = false
 let votelock = false
+let voted_for = ""
+var votelist = new Map()
+
 
 const client = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'})
 
@@ -61,11 +64,14 @@ let joinAndDisplayLocalStream = async () => {
     let player = `<div class="video-container" id = "user-container-${UID}">
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
-                    <div class = "icon-wrapper" id = "vote-${UID}">
-                    <img class = "control-icon" id = "vote-btn" src = "/./static/img/votemark.jpg"/>
+                    <div class = "icon-wrapper">
+                    AAAAAAAAAAAA
+                    <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
+                    AAAAAAAAAAAAA
                     </div>
                     </div>`
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
+    document.getElementById(`vote-${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
     await client.publish([localTracks[0], localTracks[1]])
 }
@@ -85,6 +91,7 @@ let handleUserJoined = async (user, mediaType) => {
                     </div>
                 </div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
+        document.getElementById(`vote-${user.uid}`).onclick = vote
         user.videoTrack.play(`user-${user.uid}`)
         setInterval(function() {testSocket.send(JSON.stringify({
             'user_name' : user_name,
@@ -97,6 +104,7 @@ let handleUserJoined = async (user, mediaType) => {
 }
 
 let handleUserLeft = async (user) => {
+    console.log("VOTE: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
     UID_ARR = UID_ARR.map(el => el === user.uid ? 0 : el)
     UID_ARR = UID_ARR.filter(el => el === 0 ? false : true)
     delete remoteUsers[user.uid]
@@ -136,10 +144,21 @@ let toggleMic = async (e) => {
     }
 }
 
-let vote = async (e) => {
+let FullMute = async (e) => {
+    await localTracks[0].setMuted(true)
+    await localTracks[1].setMuted(true)
+}
+
+let FullUnMute = async (e) => {
+    await localTracks[0].setMuted(false)
+    await localTracks[1].setMuted(false)
+}
+
+let vote = function (e) {
     console.log("VOTE: ГОЛОСОВАНИЕ")
     let votename = e.target.id
-    console.log("VOTE:",votename)
+    votelock = true
+    console.log("VOTE votename:",votename)
     testSocket.send(JSON.stringify({
         'vote_uid' : votename
     }))
@@ -148,7 +167,7 @@ let vote = async (e) => {
 
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
-    console.log("DATA:", data)
+    //console.log("DATA:", data)
     if (data.type === 'chat') {
         let messages = document.getElementById('messages')
         let htmlAdding = '<div><p>' + data.message + '</p></div>'
@@ -169,6 +188,12 @@ testSocket.onmessage = function (e) {
         }))
         GameProcess(roles)
     }
+    if (data.type === 'vote_sending') {               //Принимаем голоса
+        let vote = data.vote
+        console.log("VOTE: GOT", vote)
+        votelist[vote]++
+        console.log("VOTE votelist:", votelist)
+    }
 }
 
 //я понял что игра в отдельном классе это буллщит.... так что.... она будет здесть... простите...
@@ -176,36 +201,126 @@ testSocket.onmessage = function (e) {
 
 let GameProcess = async (players) => {
     let playerlist = players
+    for (let a in playerlist){
+        votelist[a] = 0
+    }
+    console.log("VOTE votelist: ", votelist)
+    let voteresult = ""
+    let killresult = ""
+    let healresult = ""
+    let checkresult = ""
     let rolespath = ["mafia", "doc", "com", "civil"]
     let rolesnames = ["мафия", "доктор", "комиссар", "гражданские"]
     let turn = -1;
     console.log(playerlist)
-    for (let i = 0; i<UID_ARR.length; i++){
-        let temp = document.getElementById(`vote-${UID_ARR[i]}`)
-        console.log("VOTE: temp", temp)
-        document.getElementById(`vote-${UID_ARR[i]}`).addEventListener('click',vote)
-    }
-    document.getElementById(`vote-${UID}`).addEventListener('click',vote)
     let htmlAdding = '<div><p>Ваша роль - ' + playerlist[UID] + '</p></div>'
     messages.insertAdjacentHTML('beforeend', htmlAdding)
     htmlAdding = '<div><p>Начинается ночь! Город засыпает...</p></div>'
     messages.insertAdjacentHTML('beforeend', htmlAdding)
     let gametimer = setInterval(function(){
+        voteresult = ""
+        for (let i =0; i<UID_ARR.length;i++){
+            console.log("VOTE button:", document.getElementById(`vote-${UID_ARR[i]}`))
+        }
+        if (turn!=-1)
+        {
+            let tempresult = ""
+            let tempvalue = 0
+            let amount_of_max = 0
+            for(let userid in votelist){
+                if (votelist[userid] > tempvalue) 
+                {
+                    tempvalue = votelist[userid]
+                    tempresult = userid
+                }
+            }
+            console.log("VOTE: tempvalue", tempvalue)
+            for(let userid in votelist){
+                if (votelist[userid] === tempvalue) 
+                {
+                    amount_of_max++
+                }
+            }
+            console.log("VOTE: amount", amount_of_max)
+            if (amount_of_max===1)
+            { 
+                
+                switch(turn) {
+                    case 0: 
+                        killresult = tempresult;
+                        messages.insertAdjacentHTML('beforeend', "<div><p>Мафия выбрала свою цель!</p></div>");
+                        break;
+                    case 1:
+                         healresult = tempresult;
+                         messages.insertAdjacentHTML('beforeend', "<div><p>Доктор выбрал, кого спасать!</p></div>");
+                         break;
+                    case 2: 
+                        checkresult = tempresult;
+                        messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар выбрал, кого проверить этой ночью</p></div>");
+                        break;
+                    case 3:
+                         voteresult = tempresult;
+                         messages.insertAdjacentHTML('beforeend', "<div><p>Голосование проведено! Выбранный будет убит!</p></div>");
+                         break;
+                }
+            }
+            else {
+                messages.insertAdjacentHTML('beforeend', "<div><p>Голосование сорвано! Одинаковое количество голосов!</p></div>");
+            }
+            for (let i in votelist) {votelist[i]=0}
+            };
         turn+=1
-        if (turn == 4) {turn = 0}
+        if (turn === 4) {
+            turn = 0
+            //playerlist[voteresult] = "spec" + объявление роли игрока, кем он был...
+        }
+        /*
+        if (turn === 3){
+            if (killresult!="")
+            {
+                if (killresult === healresult){
+                    messages.insertAdjacentHTML('beforeend', "<div><p>Доктор успешно предотвратил убийство! Все живы!</p></div>");
+                }
+                else {
+                    //playerlist[killresult] = "spec" + объявление роли игрока, кем он был, доктор спасти жертву не смог...
+                }
+            }
+            else {
+                messages.insertAdjacentHTML('beforeend', "<div><p>Мафия сегодня более благосклонна к жителям... все остались целы</p></div>");
+            }
+            if (checkresult!="")
+            {
+                messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар сделал проверку и выяснил...</p></div>");  //добавить результат проверки
+            }
+            else{
+                messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар проспал свою смену... проверок не было</p></div>");
+            }
+            killresult = ""
+            healresult = ""
+            checkresult = ""
+        } 
+        */
         console.log("TURN: ", turn, rolespath[turn])
         messages.insertAdjacentHTML('beforeend', '<div><p>сейчас ход: ' + rolesnames[turn] + '</p></div>')
         if (playerlist[UID] != rolespath[turn] && turn !=3){
             chatlock = true
-            localTracks[0].setMuted(true)
-            localTracks[1].setMuted(true)
+            FullMute()
+            // localTracks[0].setMuted(true)
+            // localTracks[1].setMuted(true)
+            votelock = true
         }
         else {
             chatlock = false
-            localTracks[0].setMuted(false)
-            localTracks[1].setMuted(false)
+            FullUnMute()
+            // localTracks[0].setMuted(false)
+            // localTracks[1].setMuted(false)
+            votelock = false
         }
-    },5000)
+        // for (let i = 0; i<UID_ARR.length; i++){
+        //     document.getElementById(`vote-${UID_ARR[i]}`).addEventListener('click',vote)
+        // }
+        // document.getElementById(`vote-${UID}`).addEventListener('click',vote)
+    },15000)
 }
 
 
