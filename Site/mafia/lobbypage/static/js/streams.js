@@ -153,13 +153,16 @@ let FullUnMute = async (e) => {
 }
 
 let vote = function (e) {
-    console.log("VOTE: ГОЛОСОВАНИЕ")
-    let votename = e.target.id
-    votelock = true
-    console.log("VOTE votename:",votename)
-    testSocket.send(JSON.stringify({
-        'vote_uid' : votename
-    }))
+    if (votelock === false){
+        console.log("VOTE: ГОЛОСОВАНИЕ")
+        let votename = e.target.id
+        votelock = true
+        console.log("VOTE votename:",votename)
+        testSocket.send(JSON.stringify({
+            'vote_uid' : votename
+        }))
+    }
+    else {console.log("VOTE: Сейчас не ваше время голосовать.")}
 }
 
 
@@ -270,9 +273,9 @@ let GameProcess = async (players) => {
         turn+=1
         if (turn === 4) {
             turn = 0
-            //playerlist[voteresult] = "spec" + объявление роли игрока, кем он был...
+            messages.insertAdjacentHTML('beforeend', "<div><p>На дневном голосовании убили игрока " + voteresult + ". Его роль - " + playerlist[voteresult] + "</p></div>");
+            voteresult = ""
         }
-        /*
         if (turn === 3){
             if (killresult!="")
             {
@@ -280,7 +283,7 @@ let GameProcess = async (players) => {
                     messages.insertAdjacentHTML('beforeend', "<div><p>Доктор успешно предотвратил убийство! Все живы!</p></div>");
                 }
                 else {
-                    //playerlist[killresult] = "spec" + объявление роли игрока, кем он был, доктор спасти жертву не смог...
+                    messages.insertAdjacentHTML('beforeend', "<div><p>Мафия убила игрока " + killresult + ". Его роль - " + playerlist[killresult] + "</p></div>");
                 }
             }
             else {
@@ -288,7 +291,7 @@ let GameProcess = async (players) => {
             }
             if (checkresult!="")
             {
-                messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар сделал проверку и выяснил...</p></div>");  //добавить результат проверки
+                messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар сделал проверку и выяснил, что роль его подозреваемого - " + playerlist[checkresult] + "</p></div>");  //добавить результат проверки
             }
             else{
                 messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар проспал свою смену... проверок не было</p></div>");
@@ -297,33 +300,20 @@ let GameProcess = async (players) => {
             healresult = ""
             checkresult = ""
         } 
-        */
         console.log("TURN: ", turn, rolespath[turn])
         messages.insertAdjacentHTML('beforeend', '<div><p>сейчас ход: ' + rolesnames[turn] + '</p></div>')
         if (playerlist[UID] != rolespath[turn] && turn !=3){
             chatlock = true
             FullMute()
-            // localTracks[0].setMuted(true)
-            // localTracks[1].setMuted(true)
             votelock = true
         }
         else {
             chatlock = false
             FullUnMute()
-            // localTracks[0].setMuted(false)
-            // localTracks[1].setMuted(false)
             votelock = false
         }
-        // for (let i = 0; i<UID_ARR.length; i++){
-        //     document.getElementById(`vote-${UID_ARR[i]}`).addEventListener('click',vote)
-        // }
-        // document.getElementById(`vote-${UID}`).addEventListener('click',vote)
-    },15000)
+    },7000)
 }
-
-
-
-
 
 
 joinAndDisplayLocalStream()
