@@ -92,7 +92,6 @@ def regist(request):
             msg.content_subtype = 'html'
             try:
                 msg.send()
-
                 #delete_inactive_accounts.apply_async(args=(user.pk,), eta=timezone.now() + timedelta(minutes=5))
             except Exception:
                 return render(request, 'registration/send_mail_error.html', {'error_text': 'Ошибка отправки '
