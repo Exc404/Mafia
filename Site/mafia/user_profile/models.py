@@ -32,5 +32,5 @@ class Profile(models.Model):
         return reverse('show_profile', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(str(self.nickname) + str(self.related_user.pk))
+        self.slug = slugify(str(self.nickname) + '-id' + str(self.related_user.pk))
         super(Profile, self).save(*args, **kwargs)

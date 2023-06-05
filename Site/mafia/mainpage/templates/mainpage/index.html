@@ -24,7 +24,7 @@
         {% if request.user.is_authenticated %}
           <div id="profile-block">
             <div id="profile-block-background">
-              <a href="{% url "profile" %}" style="margin-top: 0em; text-decoration: none; display: grid;">
+              <a href="{{ request.user.profile.get_absolute_url }}" style="margin-top: 0em; text-decoration: none; display: grid;">
                 <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"> 
                 <div id="profile-effect"></div>
               </a>

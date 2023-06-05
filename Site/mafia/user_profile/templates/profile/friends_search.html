@@ -1,0 +1,24 @@
+{% extends 'profile_base.html' %}
+ 
+{% block title %}{% endblock %}
+ 
+{% block content %}
+<div id="head">
+	<a class="ExitButton" href="{{ user_profile.get_absolute_url }}">🡸</a>
+	<h1 style="margin-top: 1em;">Поиск друзей</h1>
+</div>
+<div class="content">
+	<form method="get">
+        <input name="nickname" type="text" value={{ search_nickname }} />
+        <input style="margin-left: auto; margin-top: 1em;" type="submit" value="Поиск" >
+	</form>
+	</br>
+	{% if search_result %}
+		{% for profile in search_result %}
+			<a href="{{ profile.get_absolute_url }}"><p>{{profile.nickname}}</p></br></a>
+		{% endfor %}
+	{% else %}
+		<p>{{ message }}</p></br>
+	{% endif %}
+</div>
+{% endblock content%}
