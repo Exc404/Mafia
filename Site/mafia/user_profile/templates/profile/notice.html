@@ -1,0 +1,37 @@
+{% extends 'profile_base.html' %}
+ 
+{% block title %}Уведомления{% endblock %}
+ 
+{% block content %}
+<div id="head">
+	<a class="ExitButton" href="{% url 'mainpage'%}">🡸</a>
+	<h1 style="margin-top: 1em;">Уведомления</h1>
+</div>
+<div class="content">
+	<table>
+    {% if notices %}
+		{% for notice in notices %}
+            <tr>
+            {% if notice.notice_type == 'FR' %}
+                <td>
+                    <p><a href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> хочет добавить вас в друзья!</p>
+                </td>
+            {% endif %}
+            {% if notice.notice_type == 'IV' %}
+                <td>
+                    <p><a href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
+                </td>
+            {% endif %}
+            {% if notice.notice_type == 'IF' %}
+                <td>
+                    <p>Сервер: {{ notice.text_message }}</p>
+                </td>
+            {% endif %}
+		    </tr>
+        {% endfor %}
+    {% else %}
+        <tr>У вас нет новых уведомлений</tr>
+    {% endif %}
+    </table>
+</div>
+{% endblock content%}

@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from .models import Profile
-from .forms import EditProfileForm
+from .models import *
+from .forms import EditProfileForm, FriendsSearchForm
 
 
 # Create your views here.
@@ -87,17 +87,51 @@ def friends_search(request):
     data = {}
     if request.user.is_authenticated:
         data['user_profile'] = request.user.profile
-        if request.method == 'GET':
-            data['search_nickname'] = request.GET.get('nickname')
-            search_result = Profile.objects.filter(nickname=data['search_nickname'])
-            if search_result.count() > 0:
-                data['search_result'] = Profile.objects.filter(nickname=request.GET.get('nickname'))
-            else:
-                data['search_result'] = False
-                data['message'] = 'По вашему запросу ничего не найдено'
+        data['form'] = FriendsSearchForm(initial={'nickname': 'введите никнейм'})
+        if 'nickname' in request.GET:
+            data['form'] = FriendsSearchForm(request.GET)
+            if data['form'].is_valid():
+                search_nickname = data['form'].cleaned_data['nickname']
+                search_result = Profile.objects.filter(nickname__icontains=search_nickname)
+                if search_result.count() > 0:
+                    data['search_result'] = search_result
+                else:
+                    data['search_result'] = False
+                    data['message'] = 'По вашему запросу ничего не найдено'
         else:
-            data['message'] = 'Здесь будут перечисленны найденные профили'
+            data['message'] = 'Здесь будут перечислены найденные профили'
 
         return render(request, 'profile/friends_search.html', data)
+    else:
+        return redirect('login')
+
+
+def friends_search(request):
+    data = {}
+    if request.user.is_authenticated:
+        data['user_profile'] = request.user.profile
+        data['form'] = FriendsSearchForm(initial={'nickname': 'введите никнейм'})
+        if 'nickname' in request.GET:
+            data['form'] = FriendsSearchForm(request.GET)
+            if data['form'].is_valid():
+                search_nickname = data['form'].cleaned_data['nickname']
+                search_result = Profile.objects.filter(nickname__icontains=search_nickname)
+                if search_result.count() > 0:
+                    data['search_result'] = search_result
+                else:
+                    data['message'] = 'По вашему запросу ничего не найдено'
+        else:
+            data['message'] = 'Здесь будут перечислены найденные профили'
+
+        return render(request, 'profile/friends_search.html', data)
+    else:
+        return redirect('login')
+
+
+def notice(request):
+    if request.user.is_authenticated:
+        data = {}
+        data['notices'] = Notice.objects.filter(addressee=request.user.profile)
+        return render(request, 'profile/notice.html', data)
     else:
         return redirect('login')

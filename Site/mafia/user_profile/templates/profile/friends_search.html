@@ -1,15 +1,15 @@
 {% extends 'profile_base.html' %}
  
-{% block title %}{% endblock %}
+{% block title %}Поиск друзей{% endblock %}
  
 {% block content %}
 <div id="head">
-	<a class="ExitButton" href="{{ user_profile.get_absolute_url }}">🡸</a>
+	<a class="ExitButton" href="{% url 'mainpage'%}">🡸</a>
 	<h1 style="margin-top: 1em;">Поиск друзей</h1>
 </div>
 <div class="content">
 	<form method="get">
-        <input name="nickname" type="text" value={{ search_nickname }} />
+        {{form.nickname}}
         <input style="margin-left: auto; margin-top: 1em;" type="submit" value="Поиск" >
 	</form>
 	</br>
