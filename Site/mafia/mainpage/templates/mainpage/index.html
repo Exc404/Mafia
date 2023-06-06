@@ -7,6 +7,7 @@
     <title></title>
     <link rel="icon" href="{% static "logo.ico" %}" type="image/x-icon">
     {% block script %}{% endblock %}
+    {% block style %}{% endblock %}
   </head>
   <body>
     <header>
@@ -25,10 +26,14 @@
         {% if request.user.is_authenticated %}
           <div id="profile-block">
             <div id="profile-block-background">
-              <a href="{{ request.user.profile.get_absolute_url }}" style="margin-top: 0em; text-decoration: none; display: grid;">
-                <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"> 
-                <div id="profile-effect"></div>
-              </a>
+              <div class="dropdown">
+                <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon" onclick="myFunction()" class="dropbtn">
+                <div id="myDropdown" class="dropdown-content">
+                  <a href="{{request.user.profile.get_absolute_url}}">Профиль</a>
+                  <a href="{% url "notice" %}">Уведомления</a>
+                  <a href="#">Друзья</a>
+                </div>
+              </div>
               <p class="text-profile">{{request.user.profile.nickname}}</p>
               <a href="{% url "settings_profile" %}" class="button button-settings" >&#9881;</a>
               <a href="{% url "logout" %}" class="button button-logout" onclick="return proverka();">✖</a>
