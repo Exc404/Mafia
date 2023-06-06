@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static "css/index.css" %}">
     <title></title>
     <link rel="icon" href="{% static "logo.ico" %}" type="image/x-icon">
+    {% block script %}{% endblock %}
   </head>
   <body>
     <header>
@@ -29,8 +30,8 @@
                 <div id="profile-effect"></div>
               </a>
               <p class="text-profile">{{request.user.profile.nickname}}</p>
-              <a href="{% url "settings_profile" %}" class="button button-settings">&#9881;</a>
-              <a href="{% url "logout" %}" class="button button-logout">✖</a>
+              <a href="{% url "settings_profile" %}" class="button button-settings" >&#9881;</a>
+              <a href="{% url "logout" %}" class="button button-logout" onclick="return proverka();">✖</a>
             </div>
           </div>
         {% else %}
