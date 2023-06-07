@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [] #"26.27.182.247 --- 26.18.69.65 --- 26.55.222.192"
 
 INSTALLED_APPS = [
     'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -48,7 +49,6 @@ INSTALLED_APPS = [
     'user_profile.apps.UserProfileConfig',
     'lobbypage.apps.LobbypageConfig',
     'django_cleanup.apps.CleanupConfig',
-    'channels'
 ]
 
 SITE_ID = 1

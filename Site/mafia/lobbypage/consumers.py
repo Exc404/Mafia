@@ -128,7 +128,7 @@ class TestConsumer(WebsocketConsumer):
         print("!!!!!!!!!!!!!!КОНСУМЕР ВЫШЕЛ ПОТОМУШТА ", code)
         thisuser = Profile.objects.get(nickname=self.username)
         thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
-        thisroom.profile_set.remove(thisuser)
+        #thisroom.profile_set.remove(thisuser)
         thisuser.related_lobby_id = None
         thisuser.save()
         thisroom.DelPlayer(thisuser.pk)

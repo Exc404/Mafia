@@ -43,6 +43,7 @@ let CHANNEL = room_name
 let TOKEN = token
 let UID
 let UID_ARR = []
+let IS_NICK_WRITTEN = []
 let chatlock = false
 let votelock = false
 let voted_for = ""
@@ -75,11 +76,16 @@ let joinAndDisplayLocalStream = async () => {
 }
 
 let handleUserJoined = async (user, mediaType) => {
+    setInterval(() => testSocket.send(JSON.stringify({
+        'user_name' : user_name,
+        'uid' : UID
+    })), 100)
     remoteUsers[user.uid] = user
     await client.subscribe(user, mediaType)
     if(mediaType === "video") {
         let player = document.getElementById(`user-container-${user.uid}`)
         if(player != null){
+            IS_NICK_WRITTEN[UID_ARR.indexOf(user.uid.toString())] = false
             player.remove()
         }
         player = `<div class="video-container" id = "user-container-${user.uid}">
@@ -91,10 +97,6 @@ let handleUserJoined = async (user, mediaType) => {
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
         document.getElementById(`vote-${user.uid}`).onclick = vote
         user.videoTrack.play(`user-${user.uid}`)
-        setInterval(function() {testSocket.send(JSON.stringify({
-            'user_name' : user_name,
-            'uid' : UID
-        }))}, 2000)
     }
     if(mediaType === "audio") {
         user.audioTrack.play()
@@ -102,9 +104,12 @@ let handleUserJoined = async (user, mediaType) => {
 }
 
 let handleUserLeft = async (user) => {
-    console.log("VOTE: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
-    UID_ARR = UID_ARR.map(el => el === user.uid ? 0 : el)
+    UID_ARR = UID_ARR.map(el => el === user.uid.toString() ? 0 : el)
+    for(let i = 0; i < UID_ARR.length; i++)
+        if(UID_ARR[i] === 0)
+            IS_NICK_WRITTEN[i] = 0
     UID_ARR = UID_ARR.filter(el => el === 0 ? false : true)
+    IS_NICK_WRITTEN = IS_NICK_WRITTEN.filter(el => el === 0 ? false : true)
     delete remoteUsers[user.uid]
     document.getElementById(`user-container-${user.uid}`).remove()
 }
@@ -168,17 +173,22 @@ let vote = function (e) {
 
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
-    //console.log("DATA:", data)
     if (data.type === 'chat') {
         let messages = document.getElementById('messages')
         let htmlAdding = '<div><p>' + data.message + '</p></div>'
         messages.insertAdjacentHTML('beforeend', htmlAdding)
     }
     if(data.type === 'user_info') {
-        let super_test = document.getElementById(`user-container-${data.uid}`)
-        if(`user-container-${data.uid}` != `user-container-${UID}` && UID_ARR.indexOf(data.uid) === -1) {
-            super_test.insertAdjacentHTML('afterbegin', `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
+        if(UID_ARR.indexOf(data.uid) === -1 && data.uid != UID) {
             UID_ARR.push(data.uid)
+            IS_NICK_WRITTEN.push(false)
+        }
+        if(!IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)]) {
+            let user_div = document.getElementById(`user-container-${data.uid}`)
+            if(user_div != null) {
+                user_div.insertAdjacentHTML("afterbegin", `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
+                IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)] = true
+            }
         }
     }
     if (data.type === 'game_roles') {               //Рассылаем роли игрокам
