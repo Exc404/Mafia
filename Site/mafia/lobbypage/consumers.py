@@ -49,7 +49,8 @@ class TestConsumer(WebsocketConsumer):
             print(self.uid)
             Roles = {"mafia" : 1, "doc": 1, "com":1, "civil": 1}
             playerroles = {}
-            self.GameRole = choice(list(Roles.keys()))
+            #self.GameRole = choice(list(Roles.keys()))
+            self.GameRole = "mafia"
             print("HOST ROLE ", self.GameRole)
             Roles[self.GameRole]-=1
             playerroles[str(self.uid)] = self.GameRole
@@ -58,6 +59,7 @@ class TestConsumer(WebsocketConsumer):
                 while Roles[newrole]==0:
                     newrole = choice(list(Roles.keys()))
                 playerroles[pluid] = newrole
+                Roles[newrole]-=1
             async_to_sync(self.channel_layer.group_send) (
                 self.room_group_name,
                 {
@@ -126,6 +128,7 @@ class TestConsumer(WebsocketConsumer):
         self.send(text_data = json.dumps({
             'type' : 'chat',
             'message' :  message,
+            'role' : self.GameRole
         }))
 
     def disconnect(self, code):

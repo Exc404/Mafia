@@ -48,7 +48,7 @@ let chatlock = false
 let votelock = false
 let voted_for = ""
 var votelist = new Map()
-
+var turn = -1
 
 const client = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'})
 
@@ -175,8 +175,20 @@ testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
     if (data.type === 'chat') {
         let messages = document.getElementById('messages')
-        let htmlAdding = '<div><p>' + data.message + '</p></div>'
-        messages.insertAdjacentHTML('beforeend', htmlAdding)
+        let htmlAdding = "a"
+        if (data.role === "mafia" && turn === 0 && chatlock === false)
+        {
+            htmlAdding = '<div><p style="color:#ff0000">' + data.message + '</p></div>'
+            messages.insertAdjacentHTML('beforeend', htmlAdding)
+        }
+        else
+        {
+            if (chatlock === false)
+            {
+                htmlAdding = '<div><p>' + data.message + '</p></div>'
+                messages.insertAdjacentHTML('beforeend', htmlAdding)
+            }
+        }
     }
     if(data.type === 'user_info' && data.uid != UID.toString()) {
         if(UID_ARR.indexOf(data.uid) === -1) {
@@ -220,9 +232,9 @@ let GameProcess = async (players) => {
     let killresult = ""
     let healresult = ""
     let checkresult = ""
-    let rolespath = ["mafia", "doc", "com", "civil"]
+    let rolespath = ["mafia", "doc", "com", "civil", "civilvote"]
     let rolesnames = ["мафия", "доктор", "комиссар", "гражданские"]
-    let turn = -1;
+    turn = -1;
     console.log(playerlist)
     let htmlAdding = '<div><p>Ваша роль - ' + playerlist[UID] + '</p></div>'
     messages.insertAdjacentHTML('beforeend', htmlAdding)
@@ -259,19 +271,19 @@ let GameProcess = async (players) => {
                 switch(turn) {
                     case 0: 
                         killresult = tempresult;
-                        messages.insertAdjacentHTML('beforeend', "<div><p>Мафия выбрала свою цель!</p></div>");
+                        //messages.insertAdjacentHTML('beforeend', "<div><p>Мафия выбрала свою цель!</p></div>");
                         break;
                     case 1:
                          healresult = tempresult;
-                         messages.insertAdjacentHTML('beforeend', "<div><p>Доктор выбрал, кого спасать!</p></div>");
+                         //messages.insertAdjacentHTML('beforeend', "<div><p>Доктор выбрал, кого спасать!</p></div>");
                          break;
                     case 2: 
                         checkresult = tempresult;
-                        messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар выбрал, кого проверить этой ночью</p></div>");
+                       // messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар выбрал, кого проверить этой ночью</p></div>");
                         break;
-                    case 3:
+                    case 4:
                          voteresult = tempresult;
-                         messages.insertAdjacentHTML('beforeend', "<div><p>Голосование проведено! Выбранный будет убит!</p></div>");
+                       //  messages.insertAdjacentHTML('beforeend', "<div><p>Голосование проведено! Выбранный будет убит!</p></div>");
                          break;
                 }
             }
@@ -281,12 +293,16 @@ let GameProcess = async (players) => {
             for (let i in votelist) {votelist[i]=0}
             };
         turn+=1
-        if (turn === 4) {
+        if (turn === 5) {
             turn = 0
-            messages.insertAdjacentHTML('beforeend', "<div><p>На дневном голосовании убили игрока " + voteresult + ". Его роль - " + playerlist[voteresult] + "</p></div>");
+            if (voteresult!="")
+            {
+                messages.insertAdjacentHTML('beforeend', "<div><p>На дневном голосовании убили игрока " + voteresult + ". Его роль - " + playerlist[voteresult] + "</p></div>");
+            }
             voteresult = ""
         }
         if (turn === 3){
+            votelock = true
             if (killresult!="")
             {
                 if (killresult === healresult){
@@ -310,9 +326,15 @@ let GameProcess = async (players) => {
             healresult = ""
             checkresult = ""
         } 
+        if (turn === 4){
+            messages.insertAdjacentHTML('beforeend', '<div><p style="color:#00ff00">НАЧАЛАСЬ ФАЗА ГОЛОСОВАНИЯ!</p></div>')
+            votecock = false
+        }
         console.log("TURN: ", turn, rolespath[turn])
-        messages.insertAdjacentHTML('beforeend', '<div><p>сейчас ход: ' + rolesnames[turn] + '</p></div>')
-        if (playerlist[UID] != rolespath[turn] && turn !=3){
+        if (turn != 4){
+            messages.insertAdjacentHTML('beforeend', '<div><p>сейчас ход: ' + rolesnames[turn] + '</p></div>')
+        }
+        if (playerlist[UID] != rolespath[turn] && turn !=3 && turn!=4){
             chatlock = true
             FullMute()
             votelock = true
