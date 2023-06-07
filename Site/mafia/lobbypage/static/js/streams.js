@@ -178,8 +178,8 @@ testSocket.onmessage = function (e) {
         let htmlAdding = '<div><p>' + data.message + '</p></div>'
         messages.insertAdjacentHTML('beforeend', htmlAdding)
     }
-    if(data.type === 'user_info') {
-        if(UID_ARR.indexOf(data.uid) === -1 && data.uid != UID) {
+    if(data.type === 'user_info' && data.uid != UID.toString()) {
+        if(UID_ARR.indexOf(data.uid) === -1) {
             UID_ARR.push(data.uid)
             IS_NICK_WRITTEN.push(false)
         }
