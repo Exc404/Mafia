@@ -5,12 +5,19 @@
 {% block css %}{% load static %}<link rel="stylesheet" href="{% static "/css/createlobby_styles.css" %}">{% endblock %}
 
 {% block content %}
-Введите имя создаваемой комнаты:<br/>
+<div id="headblock">
+	<a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+	<h2 id="h-head">Создание лобби</h2>
+</div>
+<div id="content">
+	Введите имя создаваемой комнаты:<br>
 	<form method="POST" novalidate>
 	{% csrf_token %}
 	{{form.roomname}}
-	<input id="room-name-submit" type="submit" value="Enter"/>
+	<div id="SendBox"><input id="room-name-submit" type="submit" value="Создать"/></div>
 	</form>
+</div>
+
 {% endblock %}
 
 {% block script %}
