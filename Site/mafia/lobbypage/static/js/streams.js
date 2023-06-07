@@ -68,7 +68,7 @@ let joinAndDisplayLocalStream = async () => {
                     <div class = "icon-wrapper">
                     <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
                     </div>
-                    </div>`
+                </div>`
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
     document.getElementById(`vote-${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)

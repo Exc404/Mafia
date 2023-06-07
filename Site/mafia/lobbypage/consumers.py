@@ -40,6 +40,10 @@ class TestConsumer(WebsocketConsumer):
         if 'users' in text_data_json:
             self.usersid = text_data_json['users']
             self.uid = text_data_json['hostuid']
+            thisuser = Profile.objects.get(nickname=self.username)
+            thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
+            thisroom.is_game = True
+            thisroom.save()
             print(self.usersid)
             print("\n")
             print(self.uid)
