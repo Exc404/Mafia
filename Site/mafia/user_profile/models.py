@@ -82,3 +82,14 @@ class Notice(models.Model):
             self.text_message = self.sender.profile.nickname + ' приглашает вас в игру!'
 
         super(Notice, self).save(*args, **kwargs)
+
+
+class Friend(models.Model):
+    related_user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Аккаунт профиля')
+    friends = models.ManyToManyField(Profile)
+
+    def __str__(self):
+        return 'Друзья ' + self.related_user.profile.nickname
+
+    def save(self, *args, **kwargs):
+        super(Friend, self).save(*args, **kwargs)

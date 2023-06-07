@@ -7,5 +7,6 @@ urlpatterns = [
     path('edit/', edit_profile, name="edit_profile"),
     path('friends-search/', friends_search, name="friends_search"),
     path('notice/', notice, name="notice"),
+    path('friends/', friends_list, name="friends"),
     path('<slug>/', show_profile, name="show_profile"),
 ]

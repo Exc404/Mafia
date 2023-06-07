@@ -135,3 +135,12 @@ def notice(request):
         return render(request, 'profile/notice.html', data)
     else:
         return redirect('login')
+
+
+def friends_list(request):
+    if request.user.is_authenticated:
+        data = {}
+        data['friends'] = Friend.objects.get(related_user=request.user).friends.all()
+        return render(request, 'profile/friends_list.html', data)
+    else:
+        return redirect('login')

@@ -1,0 +1,25 @@
+{% extends 'profile_base.html' %}
+ 
+{% block title %}Уведомления{% endblock %}
+ 
+{% block content %}
+<div id="head">
+	<a class="ExitButton" href="{% url 'mainpage'%}">🡸</a>
+	<h1 style="margin-top: 1em;">Друзья</h1>
+</div>
+<div class="content">
+	<table>
+    {% if friends %}
+		{% for friend in friends %}
+            <tr>
+                <td>
+                    <p><a href="{{ friend.get_absolute_url }}">{{ friend.nickname }}</a></p>
+                </td>
+		    </tr>
+        {% endfor %}
+    {% else %}
+        <tr>У вас нет друзей!</tr>
+    {% endif %}
+    </table>
+</div>
+{% endblock content%}
