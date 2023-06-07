@@ -7,7 +7,12 @@ from .models import *
 from .forms import EditProfileForm, FriendsSearchForm
 
 
-# Create your views here.
+def profile(request):
+    if request.user.is_authenticated:
+        return redirect(show_profile, request.user.profile.slug)
+    else:
+        return redirect('login')
+
 
 def show_profile(request, slug):
     showed_profile = get_object_or_404(Profile, slug=slug)

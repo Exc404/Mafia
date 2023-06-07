@@ -4,11 +4,12 @@
  
 {% block content %}
 <div id="head">
-	<a class="ExitButton" href="{% url 'mainpage'%}">🡸</a>
+	<a class="ExitButton" href="{% url 'mainpage'%}">🡸</a><br>
+    <a class="ExitButton" href="{% url 'friends_search'%}">🔎</a>
 	<h1 style="margin-top: 1em;">Друзья</h1>
 </div>
 <div class="content">
-	<table>
+    <table>
     {% if friends %}
 		{% for friend in friends %}
             <tr>

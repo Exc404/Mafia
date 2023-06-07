@@ -9,7 +9,11 @@ class ProfileAdmin(admin.ModelAdmin):
 
 class NoticeAdmin(admin.ModelAdmin):
     search_fields = ('addressee__nickname', 'sender__profile__nickname')
-    list_display = ('__str__', 'view_sender_nickname', 'view_addressee_nickname', 'text_message')
+    list_display = ('__str__', 'view_sender_nickname', 'view_addressee_nickname', 'text_message', 'view_datetime')
+
+    @admin.display(description="Время отправки")
+    def view_datetime(self, obj):
+        return obj.datetime
 
     @admin.display(description="Получатель", empty_value='---')
     def view_addressee_nickname(self, obj):
