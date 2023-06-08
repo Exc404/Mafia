@@ -51,7 +51,7 @@ class Notice(models.Model):
     notice_type = models.CharField(max_length=2, choices=NoticeType.choices, default=NoticeType.INFO,
                                    verbose_name='Тип уведомления', blank=False)
 
-    text_message = models.CharField(max_length=40, verbose_name='Сообщение', blank=True)
+    text_message = models.CharField(max_length=100, verbose_name='Сообщение', blank=True)
 
     class Meta:
         verbose_name = "Уведомление"
@@ -77,9 +77,9 @@ class Notice(models.Model):
         if self.notice_type == self.NoticeType.INFO:
             self.text_message = str(self.text_message).capitalize()
         elif self.notice_type == self.NoticeType.FRIENDSHIP:
-            self.text_message = self.sender.profile.nickname + ' хочет добавить вас в друзья!'
+            self.text_message = str(self.sender.profile.nickname) + ' хочет добавить вас в друзья!'
         elif self.notice_type == self.NoticeType.INVITE:
-            self.text_message = self.sender.profile.nickname + ' приглашает вас в игру!'
+            self.text_message = str(self.sender.profile.nickname) + ' приглашает вас в игру!'
 
         super(Notice, self).save(*args, **kwargs)
 

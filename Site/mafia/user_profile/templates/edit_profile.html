@@ -1,10 +1,10 @@
 {% extends 'profile_base.html' %}
 {% block title %}Редактирование профиля{% endblock %}
-{% block head %}
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-{% endblock %}
-{% block content %}
 
+{% block style %}<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">{% endblock%}
+{% block script %}{% endblock %}
+
+{% block content %}
 <form method="POST" enctype="multipart/form-data" novalidate>
 	{% csrf_token %}
 

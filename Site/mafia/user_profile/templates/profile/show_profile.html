@@ -1,0 +1,44 @@
+{% extends 'profile/profile.html' %}
+
+{% block script %}
+{{ super }}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('.friendship-button').click(function() {
+
+    $.ajax({
+      url: 'add_friendship_record/',
+      method: 'POST',
+      success: function(response) {
+        var block = document.getElementById('EditProfile');
+        block.style.display = 'none';
+      },
+      error: function(xhr, status, error) {
+        // Обработка ошибки
+        console.log(error);
+      }
+    });
+  });
+});
+
+$(document).ready(function() {
+  $('.delete_friendship-button').click(function() {
+
+    $.ajax({
+      url: 'delete_friendship_record/',
+      method: 'POST',
+      success: function(response) {
+        var block = document.getElementById('EditProfile');
+        block.style.display = 'none';
+      },
+      error: function(xhr, status, error) {
+        // Обработка ошибки
+        console.log(error);
+      }
+    });
+  });
+});
+
+</script>
+{% endblock %}
