@@ -148,13 +148,17 @@ let toggleMic = async (e) => {
 }
 
 let FullMute = async (e) => {
-    await localTracks[0].setMuted(true)
-    await localTracks[1].setMuted(true)
+    for(let i in remoteUsers){
+        remoteUsers[i].audioTrack.stop()
+        remoteUsers[i].videoTrack.stop()
+    }
 }
 
 let FullUnMute = async (e) => {
-    await localTracks[0].setMuted(false)
-    await localTracks[1].setMuted(false)
+    for(let i in remoteUsers){
+        remoteUsers[i].audioTrack.play()
+        remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
+    }
 }
 
 let vote = function (e) {
