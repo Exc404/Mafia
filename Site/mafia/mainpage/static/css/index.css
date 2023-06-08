@@ -86,7 +86,7 @@ header{
   justify-content: flex-end;
   align-items:center;
   margin: auto;
-  margin-right: 4%;
+  margin-right: 3em;
 }
 #profile-Icon{  
   background:linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
@@ -240,9 +240,5 @@ main{
   margin-left: 5%;
   margin-right: 5%;
   background-color: #21252C;
-
   padding: 20px;
-
- 
-
 }
