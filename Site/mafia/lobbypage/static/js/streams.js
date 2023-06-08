@@ -61,6 +61,10 @@ let joinAndDisplayLocalStream = async () => {
     client.on('user-left', handleUserLeft)
     alert("Начался шпионаж за твоей жопой!")
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
+    setInterval(() => testSocket.send(JSON.stringify({
+        'user_name' : user_name,
+        'uid' : UID
+    })), 100)
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
     let player = `<div class="video-container" id = "user-container-${UID}">
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
@@ -76,10 +80,6 @@ let joinAndDisplayLocalStream = async () => {
 }
 
 let handleUserJoined = async (user, mediaType) => {
-    setInterval(() => testSocket.send(JSON.stringify({
-        'user_name' : user_name,
-        'uid' : UID
-    })), 100)
     remoteUsers[user.uid] = user
     await client.subscribe(user, mediaType)
     if(mediaType === "video") {
