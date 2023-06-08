@@ -1,15 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
-</head>
-<body>
-    Введите имя создаваемой комнаты:<br/>
+{% extends 'lobby_base.html' %}
+ 
+{% block title %}Список Лобби{% endblock %}
+
+{% block css %}{% load static %}<link rel="stylesheet" href="{% static "/css/createlobby_styles.css" %}">{% endblock %}
+
+{% block content %}
+<div id="headblock">
+	<a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+	<h2 id="h-head">Создание лобби</h2>
+</div>
+<div id="content">
+	Введите имя создаваемой комнаты:<br>
 	<form method="POST" novalidate>
 	{% csrf_token %}
 	{{form.roomname}}
-	<input id="room-name-submit" type="submit" value="Enter"/>
+	<div id="SendBox"><input id="room-name-submit" type="submit" value="Создать"/></div>
 	</form>
-</body>
-</html>
+</div>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}
