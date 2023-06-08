@@ -25,9 +25,9 @@
         </div>
         {% if request.user.is_authenticated %}
           <div id="profile-block">
-            <div id="profile-block-background">
-              <div class="dropdown">
-                <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"  onclick="myFunction()" class="dropbtn">
+            <div id="profile-block-background" >
+              <div class="dropdown" style="height: 53px;">
+                <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"  >
                 <div id="myDropdown" class="dropdown-content">
                   <a href="{{request.user.profile.get_absolute_url}}">Профиль</a>
                   <a href="{% url "notice" %}">Уведомления</a>
@@ -38,6 +38,8 @@
               </div>
               <p class="text-profile">{{request.user.profile.nickname}}</p>
             </div>
+          <div id="profile-click"  onclick="myFunction()" class="dropbtn">
+          </div>
           </div>
         {% else %}
         <div id="authentication-block">
@@ -52,5 +54,6 @@
     </header>
     {% block content %}
     {% endblock %}
+  
   </body>
 </html>
