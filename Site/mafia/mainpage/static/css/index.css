@@ -107,16 +107,33 @@ header{
   padding-right: 6px;
   background-color:rgb(41, 45, 61);
   height: 100%;
- 
+  grid-area: 1 / 1;
+  min-width: 160px;
   
+}
+#profile-click{
+  width: 100%;
+  height: 100%;
+  grid-area: 1 / 1;
+  z-index: 10;
+  background:linear-gradient(60deg,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+  rgba(0, 0, 0, 0) border-box;
+  background-size:300% 100%,cover;
+  border-radius: 10px;
+}
+#profile-click:hover{
+  animation:button-game-animation 4s ease infinite;
 }
 #profile-block{
   grid-column: 5;
-  display: flex;
+  display: grid;
   justify-content: flex-end;
   align-items:center;
   margin: auto;
   margin-right: 3em;
+  min-width: 160px;
+
+
 }
 #profile-Icon{  
   background:linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
@@ -127,6 +144,7 @@ header{
   z-index: 1;
   grid-column: 1;
   grid-row: 1;
+  
 }
 #profile-Icon:hover{
   animation:button-game-animation 10s ease infinite;
@@ -175,8 +193,8 @@ header{
 .text-profile{
   display: flex;
   align-items:center;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
   font-size: 16px;
   font-weight: bold;
   color: white;
