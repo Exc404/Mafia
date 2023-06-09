@@ -77,6 +77,8 @@ class TestConsumer(WebsocketConsumer):
                 self.GameRole = temproles[str(self.uid)]
             print(self.username, "Ваша роль - ", self.GameRole)
 
+        if 'role_chenge' in text_data_json:
+            self.GameRole = text_data_json['role_change']
 
         if 'user_name' in text_data_json:
             async_to_sync(self.channel_layer.group_send) (
@@ -128,7 +130,8 @@ class TestConsumer(WebsocketConsumer):
         self.send(text_data = json.dumps({
             'type' : 'chat',
             'message' :  message,
-            'role' : self.GameRole
+            'role' : self.GameRole,
+            'nickname' : self.username
         }))
 
     def disconnect(self, code):

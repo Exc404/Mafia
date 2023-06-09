@@ -43,12 +43,15 @@ let CHANNEL = room_name
 let TOKEN = token
 let UID
 let UID_ARR = []
+let NICK_ARR = new Map()
 let IS_NICK_WRITTEN = []
 let chatlock = false
-let votelock = false
+let votelock = true
 let voted_for = ""
 var votelist = new Map()
 var turn = -1
+var roles = new Map()
+var is_game = 0
 
 const client = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'})
 
@@ -182,14 +185,14 @@ testSocket.onmessage = function (e) {
         let htmlAdding = "a"
         if (data.role === "mafia" && turn === 0 && chatlock === false)
         {
-            htmlAdding = '<div><p style="color:#ff0000">' + data.message + '</p></div>'
+            htmlAdding = '<div><p style="color:#ff0000">' + data.nickname +": " + data.message + '</p></div>'
             messages.insertAdjacentHTML('beforeend', htmlAdding)
         }
         else
         {
             if (chatlock === false)
             {
-                htmlAdding = '<div><p>' + data.message + '</p></div>'
+                htmlAdding = '<div><p>' + data.nickname +": " + data.message + '</p></div>'
                 messages.insertAdjacentHTML('beforeend', htmlAdding)
             }
         }
@@ -200,6 +203,7 @@ testSocket.onmessage = function (e) {
             IS_NICK_WRITTEN.push(false)
         }
         if(!IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)]) {
+            NICK_ARR[data.uid] = data.user_name
             let user_div = document.getElementById(`user-container-${data.uid}`)
             if(user_div != null) {
                 user_div.insertAdjacentHTML("afterbegin", `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
@@ -208,7 +212,7 @@ testSocket.onmessage = function (e) {
         }
     }
     if (data.type === 'game_roles') {               //Рассылаем роли игрокам
-        let roles = data.roleslist
+        roles = data.roleslist
         testSocket.send(JSON.stringify({
             'roleslist' : roles,
             'socket_uid' : UID
@@ -227,6 +231,7 @@ testSocket.onmessage = function (e) {
 
 
 let GameProcess = async (players) => {
+    NICK_ARR[UID] = user_name
     let playerlist = players
     for (let a in playerlist){
         votelist[a] = 0
@@ -292,7 +297,7 @@ let GameProcess = async (players) => {
                 }
             }
             else {
-                messages.insertAdjacentHTML('beforeend', "<div><p>Голосование сорвано! Одинаковое количество голосов!</p></div>");
+                //messages.insertAdjacentHTML('beforeend', "<div><p>Голосование сорвано! Одинаковое количество голосов!</p></div>");
             }
             for (let i in votelist) {votelist[i]=0}
             };
@@ -301,7 +306,16 @@ let GameProcess = async (players) => {
             turn = 0
             if (voteresult!="")
             {
-                messages.insertAdjacentHTML('beforeend', "<div><p>На дневном голосовании убили игрока " + voteresult + ". Его роль - " + playerlist[voteresult] + "</p></div>");
+                messages.insertAdjacentHTML('beforeend', "<div><p>На дневном голосовании убили игрока " + NICK_ARR[voteresult] + ". Его роль - " + playerlist[voteresult] + "</p></div>");
+                playerlist[voteresult] = "spec"
+                roles[voteresult] = "spec"
+                delete votelist[voteresult]
+                delete NICK_ARR[voteresult]
+                if (UID.toString() === voteresult){
+                    testSocket.send(JSON.stringify({    
+                        'role_change': "spec",
+                    }))
+                }
             }
             voteresult = ""
         }
@@ -313,7 +327,16 @@ let GameProcess = async (players) => {
                     messages.insertAdjacentHTML('beforeend', "<div><p>Доктор успешно предотвратил убийство! Все живы!</p></div>");
                 }
                 else {
-                    messages.insertAdjacentHTML('beforeend', "<div><p>Мафия убила игрока " + killresult + ". Его роль - " + playerlist[killresult] + "</p></div>");
+                    messages.insertAdjacentHTML('beforeend', "<div><p>Мафия убила игрока " + NICK_ARR[killresult] + ". Его роль - " + playerlist[killresult] + "</p></div>");
+                    playerlist[killresult] = "spec"
+                    roles[killresult] = "spec"
+                    delete votelist[killresult]
+                    delete NICK_ARR[killresult]
+                    if (UID.toString() === killresult){
+                        testSocket.send(JSON.stringify({    
+                            'role_change': "spec",
+                        }))
+                    }
                 }
             }
             else {
@@ -338,7 +361,7 @@ let GameProcess = async (players) => {
         if (turn != 4){
             messages.insertAdjacentHTML('beforeend', '<div><p>сейчас ход: ' + rolesnames[turn] + '</p></div>')
         }
-        if (playerlist[UID] != rolespath[turn] && turn !=3 && turn!=4){
+        if ((playerlist[UID] != rolespath[turn] && turn !=3 && turn!=4) || playerlist[UID]==="spec"){
             chatlock = true
             FullMute()
             votelock = true
@@ -346,7 +369,7 @@ let GameProcess = async (players) => {
         else {
             chatlock = false
             FullUnMute()
-            votelock = false
+            if (turn != 3) {votelock = false}
         }
     },7000)
 }
