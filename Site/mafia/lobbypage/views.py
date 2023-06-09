@@ -12,13 +12,10 @@ from agora_token_builder import RtcTokenBuilder
 from asgiref.sync import sync_to_async
 from .game_consumer import ServerConsumer
 from channels.layers import get_channel_layer
-import asyncio
 import threading
 
 import time
 # Create your views here.
-
-ServerConsumers = []
 
 def lobby(request):
     if request.user.is_authenticated:
@@ -29,7 +26,6 @@ def lobby(request):
                 NewRoom.roomhostid = request.user.profile.pk
                 NewRoom.save()
                 GameMaster = ServerConsumer(get_channel_layer(), NewRoom.roomname+"_"+NewRoom.room_id, NewRoom.id)
-                ServerConsumers.append(GameMaster)
                 print("======================================================")
                 thread = threading.Thread(target=GameMaster.Update)
                 thread.start()
