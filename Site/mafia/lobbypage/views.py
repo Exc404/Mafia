@@ -7,10 +7,19 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from agora_token_builder import RtcTokenBuilder
+
+
+from asgiref.sync import sync_to_async
+from .game_consumer import ServerConsumer
+from channels.layers import get_channel_layer
+import asyncio
+import threading
+
 import time
 # Create your views here.
 
-Names = ["","","null"]
+ServerConsumers = []
+
 def lobby(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -19,6 +28,12 @@ def lobby(request):
                 NewRoom = NewRoom.save(commit=False)
                 NewRoom.roomhostid = request.user.profile.pk
                 NewRoom.save()
+                GameMaster = ServerConsumer(get_channel_layer(), NewRoom.roomname+"_"+NewRoom.room_id, NewRoom.id)
+                ServerConsumers.append(GameMaster)
+                print("======================================================")
+                thread = threading.Thread(target=GameMaster.Update)
+                thread.start()
+                print("======_________++++++++++++++++++++++++++")
                 return redirect(TheLobby, NewRoom.roomname+"_"+NewRoom.room_id)
         data = {}
 

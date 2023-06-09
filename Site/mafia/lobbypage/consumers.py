@@ -4,14 +4,11 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from user_profile.models import Profile
 from .models import Rooms
-from random import choice
 
 class TestConsumer(WebsocketConsumer):
 
     def connect(self):
         self.username = ""
-        self.GameRole = "homo"
-        self.uid = ""
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'lobby_%s' % self.room_name
         async_to_sync(self.channel_layer.group_add) (
@@ -46,6 +43,12 @@ class TestConsumer(WebsocketConsumer):
                     'uid' : str(text_data_json['uid'])
                 }
             )
+        
+        if 'start' in text_data_json:
+            thisuser = Profile.objects.get(nickname=self.username)
+            thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
+            thisroom.is_game = True
+            thisroom.save()
 
     def user_info_sending(self, event):
         user_name = event['user_name']
@@ -61,8 +64,6 @@ class TestConsumer(WebsocketConsumer):
         self.send(text_data = json.dumps({
             'type' : 'chat',
             'message' :  message,
-            'role' : self.GameRole,
-            'nickname' : self.username
         }))
 
     def disconnect(self, code):

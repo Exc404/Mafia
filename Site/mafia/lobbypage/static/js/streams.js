@@ -27,6 +27,9 @@ window.onload = function () {
     startButton.onclick = function () {
         if (is_host) {
             alert("Вы запустили игру")
+            testSocket.send(JSON.stringify({
+                'start' : 'ЗАРАБОТАЛО БЛЯТЬ'
+            }))
         }
         else alert("Вы не являетесь создателем комнаты")
         return false
