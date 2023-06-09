@@ -171,7 +171,7 @@ def add_notice(request, record_id):
 
     response_notice = Notice()
     response_notice.notice_type = Notice.NoticeType.INFO
-    response_notice.text_message = "Ваша заявка в друзья была одобрена!"
+    response_notice.text_message = "принял вашу заявку в друзья!"
     response_notice.sender = user2
     response_notice.addressee = user1.profile
     response_notice.save()

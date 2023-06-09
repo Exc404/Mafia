@@ -2,6 +2,95 @@
  
 {% block title %}Уведомления{% endblock %}
 {% block style %}
+<style>
+  *{
+      margin: 0;
+      padding: 0;
+  }
+  body{
+      font-family: sans-serif;
+      font-size: 20px;
+      min-height: 100vh;
+      background: linear-gradient(135deg, rgb(243, 46, 46) 0%, rgb(78, 9, 16) 100%);
+  }
+  main{
+      width: 27em;
+      height: 33em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1em;
+  }
+  #headblock{
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      margin-bottom: 1em;
+      align-items: flex-start;
+      width: 100%;
+  }
+  #h-head{
+    margin: 0 auto 0 auto;
+    padding-right:50px;
+    columns: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .list{
+    width: 27em;
+    height: 30em;
+    background-color: #292e36;
+    overflow-y: scroll;
+    margin-bottom: 1em;
+    border-radius: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+    padding: 0.5em;
+  }
+
+    
+
+  html {
+    --scrollbarBG: #27303f;
+    --thumbBG: #90A4AE;
+  }
+  .list::-webkit-scrollbar-corner {
+    background: #27303f;
+  }
+  .list::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  .list::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+  }
+  .list::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+  }
+  table {
+    width:100%;
+    border-collapse:separate; 
+    border-spacing:0 0.2em;
+  }
+  tr{
+    height: 100%;
+    background-color: #363d48;
+  }
+  td{
+    height: 100%;
+    padding: 0.5em;
+  }
+  td:first-child{border-radius: 10px 0 0 10px;}
+  td:last-child{border-radius: 0 10px 10px 0;}
+  tr>td {
+    margin-bottom: 30px;
+  }
+ 
+</style>
 {% endblock%}
 
 {% block script %}
@@ -52,6 +141,49 @@ $(document).ready(function() {
 {% endblock%}
 
 {% block content %}
+  <div id="headblock">
+      <a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+    <h2 id="h-head">Уведомления</h2>
+  </div>
+  <div class="list">
+    <table cellspacing="0" cellpadding="0">
+      {% if notices %}
+        {% for notice in notices %}
+          <tr data-record-id="{{ notice.id }}notice">
+            {% if notice.notice_type == 'FR' %}
+              <td>
+                <p><a href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> хочет добавить вас в друзья!</p>
+              </td>
+              <td>
+                <button class="add-button" data-record-id="{{ notice.id }}">Добавить</button>
+              </td>
+            {% endif %}
+            {% if notice.notice_type == 'IV' %}
+              <td>
+                <p><a href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
+              </td>
+              <td></td>
+            {% endif %}
+            {% if notice.notice_type == 'IF' %}
+              <td>
+                {% if notice.sender %}
+                  <p>{{ notice.sender.profile.nickname }}</p>
+                {% endif %}
+                <p>{{ notice.text_message }}</p>
+              </td>
+              <td></td>
+            {% endif %}
+              <td>
+                  <button class="delete-button" data-record-id="{{ notice.id }}">Удалить</button>
+              </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+          <tr>У вас нет новых уведомлений</tr>
+      {% endif %}
+      </table> 
+  </div>
+<!-- 
 <div id="head">
 	<a class="ExitButton" href="{% url 'mainpage'%}">🡸</a>
 	<h1 style="margin-top: 1em;">Уведомления</h1>
@@ -90,5 +222,5 @@ $(document).ready(function() {
         <tr>У вас нет новых уведомлений</tr>
     {% endif %}
     </table>
-</div>
+</div> -->
 {% endblock content%}
