@@ -56,7 +56,10 @@ class Notice(models.Model):
     class Meta:
         verbose_name = "Уведомление"
         verbose_name_plural = "Уведомления"
-
+    
+    def get_datetime(self):
+        return self.datetime.strftime('%d.%m %H:%M')
+    
     def __str__(self):
         str_type = ''
         if self.notice_type == self.NoticeType.INFO:

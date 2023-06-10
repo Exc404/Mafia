@@ -82,12 +82,65 @@
   }
   td{
     height: 100%;
-    padding: 0.5em;
+    padding: 0.3em;
   }
   td:first-child{border-radius: 10px 0 0 10px;}
   td:last-child{border-radius: 0 10px 10px 0;}
   tr>td {
     margin-bottom: 30px;
+  }
+  
+  .text-message::first-letter{
+    text-transform: lowercase;
+  }
+
+  .profile-Icon{
+    background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(45deg, rgb(3, 25, 151), #0b9ef9) border-box;
+    border: 3px solid transparent;
+    border-radius: 10px;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+  }
+  .links{
+    margin-top: 0.3em;
+    color:rgb(114, 143, 248);
+    text-decoration: none;
+  }
+  .links:hover{
+    text-decoration: underline;
+  }
+  p{
+    font-size: 16px;
+    margin-left: 1em;
+  }
+  button{
+    background:#ffffff00;
+    border: none;
+    color: #fff;
+    font-size: 25px;
+    padding: 0;
+    margin: 0;
+  }
+  button:hover{
+    color: #19d759;
+  }
+  .delete-button{
+    background:#ffffff00;
+    font-size: 30px;
+    padding: 0;
+    margin: 0;
+  }
+  .delete-button:hover{
+    color: red;
+  }
+  .datatime{
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 0.1em;
+    align-items: center;
+    font-size: 14px;
+    color: #ffffff8c
   }
  
 </style>
@@ -152,29 +205,47 @@ $(document).ready(function() {
           <tr data-record-id="{{ notice.id }}notice">
             {% if notice.notice_type == 'FR' %}
               <td>
-                <p><a href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> хочет добавить вас в друзья!</p>
+                <div class="datatime">{{notice.get_datetime}}</div>
+                <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                  <img class="profile-Icon" width="45px" height="45px" src="{{notice.sender.profile.profile_img.url}}" alt="Icon">
+                  <div>
+                    <a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a>
+                    <p class="text-message" style="margin: 0;">хочет добавить вас в друзья!</p>
+                  </div>
+                </div>       
               </td>
               <td>
-                <button class="add-button" data-record-id="{{ notice.id }}">Добавить</button>
+                <button class="add-button" data-record-id="{{ notice.id }}">✔</button>
               </td>
             {% endif %}
             {% if notice.notice_type == 'IV' %}
               <td>
-                <p><a href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
+                <div class="datatime">{{notice.get_datetime}}</div>
+                <p><a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
               </td>
               <td></td>
             {% endif %}
             {% if notice.notice_type == 'IF' %}
               <td>
-                {% if notice.sender %}
-                  <p>{{ notice.sender.profile.nickname }}</p>
-                {% endif %}
-                <p>{{ notice.text_message }}</p>
+                <div class="datatime">{{notice.get_datetime}}</div>
+                <p>
+                  {% if notice.sender %}
+                    <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                      <img class="profile-Icon" width="45px" height="45px" src="{{notice.sender.profile.profile_img.url}}" alt="Icon">
+                      <div>
+                        <a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a>
+                        <p class="text-message" style="margin: 0;">{{ notice.text_message }}</p>
+                      </div>
+                    </div>                    
+                  {% else %}
+                    <p class="text-message">{{ notice.text_message }}</p>
+                  {% endif %}
+                </p>
               </td>
               <td></td>
             {% endif %}
               <td>
-                  <button class="delete-button" data-record-id="{{ notice.id }}">Удалить</button>
+                  <button class="delete-button" data-record-id="{{ notice.id }}">🗑</button>
               </td>
           </tr>
         {% endfor %}

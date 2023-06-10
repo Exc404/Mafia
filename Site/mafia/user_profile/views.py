@@ -125,7 +125,7 @@ def friends_search(request):
 def notice(request):
     if request.user.is_authenticated:
         data = {}
-        data['notices'] = Notice.objects.filter(addressee=request.user.profile)
+        data['notices'] = reversed(Notice.objects.filter(addressee=request.user.profile))
         return render(request, 'profile/notice.html', data)
     else:
         return redirect('login')
@@ -208,7 +208,7 @@ def delete_friendship_notice(request, slug):
 
     response_notice = Notice()
     response_notice.notice_type = Notice.NoticeType.INFO
-    response_notice.text_message = "Вас удалили из друзей!"
+    response_notice.text_message = "Вас удалил из друзей!"
     response_notice.sender = profile1.related_user
     response_notice.addressee = profile2
     response_notice.save()
