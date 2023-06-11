@@ -67,6 +67,7 @@ def TheLobby(request, room_name):
                               {'request': request,
                                'room_name_json': mark_safe(json.dumps(room_name)),
                                'user_nickname_json': mark_safe(json.dumps(player.nickname)),
+                               'user_pk_json': mark_safe(json.dumps(str(player.pk))),
                                'the_host_json': mark_safe(json.dumps(request.user.profile.pk == room.roomhostid)),
                                'agora_token' : mark_safe(json.dumps(RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs)))
                                })

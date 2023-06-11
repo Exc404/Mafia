@@ -9,6 +9,7 @@ class Rooms(models.Model):
     roomhostid = models.IntegerField(default = 0)
     room_id = models.CharField(max_length=8, default="STOCKID")
     is_game = models.BooleanField(default=0)
+    votelist = models.JSONField(null = True, default = dict)
 
     def DelPlayer(self, userid):
         if self.roomhostid == userid and self.profile_set.count()>0:

@@ -7,18 +7,28 @@ console.log(url)
 const testSocket = new WebSocket(url)
 
 testSocket.onopen = () => testSocket.send(JSON.stringify({
-    'username': user_name
+    'username': user_name,
+    'pk' : user_pk
 }))
 
 let inputForm = document.getElementById('messageInputForm')
 
 inputForm.addEventListener('submit', (e) => {
     e.preventDefault()
-    let message = e.target.messageForm.value
-    if (message === "iliveindarkness") {chatlock = false} // это надо удалить...
-    testSocket.send(JSON.stringify({
-        'message': message
-    }))
+    if (chatlock === false){
+        let message = e.target.messageForm.value
+        if (message === "iliveindarkness") {chatlock = false} // это надо удалить...
+        if(message!="") {
+            message = user_name + ":" + message
+            testSocket.send(JSON.stringify({
+                'message': message
+            }))
+        }
+    }
+    else
+    {
+        messages.insertAdjacentHTML('beforeend', '<div><p style="color:#1D943C"> У вас чатлок!</p></div>')
+    }
     inputForm.reset()
 })
 
@@ -56,7 +66,8 @@ let joinAndDisplayLocalStream = async () => {
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
     setInterval(() => testSocket.send(JSON.stringify({
         'user_name' : user_name,
-        'uid' : UID
+        'uid' : UID,
+        'pk' : user_pk
     })), 100)
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
     let player = `<div class="video-container" id = "user-container-${UID}">
@@ -67,7 +78,7 @@ let joinAndDisplayLocalStream = async () => {
                     </div>
                 </div>`
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
-    //document.getElementById(`vote-${UID}`).onclick = vote
+    document.getElementById(`vote-${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
     await client.publish([localTracks[0], localTracks[1]])
 }
@@ -88,7 +99,7 @@ let handleUserJoined = async (user, mediaType) => {
                     </div>
                 </div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
-        //document.getElementById(`vote-${user.uid}`).onclick = vote
+        document.getElementById(`vote-${user.uid}`).onclick = vote
         user.videoTrack.play(`user-${user.uid}`)
     }
     if(mediaType === "audio") {
@@ -139,30 +150,27 @@ let toggleMic = async (e) => {
     }
 }
 
-// let vote = function (e) {
-//     if (votelock === false){
-//         console.log("VOTE: ГОЛОСОВАНИЕ")
-//         let votename = e.target.id
-//         votelock = true
-//         console.log("VOTE votename:",votename)
-//         testSocket.send(JSON.stringify({
-//             'vote_uid' : votename
-//         }))
-//     }
-//     else {console.log("VOTE: Сейчас не ваше время голосовать.")}
-// }
-
-
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
     if (data.type === 'chat') {
-        let messages = document.getElementById('messages')
-        htmlAdding = '<div><p>' + data.message + '</p></div>'
-        messages.insertAdjacentHTML('beforeend', htmlAdding)
+        if (chatlock === false){
+            let messages = document.getElementById('messages')
+            if (turn === 0 && MyRole==="mafia"){
+            htmlAdding = '<div><p style="color:#FF0000">' + data.message + '</p></div>'
+            }
+            else{
+                htmlAdding = '<div><p>' + data.message + '</p></div>'
+            }
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+            messages.insertAdjacentHTML('beforeend', htmlAdding)
+        }
     }
     if(data.type === 'user_info' && data.uid != UID.toString()) {
         if(UID_ARR.indexOf(data.uid) === -1) {
             UID_ARR.push(data.uid)
+            console.log("GAME: GOT PK + UID", data.pk," ", data.uid, " ", data.user_name)
+            PK_SET['vote-'+data.uid] = data.pk
+            console.log("GAME:", PK_SET)
             IS_NICK_WRITTEN.push(false)
         }
         if(!IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)]) {
@@ -172,6 +180,67 @@ testSocket.onmessage = function (e) {
                 IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)] = true
             }
         }
+    }
+    if(data.type === 'start_info') {
+        Roles = data.rolelist
+        MyRole = Roles[user_pk]
+        console.log("GAME: UID", UID)
+        PK_SET['vote-'+UID] = user_pk
+        let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
+        messages.insertAdjacentHTML('beforeend', warning)
+    }
+    if(data.type === 'turn_info'){
+        console.log("GAME:", PK_SET)
+        turn = data.turnnumber
+        chatlock = data.chatlock
+        votelock = data.votelock
+        console.log("CHATLOCK:", data.chatlock)
+        let warning = '<div><p style="color:#1D943C"> ТЕКУЩИЙ ХОД: ' + Rolenames[turn] +'</p></div>'
+        messages.insertAdjacentHTML('beforeend', warning)
+    }
+    if(data.type === 'vote_result'){
+        let resultname = data.resultname
+        let warning = '<div><p style="color:#1D943C"> Результат голосования: ' + resultname +'</p></div>'
+        resultname = ""
+        messages.insertAdjacentHTML('beforeend', warning)
+    }
+    if(data.type === 'morning_results'){
+        let killed = data.killtarget
+        let dead_name = data.targetname
+        let if_saved = data.healresult
+        let check = data.checked
+        if (killed === ""){
+            let warning = '<div><p style="color:#1D943C"> УБИЙСТВА НЕ ПРОИЗОШЛО! ВСЕ ЖИВЫ!</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+        }
+        else {
+        if (if_saved) {
+            let warning = '<div><p style="color:#1D943C"> ДОКТОРУ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! ВСЕ ЖИВЫ!</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+        }
+        else{
+            console.log('GAME: rolelist', Roles)
+            console.log('GAME: killed', killed)
+            let warning = '<div><p style="color:#1D943C"> ДОКТОРУ НЕ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! Был убит игрок '+ dead_name +'. Его роль - ' + Roles[killed] + '</p></div>'
+            Roles[killed] = "spec"
+            messages.insertAdjacentHTML('beforeend', warning)
+        }
+        if (check != ""){
+            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+        }
+        else {
+            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+        }
+        }
+    }
+    if(data.type === "night_results"){
+        let killed = data.votetarget
+        let killed_name = data.targetname
+        let warning = '<div><p style="color:#1D943C"> В результате дневного голосования был убит игрок '+ killed_name +'. Его роль - ' + Roles[killed] + '</p></div>'
+        Roles[killed] = "spec"
+        messages.insertAdjacentHTML('beforeend', warning)
     }
 }
 
