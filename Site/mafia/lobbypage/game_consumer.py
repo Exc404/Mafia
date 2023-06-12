@@ -32,7 +32,7 @@ class ServerConsumer():
                     players_amount = thisroom.profile_set.count()
                     if players_amount > 0:
                         votelist = {}
-                        roles = {"mafia": 1, "com" : 1, "doc" : 1, "civil" : 0}
+                        roles = {"mafia": 2, "com" : 1, "doc" : 1, "civil" : 1}
                         players = thisroom.profile_set.all()
                         for guy in players:
                             votelist[guy.pk] = 0
@@ -133,7 +133,7 @@ class ServerConsumer():
                                     'turn_number' : self.turn 
                                 }
                             )  
-                            sleep(10)
+                            sleep(20)
                         thisroom.is_game = False
                         thisroom.save()
             except Rooms.DoesNotExist:

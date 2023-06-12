@@ -159,10 +159,12 @@ let FullMute = async () => {
 
 let RoleUnMute = async () => {
     for(let i in remoteUsers) {
-        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] === MyRole) {
-            remoteUsers[i].audioTrack.play()
+        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] != "spec"){
+            if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] === MyRole) {
+                remoteUsers[i].audioTrack.play()
+            }
+            remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
         }
-        remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
     }
     localTracks[1].play(`user-${UID}`)
 }
@@ -224,17 +226,24 @@ testSocket.onmessage = function (e) {
         console.log("GAME STAGE: ", turn)
         chatlock = data.chatlock
         votelock = data.votelock
-        if(chatlock) {
+        if(chatlock && Roles[user_pk] != "spec") {
+            console.log("GAME: MUTE", turn)
             FullMute()
         }
-        else if(chatlock && Roles[user_pk] === "spec" && (turn ===3 || turn === 4))
+        else if(chatlock && Roles[user_pk] === "spec" && (turn === 3 || turn === 4)) {
+            console.log("GAME: SPEC", turn)
             FullUnMute()
-        else if(!chatlock){
+        }
+        else if(!chatlock) {
+            console.log("GAME: UNMUTE", turn)
             FullMute()
             if(turn != 3 && turn != 4)
                 RoleUnMute()
             else
                 FullUnMute()
+        }
+        else {
+            FullMute()
         }
         console.log("CHATLOCK:", data.chatlock)
         let warning = '<div><p style="color:#1D943C"> ТЕКУЩИЙ ХОД: ' + Rolenames[turn] +'</p></div>'
@@ -269,6 +278,7 @@ testSocket.onmessage = function (e) {
                 Roles[killed] = "spec"
                 messages.insertAdjacentHTML('beforeend', warning)
             }
+        }
         if (check != ""){
             let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
@@ -277,7 +287,10 @@ testSocket.onmessage = function (e) {
             let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
         }
-        }
+        killed = ""
+        dead_name = ""
+        if_saved = 0
+        check = ""
     }
 
     if(data.type === "night_results"){
