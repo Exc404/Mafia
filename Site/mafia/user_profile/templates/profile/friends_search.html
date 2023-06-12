@@ -5,26 +5,142 @@
 {% block content %}
 <div id="head">
 	<a class="ExitButton" href="{% url 'mainpage'%}">🡸</a>
-	<h1 style="margin-top: 1em;">Поиск друзей</h1>
+	<h2>Поиск друзей</h2>
 </div>
-<div class="content">
+<div>
 	<form method="get">
-        {{form.nickname}}
-        <input style="margin-left: auto; margin-top: 1em;" type="submit" value="Поиск" >
+		<div id="input-nick">
+			{{form.nickname}}
+			<input type="submit" value="Поиск" >
+		</div>
 	</form>
-	</br>
-	{% if search_result %}
-		{% for profile in search_result %}
-			<a href="{{ profile.get_absolute_url }}"><p>{{profile.nickname}}</p></br></a>
-		{% endfor %}
-	{% else %}
-		<p>{{ message }}</p></br>
-	{% endif %}
+	<div class="list">
+		<table>
+		{% if search_result %}
+			{% for profile in search_result %}
+				<tr>
+					<td>
+						<div style="display: flex;flex-direction: row; justify-content: flex-start;">
+							<img class="profile-Icon" width="45px" height="45px" src="{{profile.profile_img.url}}" alt="Icon">
+							<div style="display: flex; align-items: center;">
+							  <a class="links" href="{{ profile.get_absolute_url }}">{{profile.nickname }}</a>
+							</div>
+						</div>                    
+					</td>
+				</tr>
+			{% endfor %}
+		{% else %}
+		<p style="display: flex; justify-content: center;">{{ message }}</p>
+		{% endif %}
+		</table>
+	</div>
+
 </div>
 {% endblock content%}
 
 {% block style %}
 <style>
+	#input-nick{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	input[type="text"]
+	{
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+		padding: 1%;
+		padding-top: 3.5%;
+		padding-bottom: 3.5%;
+		border-radius: 5px 0 0 5px;
+		font-size: 16px;
+		width: 100%;
+		height: 1.5em;
+		border-width: 0;
+	}
+	input[type="submit"]{
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin-top: 0;
+		margin-left: 0em;
+		border-radius: 0 5px 5px 0;
+		height: 1.85em;
+	}
+	p{
+        font-size: 16px;
+        margin-left: 1em;
+    }
+
+    .list{
+    width: 21em;
+    height: 25em;
+    background-color: #292e36;
+    overflow-y: scroll;
+    margin-bottom: 1em;
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+    padding: 0.5em;
+  }
+
+    
+
+  html {
+    --scrollbarBG: #27303f;
+    --thumbBG: #90A4AE;
+  }
+  .list::-webkit-scrollbar-corner {
+    background: #27303f;
+  }
+  .list::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  .list::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+  }
+  .list::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+  }
+  table {
+    width:100%;
+    border-collapse:separate; 
+    border-spacing:0 0.2em;
+  }
+  tr{
+    height: 100%;
+    background-color: #363d48;
+  }
+  td{
+    height: 100%;
+    padding: 0.3em;
+    border-radius: 10px;
+  }
+
+  tr>td {
+    margin-bottom: 30px;
+  }
+  
+  .text-message::first-letter{
+    text-transform: lowercase;
+  }
+
+  .profile-Icon{
+    background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(45deg, rgb(3, 25, 151), #0b9ef9) border-box;
+    border: 3px solid transparent;
+    border-radius: 10px;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+  }
+  .links{
+    color:rgb(114, 143, 248);
+    text-decoration: none;
+  }
+  .links:hover{
+    text-decoration: underline;
+  }
 	
 </style>
 {% endblock%}
