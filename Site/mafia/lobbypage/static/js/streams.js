@@ -25,8 +25,7 @@ inputForm.addEventListener('submit', (e) => {
             }))
         }
     }
-    else
-    {
+    else {
         messages.insertAdjacentHTML('beforeend', '<div><p style="color:#1D943C"> У вас чатлок!</p></div>')
     }
     inputForm.reset()
@@ -150,6 +149,23 @@ let toggleMic = async (e) => {
     }
 }
 
+let FullMute = async () => {
+    for(let i in remoteUsers) {
+        remoteUsers[i].videoTrack.stop()
+        remoteUsers[i].audioTrack.stop()
+    }
+    localTracks[1].stop()
+}
+
+let FullUnMute = async () => {
+    for(let i in remoteUsers) {
+        remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
+        remoteUsers[i].audioTrack.play()
+    }
+    localTracks[1].play(`user-${UID}`)
+}
+
+
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
     if (data.type === 'chat') {
@@ -183,6 +199,7 @@ testSocket.onmessage = function (e) {
     }
     if(data.type === 'start_info') {
         Roles = data.rolelist
+        console.log("GAME: ROLES", Roles)
         MyRole = Roles[user_pk]
         console.log("GAME: UID", UID)
         PK_SET['vote-'+UID] = user_pk
@@ -194,6 +211,12 @@ testSocket.onmessage = function (e) {
         turn = data.turnnumber
         chatlock = data.chatlock
         votelock = data.votelock
+        if(chatlock) {
+            FullMute()
+        }
+        else {
+            FullUnMute()
+        }
         console.log("CHATLOCK:", data.chatlock)
         let warning = '<div><p style="color:#1D943C"> ТЕКУЩИЙ ХОД: ' + Rolenames[turn] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
