@@ -269,14 +269,14 @@ testSocket.onmessage = function (e) {
                 Roles[killed] = "spec"
                 messages.insertAdjacentHTML('beforeend', warning)
             }
-            if (check != ""){
-                let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
-                messages.insertAdjacentHTML('beforeend', warning)
-            }
-            else {
-                let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
-                messages.insertAdjacentHTML('beforeend', warning)
-            }
+        if (check != ""){
+            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+        }
+        else {
+            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+        }
         }
     }
 
