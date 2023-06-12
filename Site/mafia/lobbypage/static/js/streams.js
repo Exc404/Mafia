@@ -6,10 +6,18 @@ console.log(url)
 
 const testSocket = new WebSocket(url)
 
-testSocket.onopen = () => testSocket.send(JSON.stringify({
-    'username': user_name,
-    'pk' : user_pk
-}))
+testSocket.onopen = function(){
+    console.log("GAME: ROLES", Roles)
+    console.log("GAME: PK", user_pk)
+    if (is_game == 1){
+        chatlock = true
+        votelock = true
+    } 
+    testSocket.send(JSON.stringify({
+        'username': user_name,
+        'pk' : user_pk,
+    }))
+}
 
 let inputForm = document.getElementById('messageInputForm')
 
@@ -219,6 +227,10 @@ testSocket.onmessage = function (e) {
         PK_SET['vote-'+UID] = user_pk
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
+    }
+    if (data.type === 'update_roles'){
+        Roles = data.rolelist
+        MyRole = data.rolelist[user_pk]
     }
 
     if(data.type === 'turn_info'){

@@ -89,6 +89,13 @@ class TestConsumer(WebsocketConsumer):
             'checked' : event['checkresult']
         }))
 
+    def update_roles(self,event):
+        self.role = event['rolelist'][self.pk]
+        self.send(text_data = json.dumps({
+            'type' : 'update_roles',
+            'rolelist' : event['rolelist']
+        }))
+
     def new_turn(self,event):
         turn = event['new_turn']
         if (self.role == turn or turn=="civilchat" or turn=="civilvote") and self.role!="spec":

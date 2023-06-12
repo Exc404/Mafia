@@ -56,7 +56,7 @@ def TheLobby(request, room_name):
         for room in Rooms.objects.all():
             print(room.roomname+"_"+room.room_id)
             if room.roomname+"_"+room.room_id == room_name:
-                if room.profile_set.count() < 12:
+                if room.profile_set.count() < 12 and (room.is_game == False or str(player.pk) in list(room.votelist.keys())):
                     print("!!!!!!!!ВЫБРАНА КОМНАТА", room.roomname)
                     room.profile_set.add(player, bulk=False)
                     room.CheckPlayers()  #Cheking!!!!!
@@ -68,6 +68,7 @@ def TheLobby(request, room_name):
                                'room_name_json': mark_safe(json.dumps(room_name)),
                                'user_nickname_json': mark_safe(json.dumps(player.nickname)),
                                'user_pk_json': mark_safe(json.dumps(str(player.pk))),
+                               'room_isgame_json' : mark_safe(json.dumps(room.is_game)),
                                'the_host_json': mark_safe(json.dumps(request.user.profile.pk == room.roomhostid)),
                                'agora_token' : mark_safe(json.dumps(RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs)))
                                })

@@ -32,7 +32,7 @@ class ServerConsumer():
                     players_amount = thisroom.profile_set.count()
                     if players_amount > 0:
                         votelist = {}
-                        roles = {"mafia": 2, "com" : 1, "doc" : 1, "civil" : 1}
+                        roles = {"mafia": 0, "com" : 1, "doc" : 1, "civil" : 0}
                         players = thisroom.profile_set.all()
                         for guy in players:
                             votelist[guy.pk] = 0
@@ -93,7 +93,32 @@ class ServerConsumer():
                                 thisroom.votelist = tempvotelist
                                 thisroom.save()
                             self.turn+=1
+
+
                             if self.turn == 5: self.turn = 0
+                            
+                            #ПРОВЕРКА НА ЛИВНУВШИХ
+                            thisroom = Rooms.objects.get(id = self.id)
+                            players_now = [] 
+                            for pl in thisroom.profile_set.all():
+                                players_now.append(str(pl.pk))
+                            print("ИГРОКИ СЕЙЧАС:", players_now)
+                            print("ИГРОКИ В БАЗЕ",  rolelist)
+                            for pl in list(rolelist.keys()):
+                                if pl not in players_now:
+                                    print("105ая строка пройдена!")
+                                    if Gamepath[self.turn] == rolelist[pl]:
+                                        rolelist[pl] = "spec"
+                                        print("РОЛИ ИЗМЕНЕНЫ!", rolelist)
+                            async_to_sync(self.channel_layer.group_send)(
+                                self.group_name,
+                                {
+                                    'type' : 'update_roles',
+                                    'rolelist' : rolelist  
+                                }
+                            )
+                            #ПРОВЕРКА НА ЛИВНУВШИХ ЗАКОНЧИЛАСЬ
+
                             # if self.turn == 1:
                             #     is_doctor_alive = list(rolelist.values()).count("doc")
                             #     if (is_doctor_alive == 0): self.turn +=1
