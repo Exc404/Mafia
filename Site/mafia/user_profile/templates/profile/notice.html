@@ -1,5 +1,5 @@
 {% extends 'profile_base.html' %}
- 
+
 {% block title %}Уведомления{% endblock %}
 {% block style %}
 <style>
@@ -81,6 +81,7 @@
   }
   td{
     height: 100%;
+    width: 100%;
     padding: 0.3em;
   }
   td:first-child{border-radius: 10px 0 0 10px;}
@@ -237,7 +238,12 @@ $(document).ready(function() {
                       </div>
                     </div>                    
                   {% else %}
-                    <p class="text-message">{{ notice.text_message }}</p>
+                    <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                        <img class="profile-Icon" style="border-radius: 100%; background: #f05a2d; margin: 5px 0.5em 5px 0.5em;" width="40px" height="40px" src="https://i.imgur.com/qzTm4EW.png" alt="Icon">
+                        <div  style="display: flex;flex-direction: row; align-items: center;">
+                          <p class="text-message" style="margin: 0;">{{ notice.text_message }}</p>
+                        </div>  
+                    </div>                    
                   {% endif %}
                 </p>
               </td>
