@@ -107,10 +107,12 @@ let handleUserJoined = async (user, mediaType) => {
                 </div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
         document.getElementById(`vote-${user.uid}`).onclick = vote
-        user.videoTrack.play(`user-${user.uid}`)
+        if(!is_game)
+            user.videoTrack.play(`user-${user.uid}`)
     }
     if(mediaType === "audio") {
-        user.audioTrack.play()
+        if(!is_game)
+            user.audioTrack.play()
     }
 }
 
@@ -221,6 +223,7 @@ testSocket.onmessage = function (e) {
     }
     if(data.type === 'start_info') {
         Roles = data.rolelist
+        is_game = true
         console.log("GAME: ROLES", Roles)
         MyRole = Roles[user_pk]
         console.log("GAME: UID", UID)
