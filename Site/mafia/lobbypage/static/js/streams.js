@@ -157,10 +157,22 @@ let FullMute = async () => {
     localTracks[1].stop()
 }
 
+let RoleUnMute = async () => {
+    for(let i in remoteUsers) {
+        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] === MyRole) {
+            remoteUsers[i].audioTrack.play()
+        }
+        remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
+    }
+    localTracks[1].play(`user-${UID}`)
+}
+
 let FullUnMute = async () => {
     for(let i in remoteUsers) {
-        remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
-        remoteUsers[i].audioTrack.play()
+        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] != "spec") {
+            remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
+            remoteUsers[i].audioTrack.play()
+        }
     }
     localTracks[1].play(`user-${UID}`)
 }
@@ -172,7 +184,7 @@ testSocket.onmessage = function (e) {
         if (chatlock === false){
             let messages = document.getElementById('messages')
             if (turn === 0 && MyRole==="mafia"){
-            htmlAdding = '<div><p style="color:#FF0000">' + data.message + '</p></div>'
+                htmlAdding = '<div><p style="color:#FF0000">' + data.message + '</p></div>'
             }
             else{
                 htmlAdding = '<div><p>' + data.message + '</p></div>'
@@ -206,27 +218,36 @@ testSocket.onmessage = function (e) {
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
     }
+
     if(data.type === 'turn_info'){
-        console.log("GAME:", PK_SET)
         turn = data.turnnumber
+        console.log("GAME STAGE: ", turn)
         chatlock = data.chatlock
         votelock = data.votelock
         if(chatlock) {
             FullMute()
         }
-        else {
+        else if(chatlock && Roles[user_pk] === "spec" && (turn ===3 || turn === 4))
             FullUnMute()
+        else if(!chatlock){
+            FullMute()
+            if(turn != 3 && turn != 4)
+                RoleUnMute()
+            else
+                FullUnMute()
         }
         console.log("CHATLOCK:", data.chatlock)
         let warning = '<div><p style="color:#1D943C"> ТЕКУЩИЙ ХОД: ' + Rolenames[turn] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
     }
+
     if(data.type === 'vote_result'){
         let resultname = data.resultname
         let warning = '<div><p style="color:#1D943C"> Результат голосования: ' + resultname +'</p></div>'
         resultname = ""
         messages.insertAdjacentHTML('beforeend', warning)
     }
+
     if(data.type === 'morning_results'){
         let killed = data.killtarget
         let dead_name = data.targetname
@@ -237,27 +258,28 @@ testSocket.onmessage = function (e) {
             messages.insertAdjacentHTML('beforeend', warning)
         }
         else {
-        if (if_saved) {
-            let warning = '<div><p style="color:#1D943C"> ДОКТОРУ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! ВСЕ ЖИВЫ!</p></div>'
-            messages.insertAdjacentHTML('beforeend', warning)
-        }
-        else{
-            console.log('GAME: rolelist', Roles)
-            console.log('GAME: killed', killed)
-            let warning = '<div><p style="color:#1D943C"> ДОКТОРУ НЕ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! Был убит игрок '+ dead_name +'. Его роль - ' + Roles[killed] + '</p></div>'
-            Roles[killed] = "spec"
-            messages.insertAdjacentHTML('beforeend', warning)
-        }
-        if (check != ""){
-            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
-            messages.insertAdjacentHTML('beforeend', warning)
-        }
-        else {
-            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
-            messages.insertAdjacentHTML('beforeend', warning)
-        }
+            if (if_saved) {
+                let warning = '<div><p style="color:#1D943C"> ДОКТОРУ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! ВСЕ ЖИВЫ!</p></div>'
+                messages.insertAdjacentHTML('beforeend', warning)
+            }
+            else{
+                console.log('GAME: rolelist', Roles)
+                console.log('GAME: killed', killed)
+                let warning = '<div><p style="color:#1D943C"> ДОКТОРУ НЕ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! Был убит игрок '+ dead_name +'. Его роль - ' + Roles[killed] + '</p></div>'
+                Roles[killed] = "spec"
+                messages.insertAdjacentHTML('beforeend', warning)
+            }
+            if (check != ""){
+                let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
+                messages.insertAdjacentHTML('beforeend', warning)
+            }
+            else {
+                let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
+                messages.insertAdjacentHTML('beforeend', warning)
+            }
         }
     }
+
     if(data.type === "night_results"){
         let killed = data.votetarget
         let killed_name = data.targetname
