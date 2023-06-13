@@ -146,6 +146,23 @@ header{
   grid-row: 1;
   
 }
+#ViewNoti{
+  background-color: #d93030; 
+  border-radius: 100%; 
+  width: 19px;
+  height:19px;
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 22;
+  display: flex;
+  justify-self: flex-end;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  color: white;
+  font-size: 12px;
+  transform: translateX(5px) translateY(-5px);
+}
 #profile-Icon:hover{
   animation:button-game-animation 10s ease infinite;
 }
@@ -193,8 +210,8 @@ header{
 .text-profile{
   display: flex;
   align-items:center;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 1em;
+  margin-right: 1em;
   font-size: 16px;
   font-weight: bold;
   color: white;
@@ -289,4 +306,8 @@ main{
   margin-right: 5%;
   background-color: #21252C;
   padding: 20px;
+}
+
+.dropdown-content{
+  margin-top: 0.3em;
 }
