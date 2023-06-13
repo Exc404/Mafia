@@ -42,14 +42,15 @@ inputForm.addEventListener('submit', (e) => {
 window.onload = function () {
     let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
-        if (is_host) {
-            alert("Вы запустили игру")
-            testSocket.send(JSON.stringify({
-                'start' : 'ЗАРАБОТАЛО БЛЯТЬ'
-            }))
+        console.log("GAME: AMOUNT", UID_ARR.length + 1)
+        if (UID_ARR.length + 1 < 5){
+            alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
-        else alert("Вы не являетесь создателем комнаты")
-        return false
+        else{
+        testSocket.send(JSON.stringify({
+            'are_you_host' : "are_you_host"
+        }))
+        }
     }
 }
 
@@ -246,6 +247,17 @@ testSocket.onmessage = function (e) {
     if (data.type === 'update_roles'){
         Roles = data.rolelist
         MyRole = data.rolelist[user_pk]
+    }
+
+    if (data.type === "am_i_host"){
+        if (data.is_host === true){
+            alert("Вы запустили игру")
+            testSocket.send(JSON.stringify({
+                'start' : 'ЗАРАБОТАЛО БЛЯТЬ'
+            }))
+        }
+        else alert("Вы не являетесь создателем комнаты")
+        return false
     }
 
     if(data.type === 'turn_info'){

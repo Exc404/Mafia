@@ -34,3 +34,14 @@ class Profile(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(str(self.nickname) + str(self.related_user.pk))
         super(Profile, self).save(*args, **kwargs)
+
+
+
+
+class GameHistory(models.Model):
+
+    roomname = models.CharField(blank=False, max_length=40)
+    data =  models.DateField()
+    win = models.IntegerField(default = -1)
+    playerlist = models.JSONField(null = True, default = dict)
+    players = models.ManyToManyField(Profile)

@@ -34,4 +34,3 @@ class Rooms(models.Model):
 
     def __str__(self):
         return self.roomname + ' ' + str(self.profile_set.count()) + '/12 '
-

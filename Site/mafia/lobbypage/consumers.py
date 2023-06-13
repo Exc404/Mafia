@@ -64,6 +64,30 @@ class TestConsumer(WebsocketConsumer):
             thisroom.votelist[votepk]+=1
             thisroom.save()
 
+        if 'are_you_host' in text_data_json:
+            thisuser = Profile.objects.get(nickname=self.username)
+            thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
+            hostpk = thisroom.roomhostid
+            print("!!!!!!!!!!!!!!!!!", thisroom, hostpk)
+            if str(hostpk) == str(self.pk):
+                am_i_host = True
+            else:
+                am_i_host = False
+            async_to_sync(self.channel_layer.group_send) (
+                self.room_group_name,
+                {
+                    'type' : 'am_i_host',
+                    'is_host' : am_i_host
+                }
+            )
+
+    def am_i_host(self,event):
+        self.send(text_data = json.dumps({
+            'type' : 'am_i_host',
+            'is_host' : event['is_host'],
+        }))
+
+
     def night(self,event):
         killed = event["voteresult"]
         if killed == self.pk:
@@ -98,9 +122,10 @@ class TestConsumer(WebsocketConsumer):
 
     def new_turn(self,event):
         turn = event['new_turn']
+        loop = event['loop_number']
         if (self.role == turn or turn=="civilchat" or turn=="civilvote") and self.role!="spec":
             self.chatlock = False
-            if turn=="civilchat" : self.votelock=True
+            if turn=="civilchat" or loop==0: self.votelock=True
             else: self.votelock = False
         else:
             self.chatlock = True

@@ -1,9 +1,11 @@
 from asgiref.sync import async_to_sync
 from .models import Rooms
 from user_profile.models import Profile
+from user_profile.models import GameHistory
 from random import choice
 from threading import Timer
 from time import sleep
+import datetime
 
 class ServerConsumer():
     #конструктор
@@ -13,6 +15,7 @@ class ServerConsumer():
         self.id = id
         self.message = ""
         self.turn = -1
+        self.loop = 0
         print("00000000000000000000000000000000000000")
         self.killtarget = ""
         self.healtarget = ""
@@ -32,7 +35,7 @@ class ServerConsumer():
                     players_amount = thisroom.profile_set.count()
                     if players_amount > 0:
                         votelist = {}
-                        roles = {"mafia": 0, "com" : 1, "doc" : 1, "civil" : 0}
+                        roles = {"mafia": 1, "com" : 1, "doc" : 1, "civil" : 1}
                         players = thisroom.profile_set.all()
                         for guy in players:
                             votelist[guy.pk] = 0
@@ -45,6 +48,7 @@ class ServerConsumer():
                                 temprole = choice(list(roles.keys()))
                             rolelist[str(pl.pk)] = temprole
                             roles[temprole] -= 1
+                        firstroles = rolelist
                         async_to_sync(self.channel_layer.group_send)(
                             self.group_name,
                             {
@@ -55,6 +59,23 @@ class ServerConsumer():
                         print(rolelist)
                         #Начало геймплея тут vvvvvv
                         while True:
+                            darkcount = list(rolelist.values()).count("mafia")
+                            lightcount = list(rolelist.values()).count("civil") + list(rolelist.values()).count("doc") + list(rolelist.values()).count("com")
+                            if (darkcount >= lightcount or darkcount == 0):
+                                NewGameHistory = GameHistory()
+                                NewGameHistory.roomname = Rooms.objects.get(id = self.id).roomname
+                                if darkcount >= lightcount:
+                                    NewGameHistory.win = "0"
+                                elif darkcount == 0:
+                                    NewGameHistory.win = "1"
+                                NewGameHistory.data = datetime.date.today()
+                                NewGameHistory.playerlist = firstroles
+                                NewGameHistory.save()
+                                for pl in players:
+                                    NewGameHistory.players.add(pl)
+                                NewGameHistory.save()
+                                print("КОЗЫРЬКИ ПОБЕДИЛИ!")
+                                break
                             if(self.turn!=-1):
                                 thisroom = Rooms.objects.get(id = self.id)
                                 tempvotelist = thisroom.votelist
@@ -94,8 +115,9 @@ class ServerConsumer():
                                 thisroom.save()
                             self.turn+=1
 
-
-                            if self.turn == 5: self.turn = 0
+                            if self.turn == 5:
+                                self.turn = 0
+                                self.loop +=1
                             
                             #ПРОВЕРКА НА ЛИВНУВШИХ
                             thisroom = Rooms.objects.get(id = self.id)
@@ -119,12 +141,6 @@ class ServerConsumer():
                             )
                             #ПРОВЕРКА НА ЛИВНУВШИХ ЗАКОНЧИЛАСЬ
 
-                            # if self.turn == 1:
-                            #     is_doctor_alive = list(rolelist.values()).count("doc")
-                            #     if (is_doctor_alive == 0): self.turn +=1
-                            # if self.turn == 2:
-                            #     is_com_alive = list(rolelist.values()).count("com")
-                            #     if (is_com_alive == 0): self.turn +=1
                             if self.turn == 3:
                                 if self.killtarget == self.healtarget: healsuccsess = 1
                                 else: healsuccsess = 0
@@ -155,11 +171,21 @@ class ServerConsumer():
                                 {
                                     'type' : 'new_turn',
                                     'new_turn' : Gamepath[self.turn],
-                                    'turn_number' : self.turn 
+                                    'turn_number' : self.turn,
+                                    'loop_number' : self.loop 
                                 }
                             )  
                             sleep(20)
                         thisroom.is_game = False
+                        self.killtarget = ""
+                        self.healtarget = ""
+                        self.checktarget = ""
+                        self.votetarget = ""
+                        self.killedname = ""
+                        self.votename = ""
+                        self.message = ""
+                        self.turn = -1
+                        self.loop = 0
                         thisroom.save()
             except Rooms.DoesNotExist:
                 break
