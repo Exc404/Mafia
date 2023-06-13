@@ -21,26 +21,36 @@
 				</div>
 			{%else%}
 				{% if friend %}
-				<div class="profile_data" style="align-items: center; margin-bottom: auto; margin-top: auto;">
+				<div class="profile_data" >
 					<p id ="Nickname">{{user_profile.nickname}}</p>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;margin-bottom: 1px;">
 					<button id ="EditProfile" class='delete_friendship-button'>Удалить из друзей &#10134;</button>
+					</div>
 				</div>
 				{% endif %}
 				{% if friendship_notice_get %}
-				<div class="profile_data" style="align-items: center; margin-bottom: auto; margin-top: auto;">
+				<div class="profile_data">
 					<p id ="Nickname">{{user_profile.nickname}}</p>
-					<a id ="EditProfile">Одобрить заявку &#10133;</a>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;">
+						<a id ="EditProfile">Одобрить заявку &#10133;</a>
+					</div>
+					
 				</div>
 				{% endif %}
 				{% if not_friend %}
-				<div class="profile_data" style="align-items: center; margin-bottom: auto; margin-top: auto;">
+				<div class="profile_data">
 					<p id ="Nickname">{{user_profile.nickname}}</p>
-					<button id ="EditProfile" class='friendship-button'>Добавить в друзья</button>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;">
+						<button id ="EditProfile" class='friendship-button'>Добавить в друзья</button>
+					</div>
+					
 				</div>
 				{% endif %}
 				{% if friendship_notice_send %}
-				<div class="profile_data" style="align-items: center; margin-bottom: auto; margin-top: auto;">
+				<div class="profile_data">
+					<!-- style="align-items: center; margin-bottom: auto; margin-top: auto;" -->
 					<p id ="Nickname">{{user_profile.nickname}}</p>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;"></div>
 				</div>
 				{% endif %}
 			{% endif %}
