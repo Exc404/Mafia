@@ -51,7 +51,7 @@ def TheLobby(request, room_name):
     currentTimeStamp = time.time()
     privilegeExpiredTs = currentTimeStamp + expirationTimeInSeconds
     role = 1
-    if player.related_lobby_id == None or str(player.pk) in list(room.votelist.keys()):
+    if player.related_lobby_id == None:
         print("!!!!!!!!!!!!!!!!!!!!ПОЛЬЗОВАТЕЛЬ", player.nickname, " ЗАШЕЛ В ЗЭ ЛОББИ!!!!!!!!!!!!!!")
         for room in Rooms.objects.all():
             print(room.roomname+"_"+room.room_id)

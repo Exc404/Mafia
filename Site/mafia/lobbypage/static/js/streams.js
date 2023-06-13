@@ -124,7 +124,8 @@ let handleUserLeft = async (user) => {
     UID_ARR = UID_ARR.filter(el => el === 0 ? false : true)
     IS_NICK_WRITTEN = IS_NICK_WRITTEN.filter(el => el === 0 ? false : true)
     delete remoteUsers[user.uid]
-    document.getElementById(`user-container-${user.uid}`).remove()
+    if(!is_game)
+        document.getElementById(`user-container-${user.uid}`).remove()
 }
 
 let leaveAndRemoveLocalStream = async () => {
@@ -209,7 +210,7 @@ testSocket.onmessage = function (e) {
         if(UID_ARR.indexOf(data.uid) === -1) {
             UID_ARR.push(data.uid)
             console.log("GAME: GOT PK + UID", data.pk," ", data.uid, " ", data.user_name)
-            PK_SET['vote-'+data.uid] = data.pk
+            PK_SET['vote-' + data.uid] = data.pk
             console.log("GAME:", PK_SET)
             IS_NICK_WRITTEN.push(false)
         }
@@ -218,6 +219,17 @@ testSocket.onmessage = function (e) {
             if(user_div != null) {
                 user_div.insertAdjacentHTML("afterbegin", `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
                 IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)] = true
+            }
+            let str = 'vote-' + data.uid
+            let res_uid = ''
+            for(let i in PK_SET) {
+                if(PK_SET[i] === data.pk && i != str) {
+                    res_uid = i.substring(5)
+                    let el = document.getElementById(`user-container-${res_uid}`)
+                    if(el != null)
+                        document.getElementById(`user-container-${res_uid}`).remove()
+                    delete PK_SET[i]
+                }
             }
         }
     }
