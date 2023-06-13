@@ -35,7 +35,7 @@ class ServerConsumer():
                     players_amount = thisroom.profile_set.count()
                     if players_amount > 0:
                         votelist = {}
-                        roles = {"mafia": 1, "com" : 1, "doc" : 1, "civil" : 1}
+                        roles = {"mafia": players_amount//4, "com" : 1, "doc" : 1, "civil" : players_amount-1-1-(players_amount//4)}
                         players = thisroom.profile_set.all()
                         for guy in players:
                             votelist[guy.pk] = 0
