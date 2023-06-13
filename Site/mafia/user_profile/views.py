@@ -125,7 +125,9 @@ def friends_search(request):
 def notice(request):
     if request.user.is_authenticated:
         data = {}
-        data['notices'] = reversed(Notice.objects.filter(addressee=request.user.profile))
+        data['notices'] = Notice.objects.filter(addressee=request.user.profile)
+        data['empty'] = (data['notices'].count() == 0)
+        data['notices'] = reversed(data['notices'])
         return render(request, 'profile/notice.html', data)
     else:
         return redirect('login')
@@ -199,7 +201,6 @@ def add_friendship_notice(request, slug):
 
 @csrf_exempt
 def delete_friendship_notice(request, slug):
-
     profile1 = request.user.profile
     profile2 = Profile.objects.get(slug=slug)
 
@@ -215,3 +216,21 @@ def delete_friendship_notice(request, slug):
 
     response = {'message': 'Уведомление отправлено'}
     return JsonResponse(response)
+
+
+@csrf_exempt
+def new_notices_check_view(request):
+    if request.method == "POST":
+        notices_count_on_page = int(request.POST.get('notices_count'))
+
+        htmlCode = ""
+        notices = Notice.objects.filter(addressee=request.user.profile)
+
+        if notices.count() > notices_count_on_page:
+            k = notices.count() - 1
+            while k >= notices_count_on_page:
+                htmlCode += render_to_string("profile/notices_pack_ajax.html", {'notice': notices[k]})
+                k -= 1
+
+        response = {'message': 'Кол-во проверено', "htmlCode": htmlCode}
+        return JsonResponse(response)

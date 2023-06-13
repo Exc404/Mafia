@@ -11,6 +11,7 @@ urlpatterns = [
     path('notice/', notice, name="notice"),
     path('notice/delete_record/<int:record_id>/', delete_notice, name='delete_record'),
     path('notice/add_record/<int:record_id>/', add_notice, name='add_record'),
+    path('notice/new_notices_check_view/', new_notices_check_view, name='new_notices_check_view'),
     path('<slug>/', show_profile, name="show_profile"),
     path('<slug>/add_friendship_record/', add_friendship_notice, name="add_friendship_record"),
     path('<slug>/delete_friendship_record/', delete_friendship_notice, name="delete_friendship_record"),

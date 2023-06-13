@@ -150,46 +150,80 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-  $('.delete-button').click(function() {
-    var recordId = $(this).data('record-id');
+    // Находите родительский элемент таблицы, к которому вы добавляете строки
+    var parentTable = $('#noticetable');
 
-    $.ajax({
-      url: 'delete_record/' + recordId + '/',
-      method: 'POST',
-      success: function(response) {
-        var elementToRemove = document.querySelector('[data-record-id="' + response.notice_id + 'notice"]');
-            if (elementToRemove) {
-                elementToRemove.remove();
+    // Назначьте обработчик события на родительский элемент таблицы с использованием делегирования
+    parentTable.on('click', '.delete-button', function() {
+        // Получите данные, связанные с кнопкой
+        var recordId = $(this).data('record-id');
+
+        // Выполните AJAX-запрос
+        $.ajax({
+            url: 'delete_record/' + recordId + '/',
+            method: 'POST',
+            success: function(response) {
+                var elementToRemove = document.querySelector('[data-record-id="' + response.notice_id + 'notice"]');
+                if (elementToRemove) {
+                    elementToRemove.remove();
+                }
+            },
+            error: function(xhr, status, error) {
+                // Обработка ошибки
+                console.error('Произошла ошибка при выполнении запроса.');
             }
-      },
-      error: function(xhr, status, error) {
-        // Обработка ошибки
-        console.log(error);
-      }
+        });
     });
-  });
+
+    parentTable.on('click', '.add-button', function() {
+        // Получите данные, связанные с кнопкой
+        var recordId = $(this).data('record-id');
+
+        // Выполните AJAX-запрос
+        $.ajax({
+            url: 'add_record/' + recordId + '/',
+            method: 'POST',
+            success: function(response) {
+                var elementToRemove = document.querySelector('[data-record-id="' + response.notice_id + 'notice"]');
+                if (elementToRemove) {
+                    elementToRemove.remove();
+                }
+            },
+            error: function(xhr, status, error) {
+                // Обработка ошибки
+                console.error('Произошла ошибка при выполнении запроса.');
+            }
+        });
+    });
 });
 
 $(document).ready(function() {
-  $('.add-button').click(function() {
-    var recordId = $(this).data('record-id');
+    setInterval(makeAjaxRequest, 2500);
+});
+
+function makeAjaxRequest() {
+
+    var dataToSend = {
+        notices_count: document.getElementsByClassName("notice_record").length,
+    };
 
     $.ajax({
-      url: 'add_record/' + recordId + '/',
-      method: 'POST',
-      success: function(response) {
-        var elementToRemove = document.querySelector('[data-record-id="' + response.notice_id + 'notice"]');
-            if (elementToRemove) {
-                elementToRemove.remove();
-            }
-      },
-      error: function(xhr, status, error) {
-        // Обработка ошибки
-        console.log(error);
-      }
+        url: 'new_notices_check_view/',  // URL-адрес вашего представления Django
+        type: 'POST',  // Может быть GET, POST и т.д., в зависимости от вашего представления
+        dataType: 'json',  // Ожидаемый тип данных, например, JSON
+        data: dataToSend,
+        success: function(data) {
+            var noticetable = document.getElementById("noticetable");
+            noticetable.insertAdjacentHTML("afterbegin", data.htmlCode);
+        },
+        error: function(xhr, status, error) {
+            // Обработка ошибки
+            console.log('Произошла ошибка при выполнении запроса.');
+        }
     });
-  });
-});
+}
+
+
 </script>
 {% endblock%}
 
@@ -199,10 +233,10 @@ $(document).ready(function() {
     <h2 id="h-head">Уведомления</h2>
   </div>
   <div class="list">
-    <table cellspacing="0" cellpadding="0">
+    <table cellspacing="0" cellpadding="0" id="noticetable">
       {% if notices %}
         {% for notice in notices %}
-          <tr data-record-id="{{ notice.id }}notice">
+          <tr data-record-id="{{ notice.id }}notice" class="notice_record">
             {% if notice.notice_type == 'FR' %}
               <td>
                 <div class="datatime">{{notice.get_datetime}}</div>
@@ -223,7 +257,9 @@ $(document).ready(function() {
                 <div class="datatime">{{notice.get_datetime}}</div>
                 <p><a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
               </td>
-              <td></td>
+              <td>
+                <button class="delete-button" data-record-id="{{ notice.id }}">✔</button>
+              </td>
             {% endif %}
             {% if notice.notice_type == 'IF' %}
               <td>
@@ -254,8 +290,11 @@ $(document).ready(function() {
               </td>
           </tr>
         {% endfor %}
+      {% endif %}
+      {% if empty %}
+          <tr id="notnoticerecord" style="display: table-row; text-align: center;"><td style="text-align: center;">Уведомлений нет</td><td></td></tr>
       {% else %}
-          <tr>У вас нет новых уведомлений</tr>
+          <tr id="notnoticerecord" style="display: none; text-align: center;"><td style="text-align: center;">Уведомлений нет</td><td></td></tr>
       {% endif %}
       </table> 
   </div>
