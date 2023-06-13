@@ -105,19 +105,40 @@
           <div id="profile-block">
             <div id="profile-block-background" >
               <div class="dropdown" style="height: 53px;">
-                <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"  >
+                <div style="display: grid;grid-column: 1;grid-row: 1;">
+                  <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"  >
+                   
+                  {% if NoticesCount %}
+                    {% if NoticesCount < 100 %} 
+                      <div id="ViewNoti">
+                        {{NoticesCount}}
+                      </div>
+                    {% else %}
+                      <div id="ViewNoti">
+                        <p style="font-size: 17px; font-weight:lighter;">☭</p>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+              
+                </div>
                 <div id="myDropdown" class="dropdown-content">
                   <a href="{{request.user.profile.get_absolute_url}}">Профиль</a>
-                  <a href="{% url "notice" %}">Уведомления</a>
+                  
+                    {% if NoticesCount %}
+                      <a style="display: flex; align-items: center; justify-content: flex-end; padding-right: 0;" href="{% url "notice" %}">Уведомления<div id="ViewNoti" style="transform: translateY(-1px); width: 14px;height: 14px;margin-left: 0.8em; margin-right: 1em;"></div></a>
+                    {% else %}
+                      <a href="{% url "notice" %}">Уведомления</a>
+                    {% endif %}
+                    
                   <a href="{% url "friends" %}">Друзья</a>
                   <a href="{% url "settings_profile" %}" >Настройки</a>
                   <a href="{% url "logout" %}" onclick="return proverka();">Выйти</a>
                 </div>
               </div>
-              <p class="text-profile">{{request.user.profile.nickname}}</p>
+              <p class="text-profile">{{request.user.profile.nickname}}</p>  
             </div>
-          <div id="profile-click"  onclick="myFunction()" class="dropbtn">
-          </div>
+            <div id="profile-click"  onclick="myFunction()" class="dropbtn">
+            </div>
           </div>
         {% else %}
         <div id="authentication-block">
