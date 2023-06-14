@@ -6,6 +6,86 @@
     <link rel="stylesheet" href="{% static "css/index.css" %}">
     <title></title>
     <link rel="icon" href="{% static "logo.ico" %}" type="image/x-icon">
+    {% block script %}{% endblock %}
+    {% block style %}{% endblock %}
+    <script>
+      function proverka() {
+          if (confirm("Подтвердите выход из аккаунта!")) {
+              return true;
+          } else {
+              return false;
+          }
+      }
+    
+      /* When the user clicks on the button,
+    toggle between hiding and showing the dropdown content */
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+    
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropbtn')) {
+    
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+    </script>
+    <style>
+      /* Dropdown Button */
+      .dropbtn {
+          border: none;
+          cursor: pointer;
+      }
+      
+      /* Dropdown button on hover & focus */
+      .dropbtn:hover, .dropbtn:focus {
+          background-color: #2980B9;
+      }
+      
+      /* The container <div> - needed to position the dropdown content */
+      .dropdown {
+          position: relative;
+          display: inline-block;
+          border-radius: 10px;
+      }
+      
+      /* Dropdown Content (Hidden by Default) */
+      .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: rgb(41, 45, 61, 0.9);
+          min-width: 160px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+          border-radius: 10px;
+      }
+      .dropdown-content a:first-child {border-radius: 10px 10px 0 0}
+      .dropdown-content a:last-child {border-radius:0 0 10px 10px}
+      
+      /* Links inside the dropdown */
+      .dropdown-content a {
+          color: rgb(255, 255, 255);
+          padding: 12px 16px;
+          text-decoration: none;
+          display: flex;
+          font-weight: bolder;
+          justify-content: center;
+      }
+      
+      /* Change color of dropdown links on hover */
+      .dropdown-content a:hover {background-color: rgba(74, 81, 108, 0.9)}
+      
+      /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+      .show {display:block;}
+      </style>
   </head>
   <body>
     <header>
@@ -23,14 +103,41 @@
         </div>
         {% if request.user.is_authenticated %}
           <div id="profile-block">
-            <div id="profile-block-background">
-              <a href="{% url "profile" %}" style="margin-top: 0em; text-decoration: none; display: grid;">
-                <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"> 
-                <div id="profile-effect"></div>
-              </a>
-              <p class="text-profile">{{request.user.profile.nickname}}</p>
-              <a href="{% url "settings_profile" %}" class="button button-settings">&#9881;</a>
-              <a href="{% url "logout" %}" class="button button-logout">✖</a>
+            <div id="profile-block-background" >
+              <div class="dropdown" style="height: 53px;">
+                <div style="display: grid;grid-column: 1;grid-row: 1;">
+                  <img id="profile-Icon" width="53" height="53" src="{{request.user.profile.profile_img.url}}" alt="Icon"  >
+                   
+                  {% if NoticesCount %}
+                    {% if NoticesCount < 100 %} 
+                      <div id="ViewNoti">
+                        {{NoticesCount}}
+                      </div>
+                    {% else %}
+                      <div id="ViewNoti">
+                        <p style="font-size: 17px; font-weight:lighter;">☭</p>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+              
+                </div>
+                <div id="myDropdown" class="dropdown-content">
+                  <a href="{{request.user.profile.get_absolute_url}}">Профиль</a>
+                  
+                    {% if NoticesCount %}
+                      <a style="display: flex; align-items: center; justify-content: flex-end; padding-right: 0;" href="{% url "notice" %}">Уведомления<div id="ViewNoti" style="transform: translateY(-1px); width: 14px;height: 14px;margin-left: 0.8em; margin-right: 1em;"></div></a>
+                    {% else %}
+                      <a href="{% url "notice" %}">Уведомления</a>
+                    {% endif %}
+                    
+                  <a href="{% url "friends" %}">Друзья</a>
+                  <a href="{% url "settings_profile" %}" >Настройки</a>
+                  <a href="{% url "logout" %}" onclick="return proverka();">Выйти</a>
+                </div>
+              </div>
+              <p class="text-profile">{{request.user.profile.nickname}}</p>  
+            </div>
+            <div id="profile-click"  onclick="myFunction()" class="dropbtn">
             </div>
           </div>
         {% else %}
@@ -46,5 +153,8 @@
     </header>
     {% block content %}
     {% endblock %}
+  
   </body>
 </html>
+
+

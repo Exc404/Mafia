@@ -1,15 +1,15 @@
 {% extends 'profile_base.html' %}
 {% block title %}Редактирование профиля{% endblock %}
-{% block head %}
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-{% endblock %}
-{% block content %}
 
+{% block style %}<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">{% endblock%}
+{% block script %}{% endblock %}
+
+{% block content %}
 <form method="POST" enctype="multipart/form-data" novalidate>
 	{% csrf_token %}
 
 	<div id="head">
-		<a class="ExitButton" href="{% url "profile" %}">🡸</a>
+		<a class="ExitButton" href="{{ form_obj.get_absolute_url }}">🡸</a>
 		<h2 style="margin-bottom: 0.5em; margin-top: 1em;">Изменить профиль</h2>
 	</div>
 

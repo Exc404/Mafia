@@ -16,3 +16,13 @@ class EditProfileForm(forms.ModelForm):
         fields = ('profile_img', 'nickname')
 
 
+class FriendsSearchForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    nickname = forms.CharField(label="Никнейм пользователя:", max_length=20)
+
+    class Meta:
+        model = Profile
+        fields = ('nickname',)
