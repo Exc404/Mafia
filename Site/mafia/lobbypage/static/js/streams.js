@@ -352,6 +352,26 @@ testSocket.onmessage = function (e) {
         }
         messages.insertAdjacentHTML('beforeend', warning)
     }
+
+    if (data.type === "end_game"){
+        let winner = ""
+        if (data.winner === "0"){
+            winner = "мафии"
+        }
+        else{
+            winner = "мирных"
+        }
+        chatlock = false
+        votelock = true
+        MyRole = ""
+        turn = 924
+        Roles = {}
+        FullUnMute()
+        is_game = false
+        let warning = '<div><p style="color:#1D943C">ИГРА ОКОНЧЕНА! Победу одержала сторона ' + winner + '!</p></div>'
+        messages.insertAdjacentHTML('beforeend', warning)
+    }
+
 }
 
 joinAndDisplayLocalStream()

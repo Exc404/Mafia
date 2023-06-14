@@ -92,6 +92,17 @@ class TestConsumer(WebsocketConsumer):
     #     }))
 
 
+    def end_game(self,event):
+        winner = event['winner']
+        self.role = ""
+        self.chatlock = False
+        self.votelock = True
+        self.send(text_data = json.dumps({
+            'type' : 'end_game',
+            'winner' : winner,
+        }))
+
+
     def night(self,event):
         killed = event["voteresult"]
         if killed == self.pk:

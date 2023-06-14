@@ -11,11 +11,16 @@ let vote = function (e) {
     if (votelock === false){
         console.log("GAME: ГОЛОСОВАНИЕ", e.target.id)
         let votename = e.target.id
-        votelock = true
-        console.log("VOTE votename:",votename)
-        testSocket.send(JSON.stringify({
-            'vote_pk' : PK_SET[votename]
-        }))
+        if (Roles[PK_SET[votename]]!="spec"){
+            votelock = true
+            console.log("VOTE votename:",votename)
+            testSocket.send(JSON.stringify({
+                'vote_pk' : PK_SET[votename]
+            }))
+        }
+        else {
+            alert("Нельзя голосовать за усопшего!")
+        }
     }
     else {console.log("GAME: Сейчас не ваше время голосовать.")}
 }
