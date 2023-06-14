@@ -73,19 +73,23 @@ class TestConsumer(WebsocketConsumer):
                 am_i_host = True
             else:
                 am_i_host = False
-            async_to_sync(self.channel_layer.group_send) (
-                self.room_group_name,
-                {
-                    'type' : 'am_i_host',
-                    'is_host' : am_i_host
-                }
-            )
+            self.send(text_data = json.dumps({
+                'type' : 'am_i_host',
+                'is_host' : am_i_host
+            }))
+            # async_to_sync(self.channel_layer.group_send) (
+            #     self.room_group_name,
+            #     {
+            #         'type' : 'am_i_host',
+            #         'is_host' : am_i_host
+            #     }
+            # )
 
-    def am_i_host(self,event):
-        self.send(text_data = json.dumps({
-            'type' : 'am_i_host',
-            'is_host' : event['is_host'],
-        }))
+    # def am_i_host(self,event):
+    #     self.send(text_data = json.dumps({
+    #         'type' : 'am_i_host',
+    #         'is_host' : event['is_host'],
+    #     }))
 
 
     def night(self,event):

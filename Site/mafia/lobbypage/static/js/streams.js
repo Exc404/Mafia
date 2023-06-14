@@ -43,7 +43,7 @@ window.onload = function () {
     let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
         console.log("GAME: AMOUNT", UID_ARR.length + 1)
-        if (UID_ARR.length + 1 < 5){
+        if (UID_ARR.length + 1 < 0){
             alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
         else{
@@ -239,11 +239,13 @@ testSocket.onmessage = function (e) {
         is_game = true
         console.log("GAME: ROLES", Roles)
         MyRole = Roles[user_pk]
+        document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">${MyRole}</span>`)
         console.log("GAME: UID", UID)
         PK_SET['vote-'+UID] = user_pk
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
     }
+    
     if (data.type === 'update_roles'){
         Roles = data.rolelist
         MyRole = data.rolelist[user_pk]
@@ -251,7 +253,6 @@ testSocket.onmessage = function (e) {
 
     if (data.type === "am_i_host"){
         if (data.is_host === true){
-            alert("Вы запустили игру")
             testSocket.send(JSON.stringify({
                 'start' : 'ЗАРАБОТАЛО БЛЯТЬ'
             }))
@@ -315,6 +316,12 @@ testSocket.onmessage = function (e) {
                 console.log('GAME: killed', killed)
                 let warning = '<div><p style="color:#1D943C"> ДОКТОРУ НЕ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! Был убит игрок '+ dead_name +'. Его роль - ' + Roles[killed] + '</p></div>'
                 Roles[killed] = "spec"
+                for(let i in PK_SET) {
+                    if(PK_SET[i].toString() === killed) {
+                        let res_uid = i.substring(5)
+                        document.getElementById(`vote-${res_uid}`).src = '/./static/img/death.png'
+                    }
+                }
                 messages.insertAdjacentHTML('beforeend', warning)
             }
         }
@@ -337,6 +344,12 @@ testSocket.onmessage = function (e) {
         let killed_name = data.targetname
         let warning = '<div><p style="color:#1D943C"> В результате дневного голосования был убит игрок '+ killed_name +'. Его роль - ' + Roles[killed] + '</p></div>'
         Roles[killed] = "spec"
+        for(let i in PK_SET) {
+            if(PK_SET[i].toString() === killed) {
+                let res_uid = i.substring(5)
+                document.getElementById(`vote-${res_uid}`).src = '/./static/img/death.png'
+            }
+        }
         messages.insertAdjacentHTML('beforeend', warning)
     }
 }

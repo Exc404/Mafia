@@ -35,7 +35,8 @@ class ServerConsumer():
                     players_amount = thisroom.profile_set.count()
                     if players_amount > 0:
                         votelist = {}
-                        roles = {"mafia": players_amount//4, "com" : 1, "doc" : 1, "civil" : players_amount-1-1-(players_amount//4)}
+                        #roles = {"mafia": players_amount//4, "com" : 1, "doc" : 1, "civil" : players_amount-1-1-(players_amount//4)}
+                        roles = {"mafia": 1, "com" : 0, "doc" : 1, "civil" : 0}
                         players = thisroom.profile_set.all()
                         for guy in players:
                             votelist[guy.pk] = 0
@@ -61,21 +62,21 @@ class ServerConsumer():
                         while True:
                             darkcount = list(rolelist.values()).count("mafia")
                             lightcount = list(rolelist.values()).count("civil") + list(rolelist.values()).count("doc") + list(rolelist.values()).count("com")
-                            if (darkcount >= lightcount or darkcount == 0):
-                                NewGameHistory = GameHistory()
-                                NewGameHistory.roomname = Rooms.objects.get(id = self.id).roomname
-                                if darkcount >= lightcount:
-                                    NewGameHistory.win = "0"
-                                elif darkcount == 0:
-                                    NewGameHistory.win = "1"
-                                NewGameHistory.data = datetime.date.today()
-                                NewGameHistory.playerlist = firstroles
-                                NewGameHistory.save()
-                                for pl in players:
-                                    NewGameHistory.players.add(pl)
-                                NewGameHistory.save()
-                                print("КОЗЫРЬКИ ПОБЕДИЛИ!")
-                                break
+                            # if (darkcount >= lightcount or darkcount == 0):
+                            #     NewGameHistory = GameHistory()
+                            #     NewGameHistory.roomname = Rooms.objects.get(id = self.id).roomname
+                            #     if darkcount >= lightcount:
+                            #         NewGameHistory.win = "0"
+                            #     elif darkcount == 0:
+                            #         NewGameHistory.win = "1"
+                            #     NewGameHistory.data = datetime.date.today()
+                            #     NewGameHistory.playerlist = firstroles
+                            #     NewGameHistory.save()
+                            #     for pl in players:
+                            #         NewGameHistory.players.add(pl)
+                            #     NewGameHistory.save()
+                            #     print("КОЗЫРЬКИ ПОБЕДИЛИ!")
+                            #     break
                             if(self.turn!=-1):
                                 thisroom = Rooms.objects.get(id = self.id)
                                 tempvotelist = thisroom.votelist
@@ -143,7 +144,9 @@ class ServerConsumer():
 
                             if self.turn == 3:
                                 if self.killtarget == self.healtarget: healsuccsess = 1
-                                else: healsuccsess = 0
+                                else: 
+                                    healsuccsess = 0
+                                    rolelist[self.killtarget] = "spec"
                                 checked_name=""
                                 if self.checktarget!="":
                                     checked_name = rolelist[self.checktarget]
@@ -157,7 +160,12 @@ class ServerConsumer():
                                         'checkresult' : checked_name
                                     }
                                 )
+                                self.killtarget = ""
+                                self.healtarget = ""
+                                self.checktarget = ""
+                                self.killedname = ""
                             if self.turn == 0 and self.votename!="":
+                                rolelist[self.votetarget] = "spec"
                                 async_to_sync(self.channel_layer.group_send)(
                                     self.group_name,
                                     {
@@ -166,6 +174,8 @@ class ServerConsumer():
                                         'votedname' : self.votename,
                                     }
                                 )
+                                self.votetarget = ""
+                                self.votename = ""
                             async_to_sync(self.channel_layer.group_send)(
                                 self.group_name,
                                 {
@@ -175,7 +185,7 @@ class ServerConsumer():
                                     'loop_number' : self.loop 
                                 }
                             )  
-                            sleep(20)
+                            sleep(5)
                         thisroom.is_game = False
                         self.killtarget = ""
                         self.healtarget = ""
