@@ -29,5 +29,10 @@ class NoticeAdmin(admin.ModelAdmin):
         return nickname
 
 
+class FriendAdmin(admin.ModelAdmin):
+    search_fields = ('related_user__username',)
+
+
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Notice, NoticeAdmin)
+admin.site.register(Friend, FriendAdmin)

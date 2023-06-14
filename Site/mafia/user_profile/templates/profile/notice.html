@@ -177,12 +177,15 @@ $(document).ready(function() {
 
     parentTable.on('click', '.add-button', function() {
         // Получите данные, связанные с кнопкой
-        var recordId = $(this).data('record-id');
+        var dataToSend = {
+            record_id: $(this).data('record-id'),
+        };
 
         // Выполните AJAX-запрос
         $.ajax({
-            url: 'add_record/' + recordId + '/',
+            url: '{% url 'add_record'%}',
             method: 'POST',
+            data: dataToSend,
             success: function(response) {
                 var elementToRemove = document.querySelector('[data-record-id="' + response.notice_id + 'notice"]');
                 if (elementToRemove) {
@@ -198,7 +201,7 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-    setInterval(makeAjaxRequest, 2500);
+    setInterval(makeAjaxRequest, 1000);
 });
 
 function makeAjaxRequest() {
@@ -214,7 +217,7 @@ function makeAjaxRequest() {
         data: dataToSend,
         success: function(data) {
             var noticetable = document.getElementById("noticetable");
-            noticetable.insertAdjacentHTML("afterbegin", data.htmlCode);
+            noticetable.innerHTML = data.htmlCode;
         },
         error: function(xhr, status, error) {
             // Обработка ошибки
@@ -292,7 +295,7 @@ function makeAjaxRequest() {
         {% endfor %}
       {% endif %}
       {% if empty %}
-          <tr id="notnoticerecord" style="display: table-row; text-align: center;"><td style="text-align: center;">Уведомлений нет</td><td></td></tr>
+          <tr id="notnoticerecord" style="text-align: center;"><td style="text-align: center;">Уведомлений нет</td><td></td></tr>
       {% else %}
           <tr id="notnoticerecord" style="display: none; text-align: center;"><td style="text-align: center;">Уведомлений нет</td><td></td></tr>
       {% endif %}

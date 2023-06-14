@@ -40,5 +40,46 @@ $(document).ready(function() {
   });
 });
 
+$(document).ready(function() {
+  $('.delete_friendship-button').click(function() {
+
+    $.ajax({
+      url: 'delete_friendship_record/',
+      method: 'POST',
+      success: function(response) {
+        var block = document.getElementById('EditProfile');
+        block.style.display = 'none';
+      },
+      error: function(xhr, status, error) {
+        // Обработка ошибки
+        console.log(error);
+      }
+    });
+  });
+});
+
+$(document).ready(function() {
+  $('.answer_friendship-button').click(function() {
+        var dataToSend = {
+            record_id: $(this).data('record-id'),
+        };
+        // Выполните AJAX-запрос
+        $.ajax({
+            url: '{% url 'add_record'%}',
+            method: 'POST',
+            data: dataToSend,
+            success: function(response) {
+                var elementToRemove = document.getElementById("EditProfile");
+                if (elementToRemove) {
+                    elementToRemove.remove();
+                }
+            },
+            error: function(xhr, status, error) {
+                // Обработка ошибки
+                console.error('Произошла ошибка при выполнении запроса.');
+      }
+    });
+  });
+});
 </script>
 {% endblock %}
