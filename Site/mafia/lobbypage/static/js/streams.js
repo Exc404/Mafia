@@ -82,13 +82,13 @@ let joinAndDisplayLocalStream = async () => {
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
                     <div class = "icon-wrapper">
-                    <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
+                    <img class = "control-icon" id = "vote-${UID}" style="height: 25px;width: 25px;" src = "/./static/img/votemark.jpg"/>
                     </div>
                 </div>`+`<div class="video-container" id = "user-container-${UID}">
                 <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                 <div class="video-player" id = "user-${UID}"></div>
                 <div class = "icon-wrapper">
-                <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
+                <img class = "control-icon" id = "vote-${UID}" style="height: 25px;width: 25px;" src = "/./static/img/votemark.jpg"/>
                 </div>
             </div>`
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
@@ -224,11 +224,6 @@ function startTimer(duration, display) {
     }, 10);
 
 }
-// window.onload = function () {
-//     var fiveMinutes = 60 * 5,
-//         display = document.querySelector('#time');
-//     startTimer(fiveMinutes, display);
-// };
 
 
 testSocket.onmessage = function (e) {
@@ -278,7 +273,35 @@ testSocket.onmessage = function (e) {
         is_game = true
         console.log("GAME: ROLES", Roles)
         MyRole = Roles[user_pk]
+
         //id="блок роль" class = MyRole
+        document.getElementById('invate').style.display="none"
+        document.getElementById('info-card').style.display="block"
+        if(MyRole == "mafia")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Мафия"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mafiozi.jpg" width="285px"/> '
+        }
+        else if(MyRole == "doc")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Доктор"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/dok.jpg" width="285px"/> '
+        }
+        else if(MyRole == "com")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Комиссар"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/com.jpg" width="285px"/> '
+        }     
+        else if(MyRole == "civil")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Гражданин"
+        if(Math.floor(Math.random() * 2))
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_1.jpg" width="285px"/> '
+        else
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_2.jpg" width="285px"/> '
+        }
+            
+        
         console.log("GAME: UID", UID)
         PK_SET['vote-'+UID] = user_pk
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'

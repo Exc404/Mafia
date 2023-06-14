@@ -22,10 +22,52 @@
             </div>
         </div>
         <div id="right-block">
-            <section id = "room-name-wrapper">
-                <p>Комната: <span id = "room-name"></span></p>
-            </section>
-            <a id="startgame" href="#">Начать игру</a>
+            <div class="buttons">
+                <a class = "control-icon" id="startgame" href="#">Начать игру</a>    
+                <a class = "control-icon" id = "leave-btn">✖</a>  
+            </div>
+            <div class="frends-or-info">
+                <div id="info-card" style="display:none;"> 
+                    
+                    <div id="card"></div>
+                    <p id="myrole"></p>
+                    
+                </div>
+
+                <div id="invate" style="height: 100%;">
+                    <h3 style="width: 285px;background-color: #343f50;color: white;display: flex;justify-content: center;">Приглашения</h3>
+                    <div class="list" style="display:block;">
+                        <table>
+                        {% if friends %}
+                            {% for friend in friends %}
+                                <tr>
+                                    <td>
+                                        <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                                            <img class="profile-Icon" width="30px" height="30px" src="{{friend.profile_img.url}}" alt="Icon">
+                                            <div style="display: flex; align-items: center;">
+                                                <a class="links" target="_blank" href="{{ friend.get_absolute_url }}">{{friend.nickname }}</a>
+                                            </div>
+                                        </div>                    
+                                    </td>
+                                    <td>
+                                        <button>+</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <div style="display: flex; justify-content: center;">
+                                У вас нет друзей!
+                            </div>
+                        </tr>
+                        {% endif %}
+                        </table>
+                    </div>
+                </div>
+                
+
+            </div>
+            
 
             <div id="chat">
                 <h2>Чат:</h2>
@@ -34,6 +76,9 @@
                 </form>
                 <div id="messages"></div>
             </div>
+            <section id = "room-name-wrapper">
+                <p>Комната: <span id = "room-name"></span></p>
+            </section>
         </div>
     </main>
 
@@ -54,4 +99,89 @@
 </script>
 <script type="text/javascript" src = "/./static/js/streams.js"></script>
 <script type="text/javascript" src = "/./static/js/game.js"></script>
+
+
+<style>
+   
+    p{
+        font-size: 16px;
+        margin-left: 0.8em;
+        font-weight: bolder;
+        color: white;
+    }
+
+    .list{
+    width: 280px;
+    height: 100%;
+    background-color: #292e36;
+    overflow-y: scroll;
+    margin-bottom: 1em;
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+    padding: 0.5em;
+  }
+
+    
+
+  html {
+    --scrollbarBG: #27303f;
+    --thumbBG: #90A4AE;
+  }
+  .list::-webkit-scrollbar-corner {
+    background: #27303f;
+  }
+  .list::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  .list::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+  }
+  .list::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+  }
+  table {
+    width:100%;
+    border-collapse:separate; 
+    border-spacing:0 0.2em;
+  }
+  tr{
+    height: 100%;
+    background-color: #363d48;
+  }
+  td{
+    height: 100%;
+    padding: 0.3em;
+    border-radius: 10px;
+  }
+  td:first-child{border-radius: 10px 0 0 10px;}
+  td:last-child{border-radius: 0 10px 10px 0;}
+
+  tr>td {
+    margin-bottom: 30px;
+  }
+  
+  .text-message::first-letter{
+    text-transform: lowercase;
+  }
+
+  .profile-Icon{
+    background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(45deg, rgb(3, 25, 151), #0b9ef9) border-box;
+    border: 3px solid transparent;
+    border-radius: 10px;
+    margin-right: 0.8em;
+    margin-left: 0em;
+  }
+  .links{
+    color:rgb(114, 143, 248);
+    text-decoration: none;
+  }
+  .links:hover{
+    text-decoration: underline;
+  }
+</style>
+
 </html>
