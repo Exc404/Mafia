@@ -127,6 +127,14 @@ class ServerConsumer():
                                 }
                             )
                             #ПРОВЕРКА НА ЛИВНУВШИХ ЗАКОНЧИЛАСЬ
+                            
+                            if self.turn == 1:
+                                is_doctor_alive = list(rolelist.values()).count("doc")
+                                if (is_doctor_alive == 0): self.turn +=1
+                            if self.turn == 2:
+                                is_com_alive = list(rolelist.values()).count("com")
+                                if (is_com_alive == 0): self.turn +=1
+
 
                             if self.turn == 3:
                                 if self.killtarget == self.healtarget: healsuccsess = 1
