@@ -5,6 +5,7 @@ from user_profile.models import GameHistory
 from random import choice
 from threading import Timer
 from time import sleep
+from copy import copy
 import datetime
 
 class ServerConsumer():
@@ -23,6 +24,7 @@ class ServerConsumer():
         self.votetarget = ""
         self.killedname = ""
         self.votename = ""
+        self.firstroles = {}
 
     #функция обновления
     def Update(self):
@@ -35,8 +37,7 @@ class ServerConsumer():
                     players_amount = thisroom.profile_set.count()
                     if players_amount > 0:
                         votelist = {}
-                        #roles = {"mafia": players_amount//4, "com" : 1, "doc" : 1, "civil" : players_amount-1-1-(players_amount//4)}
-                        roles = {"mafia": 1, "com" : 0, "doc" : 1, "civil" : 0}
+                        roles = {"mafia": players_amount//4, "com" : 1, "doc" : 1, "civil" : players_amount-1-1-(players_amount//4)}
                         players = thisroom.profile_set.all()
                         for guy in players:
                             votelist[guy.pk] = 0
@@ -49,7 +50,9 @@ class ServerConsumer():
                                 temprole = choice(list(roles.keys()))
                             rolelist[str(pl.pk)] = temprole
                             roles[temprole] -= 1
-                        firstroles = rolelist
+                        if(self.firstroles == {}):
+                            self.firstroles = copy(rolelist)
+                            print("-------------------------self.firstroles-----------------------------", self.firstroles)
                         async_to_sync(self.channel_layer.group_send)(
                             self.group_name,
                             {
@@ -60,32 +63,6 @@ class ServerConsumer():
                         print(rolelist)
                         #Начало геймплея тут vvvvvv
                         while True:
-                            darkcount = list(rolelist.values()).count("mafia")
-                            lightcount = list(rolelist.values()).count("civil") + list(rolelist.values()).count("doc") + list(rolelist.values()).count("com")
-                            if (darkcount >= lightcount or darkcount == 0):
-                                NewGameHistory = GameHistory()
-                                NewGameHistory.roomname = Rooms.objects.get(id = self.id).roomname
-                                if darkcount >= lightcount:
-                                    NewGameHistory.win = "0"
-                                elif darkcount == 0:
-                                    NewGameHistory.win = "1"
-                                NewGameHistory.data = datetime.date.today()
-                                NewGameHistory.playerlist = firstroles
-                                NewGameHistory.save()
-                                for pl in players:
-                                    NewGameHistory.players.add(pl)
-                                NewGameHistory.save()
-                                async_to_sync(self.channel_layer.group_send)(
-                                    self.group_name,
-                                    {
-                                            'type' : 'end_game',
-                                            'winner' : NewGameHistory.win,
-                                    }
-                                )
-                                thisroom = Rooms.objects.get(id = self.id)
-                                thisroom.votelist = {}
-                                thisroom.save()
-                                break
                             if(self.turn!=-1):
                                 thisroom = Rooms.objects.get(id = self.id)
                                 tempvotelist = thisroom.votelist
@@ -185,6 +162,35 @@ class ServerConsumer():
                                 )
                                 self.votetarget = ""
                                 self.votename = ""
+
+                            darkcount = list(rolelist.values()).count("mafia")
+                            lightcount = list(rolelist.values()).count("civil") + list(rolelist.values()).count("doc") + list(rolelist.values()).count("com")
+                            if (darkcount >= lightcount or darkcount == 0):
+                                NewGameHistory = GameHistory()
+                                NewGameHistory.roomname = Rooms.objects.get(id = self.id).roomname
+                                if darkcount >= lightcount:
+                                    NewGameHistory.win = "0"
+                                elif darkcount == 0:
+                                    NewGameHistory.win = "1"
+                                NewGameHistory.data = datetime.date.today()
+                                print("++++++++++++++++++++++++++++self.firstroles+++++++++++++++++++++++++++++++++++++", self.firstroles)
+                                NewGameHistory.playerlist = self.firstroles
+                                NewGameHistory.save()
+                                for pl in players:
+                                    NewGameHistory.players.add(pl)
+                                NewGameHistory.save()
+                                async_to_sync(self.channel_layer.group_send)(
+                                    self.group_name,
+                                    {
+                                            'type' : 'end_game',
+                                            'winner' : NewGameHistory.win,
+                                    }
+                                )
+                                thisroom = Rooms.objects.get(id = self.id)
+                                thisroom.votelist = {}
+                                thisroom.save()
+                                break
+
                             async_to_sync(self.channel_layer.group_send)(
                                 self.group_name,
                                 {
@@ -194,7 +200,7 @@ class ServerConsumer():
                                     'loop_number' : self.loop 
                                 }
                             )  
-                            sleep(5)
+                            sleep(20)
                         thisroom.is_game = False
                         self.killtarget = ""
                         self.healtarget = ""

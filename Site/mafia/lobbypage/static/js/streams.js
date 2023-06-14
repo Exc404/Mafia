@@ -25,7 +25,6 @@ inputForm.addEventListener('submit', (e) => {
     e.preventDefault()
     if (chatlock === false){
         let message = e.target.messageForm.value
-        if (message === "iliveindarkness") {chatlock = false} // это надо удалить...
         if(message!="") {
             message = user_name + ":" + message
             testSocket.send(JSON.stringify({
@@ -43,7 +42,7 @@ window.onload = function () {
     let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
         console.log("GAME: AMOUNT", UID_ARR.length + 1)
-        if (UID_ARR.length + 1 < 0){
+        if (UID_ARR.length + 1 < 5){
             alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
         else{
@@ -249,6 +248,8 @@ testSocket.onmessage = function (e) {
     if (data.type === 'update_roles'){
         Roles = data.rolelist
         MyRole = data.rolelist[user_pk]
+        if(document.getElementById('my-role') === null)
+            document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">${MyRole}</span>`)
     }
 
     if (data.type === "am_i_host"){
@@ -290,12 +291,12 @@ testSocket.onmessage = function (e) {
         messages.insertAdjacentHTML('beforeend', warning)
     }
 
-    if(data.type === 'vote_result'){
-        let resultname = data.resultname
-        let warning = '<div><p style="color:#1D943C"> Результат голосования: ' + resultname +'</p></div>'
-        resultname = ""
-        messages.insertAdjacentHTML('beforeend', warning)
-    }
+    // if(data.type === 'vote_result'){
+    //     let resultname = data.resultname
+    //     let warning = '<div><p style="color:#1D943C"> Результат голосования: ' + resultname +'</p></div>'
+    //     resultname = ""
+    //     messages.insertAdjacentHTML('beforeend', warning)
+    // }
 
     if(data.type === 'morning_results'){
         let killed = data.killtarget
@@ -318,9 +319,12 @@ testSocket.onmessage = function (e) {
                 Roles[killed] = "spec"
                 for(let i in PK_SET) {
                     if(PK_SET[i].toString() === killed) {
-                        let res_uid = i.substring(5)
-                        document.getElementById(`vote-${res_uid}`).src = '/./static/img/death.png'
+                        document.getElementById(i).src = '/./static/img/death.png'
                     }
+                }
+                if(killed === user_pk.toString()) {
+                    document.getElementById('my-role').remove()
+                    document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">ВЫ МЕРТВЫ(${MyRole})</span>`)
                 }
                 messages.insertAdjacentHTML('beforeend', warning)
             }
@@ -346,9 +350,12 @@ testSocket.onmessage = function (e) {
         Roles[killed] = "spec"
         for(let i in PK_SET) {
             if(PK_SET[i].toString() === killed) {
-                let res_uid = i.substring(5)
-                document.getElementById(`vote-${res_uid}`).src = '/./static/img/death.png'
+                document.getElementById(i).src = '/./static/img/death.png'
             }
+        }
+        if(killed === user_pk.toString()) {
+            document.getElementById('my-role').remove()
+            document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">ВЫ МЕРТВЫ(${MyRole})</span>`)
         }
         messages.insertAdjacentHTML('beforeend', warning)
     }
@@ -368,7 +375,16 @@ testSocket.onmessage = function (e) {
         Roles = {}
         FullUnMute()
         is_game = false
+        document.getElementById('my-role').remove()
         let warning = '<div><p style="color:#1D943C">ИГРА ОКОНЧЕНА! Победу одержала сторона ' + winner + '!</p></div>'
+        for(let i in PK_SET) {
+            document.getElementById(i).src = '/./static/img/votemark.jpg'
+            let user_uid = i.substring(5)
+            if(UID_ARR.find(el => el === user_uid) === undefined && user_uid != UID.toString()) {
+                document.getElementById(`user-container-${user_uid}`).remove()
+                delete PK_SET[i]
+            }
+        }
         messages.insertAdjacentHTML('beforeend', warning)
     }
 
