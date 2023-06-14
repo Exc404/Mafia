@@ -43,7 +43,7 @@ window.onload = function () {
     let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
         console.log("GAME: AMOUNT", UID_ARR.length + 1)
-        if (UID_ARR.length + 1 < 5){
+        if (UID_ARR.length + 1 < 1){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!5
             alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
         else{
@@ -84,7 +84,13 @@ let joinAndDisplayLocalStream = async () => {
                     <div class = "icon-wrapper">
                     <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
                     </div>
-                </div>`
+                </div>`+`<div class="video-container" id = "user-container-${UID}">
+                <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
+                <div class="video-player" id = "user-${UID}"></div>
+                <div class = "icon-wrapper">
+                <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
+                </div>
+            </div>`
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
     document.getElementById(`vote-${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
@@ -192,6 +198,39 @@ let FullUnMute = async () => {
 }
 
 
+//таймер
+timerId=null
+
+function startTimer(duration, display) {
+    if(timerId)clearInterval(timerId);
+    duration*=100
+    var timer = duration, minutes, seconds;
+    console.log('starttick')
+    
+        timerId = setInterval(function () {
+        minutes = parseInt(timer / 6000, 10);
+        seconds = parseInt(timer % 6000/100, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+        stripe = document.getElementById('time-stripe-progress');
+        stripe.style.width=""+(1-timer/duration)*100+"%"
+
+        timer-=1
+        console.log('tick')
+        if(timer == -1)clearInterval(timerId);
+    }, 10);
+
+}
+// window.onload = function () {
+//     var fiveMinutes = 60 * 5,
+//         display = document.querySelector('#time');
+//     startTimer(fiveMinutes, display);
+// };
+
+
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
     if (data.type === 'chat') {
@@ -239,6 +278,7 @@ testSocket.onmessage = function (e) {
         is_game = true
         console.log("GAME: ROLES", Roles)
         MyRole = Roles[user_pk]
+        //id="блок роль" class = MyRole
         console.log("GAME: UID", UID)
         PK_SET['vote-'+UID] = user_pk
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
@@ -261,7 +301,22 @@ testSocket.onmessage = function (e) {
     }
 
     if(data.type === 'turn_info'){
-        turn = data.turnnumber
+        //60 сек - 3 4, 20 - 0 1 2 
+        //вывод имя фазы
+        var div = document.getElementById('name-event');
+        div.innerHTML = Rolenames[data.turnnumber];
+
+        //запуск таймера
+     
+        var time=20
+        if(data.turnnumber<3)time=20
+        display = document.querySelector('#time');
+        startTimer(time-1, display);
+        
+        
+
+
+        turn = data.turnnumber // - идекс фазы
         console.log("GAME STAGE: ", turn)
         chatlock = data.chatlock
         votelock = data.votelock

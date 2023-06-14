@@ -7,32 +7,41 @@
 </head>
 
 <body>
-    <div id="users">
-        <section id = "room-name-wrapper">
-            <p>Комната: <span id = "room-name"></span></p>
-        </section>
+    <main>
+        <div id="main-block">
+            <div id="event">
+                <span id="name-event"></span>
+                <span id="time"></span>
+            </div>
+            
+            <div id="time-stripe">
+                <div id="time-stripe-progress" style=""></div>
+            </div>
+            <div id="users">
+                <section id = "video-streams" class="video"></section>
+            </div>
+        </div>
+        <div id="right-block">
+            <section id = "room-name-wrapper">
+                <p>Комната: <span id = "room-name"></span></p>
+            </section>
+            <a id="startgame" href="#">Начать игру</a>
 
-        <section id = "video-streams"></section>
-        <section id = "controls-wrapper">
-            <div class = "icon-wrapper">
-                <img class = "control-icon" id = "mic-btn" src = "/./static/img/microphone.svg"/>
+            <div id="chat">
+                <h2>Чат:</h2>
+                <form id="messageInputForm">
+                    <input type="text" name="messageForm" />
+                </form>
+                <div id="messages"></div>
             </div>
-            <div class = "icon-wrapper">
-                <img class = "control-icon" id = "camera-btn" src = "/./static/img/video.svg"/>
-            </div>
-            <div class = "icon-wrapper">
-                <img class = "control-icon" id = "leave-btn" src = "/./static/img/leave.svg"/>
-            </div>
-        </section>
-        <a id="startgame" href="#">Начать игру</a>
-    </div>
-    <div id="chat">
-        <h2>Чат:</h2>
-        <form id="messageInputForm">
-            <input type="text" name="messageForm" />
-        </form>
-        <div id="messages"></div>
-    </div>
+        </div>
+    </main>
+
+    
+
+
+    
+    
 </body>
 <script type="text/javascript" src = "/./static/assets/AgoraRTC_N-4.17.2.js"></script>
 <script type="text/javascript">

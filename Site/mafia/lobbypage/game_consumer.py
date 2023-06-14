@@ -59,23 +59,23 @@ class ServerConsumer():
                         print(rolelist)
                         #Начало геймплея тут vvvvvv
                         while True:
-                            darkcount = list(rolelist.values()).count("mafia")
-                            lightcount = list(rolelist.values()).count("civil") + list(rolelist.values()).count("doc") + list(rolelist.values()).count("com")
-                            if (darkcount >= lightcount or darkcount == 0):
-                                NewGameHistory = GameHistory()
-                                NewGameHistory.roomname = Rooms.objects.get(id = self.id).roomname
-                                if darkcount >= lightcount:
-                                    NewGameHistory.win = "0"
-                                elif darkcount == 0:
-                                    NewGameHistory.win = "1"
-                                NewGameHistory.data = datetime.date.today()
-                                NewGameHistory.playerlist = firstroles
-                                NewGameHistory.save()
-                                for pl in players:
-                                    NewGameHistory.players.add(pl)
-                                NewGameHistory.save()
-                                print("КОЗЫРЬКИ ПОБЕДИЛИ!")
-                                break
+                            # darkcount = list(rolelist.values()).count("mafia")
+                            # lightcount = list(rolelist.values()).count("civil") + list(rolelist.values()).count("doc") + list(rolelist.values()).count("com")
+                            # if (darkcount >= lightcount or darkcount == 0):
+                            #     NewGameHistory = GameHistory()
+                            #     NewGameHistory.roomname = Rooms.objects.get(id = self.id).roomname
+                            #     if darkcount >= lightcount:
+                            #         NewGameHistory.win = "0"
+                            #     elif darkcount == 0:
+                            #         NewGameHistory.win = "1"
+                            #     NewGameHistory.data = datetime.date.today()
+                            #     NewGameHistory.playerlist = firstroles
+                            #     NewGameHistory.save()
+                            #     for pl in players:
+                            #         NewGameHistory.players.add(pl)
+                            #     NewGameHistory.save()
+                            #     print("КОЗЫРЬКИ ПОБЕДИЛИ!")
+                            #     break
                             if(self.turn!=-1):
                                 thisroom = Rooms.objects.get(id = self.id)
                                 tempvotelist = thisroom.votelist
