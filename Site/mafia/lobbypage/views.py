@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from agora_token_builder import RtcTokenBuilder
+from user_profile.models import Friend
 
 
 from asgiref.sync import sync_to_async
@@ -44,7 +45,7 @@ def lobby(request):
 
 def TheLobby(request, room_name):
     appId = '55fba11738094971a032a7ac307e10ed'
-    appCertificate = '' #Брать из дискорда - странная херня в предпоследнем сообщении!! и УДАЛЯТЬ!!! 11111111111111111111111111111111111111111111111111111111111111111111111111
+    appCertificate = 'b006d5596a3c4c1eaa51f546abfad7ad' #Брать из дискорда - странная херня в предпоследнем сообщении!! и УДАЛЯТЬ!!! 11111111111111111111111111111111111111111111111111111111111111111111111111
     player = request.user.profile
     uid = 0
     expirationTimeInSeconds = 3600 * 24
@@ -70,6 +71,7 @@ def TheLobby(request, room_name):
                                'user_pk_json': mark_safe(json.dumps(str(player.pk))),
                                'room_isgame_json' : mark_safe(json.dumps(room.is_game)),
                                'the_host_json': mark_safe(json.dumps(request.user.profile.pk == room.roomhostid)),
+                               'friends': Friend.objects.get(related_user=request.user).friends.all(),
                                'agora_token' : mark_safe(json.dumps(RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs)))
                                })
                 else:

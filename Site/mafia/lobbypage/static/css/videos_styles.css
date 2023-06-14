@@ -4,8 +4,7 @@
     padding: 0;
 }
 body{
-   
-    background-color: blueviolet;
+    font-family: sans-serif;
 }
 main{
     display: flex;
@@ -21,19 +20,19 @@ main{
 }
 #event{
     width: 100%;
-    height: 2em;
+    height: 25px;
     background-color: white;
 
 }
 #time-stripe{
     width: 100%;
-    height: 0.5em;
+    height: 10px;
     background-color: rgb(56, 56, 56);
 }
 
 #time-stripe-progress{
     width: 0%;
-    height: 0.5em;
+    height: 10px;
     background-color: red;
 
 }
@@ -43,14 +42,39 @@ main{
 
 
 
+
 #right-block{
     display: flex;
     flex-direction: column;
-    width: 22%;
+    width: 350px;
     overflow: hidden;
-    background-color: chartreuse;
 }
-
+.buttons{
+    background-color: #252e3c;
+    display: flex;
+    justify-content: flex-end;
+    height: 35px;
+}
+.frends-or-info{
+    width: 350px;
+    height: 430px;
+    background-color: blue;
+}
+#info-card{
+    background-color: rgb(138, 32, 32);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+.card-img{
+  
+}
+#chat{
+    width: 100%;
+    height: 60%;
+    background-color: white;
+}
 
 
 
@@ -136,19 +160,40 @@ main{
 }
 
 .control-icon {
-    height: 20px;
-    width: 20px;
+
     box-shadow: var(--shadow);
     background-color: #fff;
     cursor: pointer;
-    padding: 10px;
+    padding: 3px;
+    margin: 2px;
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+
+    
 }
 
 #leave-btn {
+    margin: 5px;
     background-color: rgb(255, 80, 80, 1);
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 5px;
+    
+    margin-left: auto;
+    margin-right: 0.5em;
+    
 }
-
+#startgame{
+    margin: 5px;
+    background-color: rgb(17, 201, 66);
+    padding-bottom: 3px;
+    text-decoration: none;
+    justify-self: flex-start;
+    margin-left: 0.5em;
+}
 
 .video-player, .icon-wrapper{
     grid-area: 1 / 1;
