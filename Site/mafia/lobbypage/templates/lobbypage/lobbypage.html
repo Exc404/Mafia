@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" media="screen" href="/./static/css/videos_styles.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/./static/css/messages.css">
 </head>
 
 <body>
@@ -64,17 +65,14 @@
                         </table>
                     </div>
                 </div>
-                
-
             </div>
-            
 
             <div id="chat">
-                <h2>Чат:</h2>
+                <h2 style="width: 285px; display:flex; color:white; justify-content: center;">Чат:</h2>
+                <div id="messages" class="messages"></div>
                 <form id="messageInputForm">
-                    <input type="text" name="messageForm" />
+                  <input type="text" id="messageInputText" name="messageForm"/>
                 </form>
-                <div id="messages"></div>
             </div>
             <section id = "room-name-wrapper">
                 <p>Комната: <span id = "room-name"></span></p>
@@ -119,7 +117,7 @@
     scrollbar-width: thin;
     scrollbar-color: var(--thumbBG) var(--scrollbarBG);
     padding: 0.5em;
-  }
+    }
 
     
 
