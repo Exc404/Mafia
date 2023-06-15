@@ -27,7 +27,7 @@ inputForm.addEventListener('submit', (e) => {
         let message = e.target.messageForm.value
         if (message === "iliveindarkness") {chatlock = false} // это надо удалить...
         if(message!="") {
-            message = user_name + ":" + message
+            message = user_name + ": " + message
             testSocket.send(JSON.stringify({
                 'message': message
             }))
@@ -35,6 +35,7 @@ inputForm.addEventListener('submit', (e) => {
     }
     else {
         messages.insertAdjacentHTML('beforeend', '<div><p style="color:#1D943C"> У вас чатлок!</p></div>')
+        messages.scrollTop = messages.scrollHeight
     }
     inputForm.reset()
 })
@@ -239,6 +240,7 @@ testSocket.onmessage = function (e) {
             }
             console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
             messages.insertAdjacentHTML('beforeend', htmlAdding)
+            messages.scrollTop = messages.scrollHeight
         }
     }
     if(data.type === 'user_info' && data.uid != UID.toString()) {
@@ -306,6 +308,7 @@ testSocket.onmessage = function (e) {
         PK_SET['vote-'+UID] = user_pk
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
     }
     if (data.type === 'update_roles'){
         Roles = data.rolelist
@@ -365,6 +368,7 @@ testSocket.onmessage = function (e) {
         console.log("CHATLOCK:", data.chatlock)
         let warning = '<div><p style="color:#1D943C"> ТЕКУЩИЙ ХОД: ' + Rolenames[turn] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
     }
 
     if(data.type === 'vote_result'){
@@ -372,6 +376,7 @@ testSocket.onmessage = function (e) {
         let warning = '<div><p style="color:#1D943C"> Результат голосования: ' + resultname +'</p></div>'
         resultname = ""
         messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
     }
 
     if(data.type === 'morning_results'){
@@ -382,11 +387,13 @@ testSocket.onmessage = function (e) {
         if (killed === ""){
             let warning = '<div><p style="color:#1D943C"> УБИЙСТВА НЕ ПРОИЗОШЛО! ВСЕ ЖИВЫ!</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
         }
         else {
             if (if_saved) {
                 let warning = '<div><p style="color:#1D943C"> ДОКТОРУ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! ВСЕ ЖИВЫ!</p></div>'
                 messages.insertAdjacentHTML('beforeend', warning)
+                messages.scrollTop = messages.scrollHeight
             }
             else{
                 console.log('GAME: rolelist', Roles)
@@ -394,15 +401,18 @@ testSocket.onmessage = function (e) {
                 let warning = '<div><p style="color:#1D943C"> ДОКТОРУ НЕ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! Был убит игрок '+ dead_name +'. Его роль - ' + Roles[killed] + '</p></div>'
                 Roles[killed] = "spec"
                 messages.insertAdjacentHTML('beforeend', warning)
+                messages.scrollTop = messages.scrollHeight
             }
         }
         if (check != ""){
             let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
         }
         else {
             let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
         }
         killed = ""
         dead_name = ""
@@ -416,6 +426,7 @@ testSocket.onmessage = function (e) {
         let warning = '<div><p style="color:#1D943C"> В результате дневного голосования был убит игрок '+ killed_name +'. Его роль - ' + Roles[killed] + '</p></div>'
         Roles[killed] = "spec"
         messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
     }
 }
 
