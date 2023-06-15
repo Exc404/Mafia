@@ -81,16 +81,7 @@ let joinAndDisplayLocalStream = async () => {
     let player = `<div class="video-container" id = "user-container-${UID}">
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
-                    <div class = "icon-wrapper">
-                    <img class = "control-icon" id = "vote-${UID}" style="height: 25px;width: 25px;" src = "/./static/img/votemark.jpg"/>
-                    </div>
-                </div>`+`<div class="video-container" id = "user-container-${UID}">
-                <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
-                <div class="video-player" id = "user-${UID}"></div>
-                <div class = "icon-wrapper">
-                <img class = "control-icon" id = "vote-${UID}" style="height: 25px;width: 25px;" src = "/./static/img/votemark.jpg"/>
-                </div>
-            </div>`
+                    <div class = "vote-control" id = "vote-${UID}" style=""/></div>`+``
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
     document.getElementById(`vote-${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
@@ -106,12 +97,9 @@ let handleUserJoined = async (user, mediaType) => {
             IS_NICK_WRITTEN[UID_ARR.indexOf(user.uid.toString())] = false
             player.remove()
         }
-        player = `<div class="video-container" id = "user-container-${user.uid}">
-                    <div class="video-player" id = "user-${user.uid}"></div>
-                    <div class = "icon-wrapper">
-                    <img class = "control-icon" id = "vote-${user.uid}" src = "/./static/img/votemark.jpg"/>
-                    </div>
-                </div>`
+        player =`<div class="video-container" id = "user-container-${user.uid}">
+        <div class="video-player" id = "user-${user.uid}"></div>
+        <div class = "vote-control" id = "vote-${user.uid}" style=""/></div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
         document.getElementById(`vote-${user.uid}`).onclick = vote
         if(!is_game)
@@ -300,7 +288,7 @@ testSocket.onmessage = function (e) {
         else
             document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_2.jpg" width="285px"/> '
         }
-            
+        
         
         console.log("GAME: UID", UID)
         PK_SET['vote-'+UID] = user_pk
@@ -343,6 +331,15 @@ testSocket.onmessage = function (e) {
         console.log("GAME STAGE: ", turn)
         chatlock = data.chatlock
         votelock = data.votelock
+        
+        if(votelock)
+            for(let i in PK_SET)document.getElementById(i).style.display="none"
+        else
+            for(let i in PK_SET)document.getElementById(i).style.display="block"
+        
+
+        
+
         if(chatlock && Roles[user_pk] != "spec") {
             console.log("GAME: MUTE", turn)
             FullMute()

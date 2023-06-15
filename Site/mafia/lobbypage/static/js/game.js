@@ -9,13 +9,13 @@ var Roles = new Map()
 
 let vote = function (e) {
     if (votelock === false){
-        console.log("GAME: ГОЛОСОВАНИЕ", e.target.id)
         let votename = e.target.id
         votelock = true
-        console.log("VOTE votename:",votename)
+        console.log("GAME: Голос")
+        for(let i in PK_SET)document.getElementById(i).style.display="none"
         testSocket.send(JSON.stringify({
             'vote_pk' : PK_SET[votename]
         }))
+        
     }
-    else {console.log("GAME: Сейчас не ваше время голосовать.")}
 }
