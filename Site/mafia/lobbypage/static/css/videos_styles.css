@@ -222,3 +222,14 @@ main{
     justify-content: flex-end;
     align-items: flex-end;
   }
+
+  .invite-button{
+    background-color:#52627a;
+    border-radius: 3px;
+    color:black;
+    font-size: large;
+    font-weight: bold;
+    width: 1.2em;
+    text-shadow: #8893a3 1px 1px;
+    cursor:pointer;
+}
