@@ -270,25 +270,25 @@ testSocket.onmessage = function (e) {
         if(MyRole == "mafia")
         {
             document.getElementById('myrole').innerHTML="Роль: Мафия"
-            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mafiozi.jpg" width="285px"/> '
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mafiozi.jpg" width="100%"/> '
         }
         else if(MyRole == "doc")
         {
             document.getElementById('myrole').innerHTML="Роль: Доктор"
-            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/dok.jpg" width="285px"/> '
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/dok.jpg" width="100%"/> '
         }
         else if(MyRole == "com")
         {
             document.getElementById('myrole').innerHTML="Роль: Комиссар"
-            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/com.jpg" width="285px"/> '
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/com.jpg" width="100%"/> '
         }     
         else if(MyRole == "civil")
         {
             document.getElementById('myrole').innerHTML="Роль: Гражданин"
         if(Math.floor(Math.random() * 2))
-            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_1.jpg" width="285px"/> '
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_1.jpg" width="100%"/> '
         else
-            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_2.jpg" width="285px"/> '
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_2.jpg" width="100%"/> '
         }
         
         

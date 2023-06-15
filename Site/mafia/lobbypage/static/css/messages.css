@@ -4,10 +4,7 @@
     scrollbar-width: thin;
     scrollbar-color: var(--thumbBG) var(--scrollbarBG);
     padding: 0.5em;
-    overflow-y: scroll;
-    overflow-anchor: none;
-    flex-direction: column-reverse;
-    height: 515px;
+    height: 16.5em;
   }
   .messages>*{
     margin-top: 2px;
@@ -42,4 +39,5 @@
     margin-top: 0.5em;
     width: 89%;
     height: 2em;
+
   }
