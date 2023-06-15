@@ -8,6 +8,8 @@ from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from agora_token_builder import RtcTokenBuilder
 
+import secrets
+import string
 
 from asgiref.sync import sync_to_async
 from .game_consumer import ServerConsumer
@@ -24,6 +26,7 @@ def lobby(request):
             if NewRoom.is_valid():
                 NewRoom = NewRoom.save(commit=False)
                 NewRoom.roomhostid = request.user.profile.pk
+                NewRoom.room_id = generate_alphanum_crypt_string(8)
                 NewRoom.save()
                 GameMaster = ServerConsumer(get_channel_layer(), NewRoom.roomname+"_"+NewRoom.room_id, NewRoom.id)
                 print("======================================================")
@@ -83,3 +86,9 @@ def lobbylist(request):
     allTable = Rooms.objects.all()
     return render(request, 'lobbypage/lobbylist.html', {'rooms': allTable})
 
+def generate_alphanum_crypt_string(length):
+    letters_and_digits = string.ascii_letters + string.digits
+    crypt_rand_string = ''.join(secrets.choice(
+        letters_and_digits) for i in range(length))
+    print("Cryptic Random string of length", length, "is:", crypt_rand_string)
+    return crypt_rand_string

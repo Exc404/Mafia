@@ -12,8 +12,13 @@ class CreateTheRoom(forms.ModelForm):
 
     def clean_roomname(self):
         rname = self.cleaned_data['roomname'].strip()
+        allowed_chars = "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
         if Rooms.objects.filter(roomname=rname).exists():
-            raise ValidationError('Эта почта уже используется!')
+            raise ValidationError('Это имя комнаты уже используется!')
+
+        for char in rname:
+            if char not in allowed_chars:
+                raise forms.ValidationError('Недопустимый символ: {}'.format(char))
 
         return rname
 
