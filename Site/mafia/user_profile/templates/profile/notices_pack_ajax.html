@@ -1,4 +1,4 @@
-<tr data-record-id="{{ notice.id }}notice" class="notice_record">
+          <tr data-record-id="{{ notice.id }}notice" class="notice_record">
             {% if notice.notice_type == 'FR' %}
               <td>
                 <div class="datatime">{{notice.get_datetime}}</div>
@@ -17,10 +17,16 @@
             {% if notice.notice_type == 'IV' %}
               <td>
                 <div class="datatime">{{notice.get_datetime}}</div>
-                <p><a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
+                <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                  <img class="profile-Icon" width="45px" height="45px" src="{{notice.sender.profile.profile_img.url}}" alt="Icon">
+                  <div>
+                    <a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a>
+                    <p class="text-message" style="margin: 0;">приглашает вас в игру!</p>
+                  </div>
+                </div>
               </td>
               <td>
-                <button class="delete-button" data-record-id="{{ notice.id }}">✔</button>
+                <a class="invite-button" data-record-id="{{ notice.id }}" href={{notice.invite_lobby.get_absolute_url}}>&rarr;</a>
               </td>
             {% endif %}
             {% if notice.notice_type == 'IF' %}

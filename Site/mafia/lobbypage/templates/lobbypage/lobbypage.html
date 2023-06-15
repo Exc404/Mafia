@@ -5,6 +5,33 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" media="screen" href="/./static/css/videos_styles.css">
     <link rel="stylesheet" type="text/css" media="screen" href="/./static/css/messages.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.invite-button').click(function() {
+                var dataToSend = {
+                      profile_id: $(this).data('record-id'),
+                };
+                // Выполните AJAX-запрос
+                $.ajax({
+                    url: '{% url "add_invite_notice"%}',
+                    method: 'POST',
+                    data: dataToSend,
+                    success: function(response) {
+                        var elementToRemove = document.querySelector('[data-record-id="' + response.profile_id + '"]');
+                        if (elementToRemove) {
+                            elementToRemove.remove();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                    // Обработка ошибки
+                    console.error('Произошла ошибка при выполнении запроса.');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -52,7 +79,7 @@
                                         </div>                    
                                     </td>
                                     <td>
-                                        <button>+</button>
+                                        <button class="invite-button" data-record-id="{{ friend.pk }}">+</button>
                                     </td>
                                 </tr>
                             {% endfor %}

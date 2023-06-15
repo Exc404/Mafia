@@ -198,6 +198,30 @@ $(document).ready(function() {
             }
         });
     });
+
+    parentTable.on('click', 'a.invite-button', function(event) {
+        // Получите данные, связанные с кнопкой
+        event.preventDefault();
+        var recordId = $(this).data('record-id');
+
+        // Выполните AJAX-запрос
+        $.ajax({
+            url: 'delete_record/' + recordId + '/',
+            method: 'POST',
+            success: function(response) {
+                var elementToRemove = document.querySelector('[data-record-id="' + response.notice_id + 'notice"]');
+                if (elementToRemove) {
+                    elementToRemove.remove();
+                }
+
+                window.location.href = event.target.href;
+            },
+            error: function(xhr, status, error) {
+                // Обработка ошибки
+                console.error('Произошла ошибка при выполнении запроса.');
+            }
+        });
+    });
 });
 
 $(document).ready(function() {
@@ -258,10 +282,16 @@ function makeAjaxRequest() {
             {% if notice.notice_type == 'IV' %}
               <td>
                 <div class="datatime">{{notice.get_datetime}}</div>
-                <p><a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
+                <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                  <img class="profile-Icon" width="45px" height="45px" src="{{notice.sender.profile.profile_img.url}}" alt="Icon">
+                  <div>
+                    <a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a>
+                    <p class="text-message" style="margin: 0;">приглашает вас в игру!</p>
+                  </div>
+                </div>
               </td>
               <td>
-                <button class="delete-button" data-record-id="{{ notice.id }}">✔</button>
+                <a class="invite-button" data-record-id="{{ notice.id }}" href={{notice.invite_lobby.get_absolute_url}}>&rarr;</a>
               </td>
             {% endif %}
             {% if notice.notice_type == 'IF' %}

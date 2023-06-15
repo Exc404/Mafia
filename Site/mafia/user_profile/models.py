@@ -37,12 +37,12 @@ class Profile(models.Model):
 
 
 class GameHistory(models.Model):
-
     roomname = models.CharField(blank=False, max_length=40)
-    data =  models.DateField()
-    win = models.IntegerField(default = -1)
-    playerlist = models.JSONField(null = True, default = dict)
+    data = models.DateField()
+    win = models.IntegerField(default=-1)
+    playerlist = models.JSONField(null=True, default=dict)
     players = models.ManyToManyField(Profile)
+
 
 class Notice(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Отправитель')
@@ -64,10 +64,10 @@ class Notice(models.Model):
     class Meta:
         verbose_name = "Уведомление"
         verbose_name_plural = "Уведомления"
-    
+
     def get_datetime(self):
         return self.datetime.strftime('%d.%m %H:%M')
-    
+
     def __str__(self):
         str_type = ''
         if self.notice_type == self.NoticeType.INFO:
@@ -105,8 +105,6 @@ class Friend(models.Model):
     def save(self, *args, **kwargs):
         super(Friend, self).save(*args, **kwargs)
 
-
     class Meta:
         verbose_name = "Друзья"
         verbose_name_plural = "Друзья"
-
