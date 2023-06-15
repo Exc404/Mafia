@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
 from random import choice
+from django.urls import reverse
 # Create your models here.
 class Rooms(models.Model):
 
@@ -9,6 +10,10 @@ class Rooms(models.Model):
     roomhostid = models.IntegerField(default = 0)
     room_id = models.CharField(max_length=8, default="STOCKID")
     is_game = models.BooleanField(default=0)
+    votelist = models.JSONField(null = True, default = dict)
+
+    def get_absolute_url(self):
+        return reverse('TheLobby', kwagrs={'<str:room_name>': self.roomname + "_" + self.room_id})
 
     def DelPlayer(self, userid):
         if self.roomhostid == userid and self.profile_set.count()>0:
@@ -33,4 +38,3 @@ class Rooms(models.Model):
 
     def __str__(self):
         return self.roomname + ' ' + str(self.profile_set.count()) + '/12 '
-

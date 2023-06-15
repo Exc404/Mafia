@@ -1,0 +1,53 @@
+<tr data-record-id="{{ notice.id }}notice" class="notice_record">
+            {% if notice.notice_type == 'FR' %}
+              <td>
+                <div class="datatime">{{notice.get_datetime}}</div>
+                <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                  <img class="profile-Icon" width="45px" height="45px" src="{{notice.sender.profile.profile_img.url}}" alt="Icon">
+                  <div>
+                    <a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a>
+                    <p class="text-message" style="margin: 0;">хочет добавить вас в друзья!</p>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <button class="add-button" data-record-id="{{ notice.id }}">✔</button>
+              </td>
+            {% endif %}
+            {% if notice.notice_type == 'IV' %}
+              <td>
+                <div class="datatime">{{notice.get_datetime}}</div>
+                <p><a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
+              </td>
+              <td>
+                <button class="delete-button" data-record-id="{{ notice.id }}">✔</button>
+              </td>
+            {% endif %}
+            {% if notice.notice_type == 'IF' %}
+              <td>
+                <div class="datatime">{{notice.get_datetime}}</div>
+                <p>
+                  {% if notice.sender %}
+                    <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                      <img class="profile-Icon" width="45px" height="45px" src="{{notice.sender.profile.profile_img.url}}" alt="Icon">
+                      <div>
+                        <a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a>
+                        <p class="text-message" style="margin: 0;">{{ notice.text_message }}</p>
+                      </div>
+                    </div>
+                  {% else %}
+                    <div style="display: flex;flex-direction: row; justify-content: flex-start;">
+                        <img class="profile-Icon" style="border-radius: 100%; background: #f05a2d; margin: 5px 0.5em 5px 0.5em;" width="40px" height="40px" src="https://i.imgur.com/qzTm4EW.png" alt="Icon">
+                        <div  style="display: flex;flex-direction: row; align-items: center;">
+                          <p class="text-message" style="margin: 0;">{{ notice.text_message }}</p>
+                        </div>
+                    </div>
+                  {% endif %}
+                </p>
+              </td>
+              <td></td>
+            {% endif %}
+              <td>
+                  <button class="delete-button" data-record-id="{{ notice.id }}">🗑</button>
+              </td>
+          </tr>

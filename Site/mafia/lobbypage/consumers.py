@@ -4,14 +4,15 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from user_profile.models import Profile
 from .models import Rooms
-from random import choice
 
 class TestConsumer(WebsocketConsumer):
 
     def connect(self):
         self.username = ""
-        self.GameRole = "homo"
-        self.uid = ""
+        self.pk = ""
+        self.role = ""
+        self.chatlock = False
+        self.votelock = True
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'lobby_%s' % self.room_name
         async_to_sync(self.channel_layer.group_add) (
@@ -28,49 +29,16 @@ class TestConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send) (
                 self.room_group_name,
                 {
-                    'type' : 'test_sending',
+                    'type' : 'message_sending',
                     'message' : message,
                 }
             )
         
         if 'username' in text_data_json and self.username=="":
             self.username = text_data_json['username']
+            self.pk = text_data_json['pk']
             print(self.username + "$")
-        
-        if 'users' in text_data_json:
-            self.usersid = text_data_json['users']
-            self.uid = text_data_json['hostuid']
-            print(self.usersid)
-            print("\n")
-            print(self.uid)
-            Roles = {"mafia" : 1, "doc": 1, "com":1, "civil": 1}
-            playerroles = {}
-            self.GameRole = choice(list(Roles.keys()))
-            print("HOST ROLE ", self.GameRole)
-            Roles[self.GameRole]-=1
-            playerroles[str(self.uid)] = self.GameRole
-            for pluid in self.usersid:
-                newrole = choice(list(Roles.keys()))
-                while Roles[newrole]==0:
-                    newrole = choice(list(Roles.keys()))
-                playerroles[pluid] = newrole
-            async_to_sync(self.channel_layer.group_send) (
-                self.room_group_name,
-                {
-                    'type' : 'roles_sending',
-                    'players_roles' : playerroles
-                }
-            )
-
-        if 'roleslist' in text_data_json:
-            if self.uid == "":
-                self.uid = text_data_json['socket_uid']
-            temproles = text_data_json['roleslist']
-            print("Принятые роли с юайди:\n", temproles, self.uid)
-            if self.GameRole == "homo":
-                self.GameRole = temproles[str(self.uid)]
-            print(self.username, "Ваша роль - ", self.GameRole)
-
+            print(self.pk + "$")
 
         if 'user_name' in text_data_json:
             async_to_sync(self.channel_layer.group_send) (
@@ -78,46 +46,142 @@ class TestConsumer(WebsocketConsumer):
                 {
                     'type' : 'user_info_sending',
                     'user_name' : text_data_json['user_name'],
-                    'uid' : str(text_data_json['uid'])
+                    'uid' : str(text_data_json['uid']),
+                    'pk' : str(text_data_json['pk'])
                 }
             )
+        
+        if 'start' in text_data_json:
+            thisuser = Profile.objects.get(nickname=self.username)
+            thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
+            thisroom.is_game = True
+            thisroom.save()
+            
+        if 'vote_pk' in text_data_json:
+            votepk = text_data_json['vote_pk']
+            thisuser = Profile.objects.get(nickname=self.username)
+            thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
+            thisroom.votelist[votepk]+=1
+            thisroom.save()
 
-        if 'vote_uid' in text_data_json:
-            vote = text_data_json['vote_uid']
-            vote = vote.replace("vote-", "")
-            async_to_sync(self.channel_layer.group_send) (
-                self.room_group_name,
-                {
-                    'type' : 'vote_sending',
-                    'vote' : vote,
-                }
-            )
-    def vote_sending(self, event):
-        vote = event['vote']
+        if 'are_you_host' in text_data_json:
+            thisuser = Profile.objects.get(nickname=self.username)
+            thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
+            hostpk = thisroom.roomhostid
+            print("!!!!!!!!!!!!!!!!!", thisroom, hostpk)
+            if str(hostpk) == str(self.pk):
+                am_i_host = True
+            else:
+                am_i_host = False
+            self.send(text_data = json.dumps({
+                'type' : 'am_i_host',
+                'is_host' : am_i_host
+            }))
+            # async_to_sync(self.channel_layer.group_send) (
+            #     self.room_group_name,
+            #     {
+            #         'type' : 'am_i_host',
+            #         'is_host' : am_i_host
+            #     }
+            # )
+
+    # def am_i_host(self,event):
+    #     self.send(text_data = json.dumps({
+    #         'type' : 'am_i_host',
+    #         'is_host' : event['is_host'],
+    #     }))
+
+
+    def end_game(self,event):
+        winner = event['winner']
+        self.role = ""
+        self.chatlock = False
+        self.votelock = True
         self.send(text_data = json.dumps({
-            'type' : 'vote_sending',
-            'vote' : vote
+            'type' : 'end_game',
+            'winner' : winner,
         }))
 
 
-    def roles_sending(self, event):
-        roleslist = event['players_roles']
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", roleslist)
+    def night(self,event):
+        killed = event["voteresult"]
+        if killed == self.pk:
+            print("YOU'VE BEEN KILLED!!!!")
+            self.role = "spec"
         self.send(text_data = json.dumps({
-            'type' : 'game_roles',
-            'roleslist' : roleslist
+            'type' : 'night_results',
+            'votetarget' : killed,
+            'targetname' : event['votedname'],
+        }))
+
+    def morning(self,event):
+        killed = event["killresult"]
+        saved = event["healsuccess"]
+        if killed == self.pk and saved==0:
+            print("YOU'VE BEEN KILLED!!!!")
+            self.role = "spec"
+        self.send(text_data = json.dumps({
+            'type' : 'morning_results',
+            'killtarget' : killed,
+            'targetname' : event['killedname'],
+            'healresult' : saved,
+            'checked' : event['checkresult']
+        }))
+
+    def update_roles(self,event):
+        self.role = event['rolelist'][self.pk]
+        self.send(text_data = json.dumps({
+            'type' : 'update_roles',
+            'rolelist' : event['rolelist']
+        }))
+
+    def new_turn(self,event):
+        turn = event['new_turn']
+        loop = event['loop_number']
+        if (self.role == turn or turn=="civilchat" or turn=="civilvote") and self.role!="spec":
+            self.chatlock = False
+            if turn=="civilchat" or loop==0: self.votelock=True
+            else: self.votelock = False
+        else:
+            self.chatlock = True
+            self.votelock = True
+        print(self.chatlock)
+        self.send(text_data = json.dumps({
+            'type' : 'turn_info',
+            'chatlock' : self.chatlock,
+            'votelock' : self.votelock,
+            'turnnumber' : event['turn_number']
+        }))
+
+    def vote_result(self,event):
+        self.send(text_data = json.dumps({
+            'type' : 'vote_result',
+            'resultpk' : event['resultpk'],
+            'resultname' : event['resultname']
+        }))
+
+    def game_starts(self, event):
+        rolelist = event['roleslist']
+        self.role = rolelist[str(self.pk)]
+        print("Моя роль - ", self.role)
+        self.send(text_data = json.dumps({
+            'type' : 'start_info',
+            'rolelist' : rolelist
         }))
 
     def user_info_sending(self, event):
         user_name = event['user_name']
         uid = event['uid']
+        pk = event['pk']
+        # print("SELF PK", self.pk, self.username)
         self.send(text_data = json.dumps({
             'type' : 'user_info',
             'user_name' : user_name,
+            'pk' : pk,
             'uid' : uid
         }))
 
-    def test_sending(self, event):
+    def message_sending(self, event):
         message = event['message']
         self.send(text_data = json.dumps({
             'type' : 'chat',
@@ -128,7 +192,7 @@ class TestConsumer(WebsocketConsumer):
         print("!!!!!!!!!!!!!!КОНСУМЕР ВЫШЕЛ ПОТОМУШТА ", code)
         thisuser = Profile.objects.get(nickname=self.username)
         thisroom = Rooms.objects.get(id=thisuser.related_lobby_id)
-        thisroom.profile_set.remove(thisuser)
+        #thisroom.profile_set.remove(thisuser)
         thisuser.related_lobby_id = None
         thisuser.save()
         thisroom.DelPlayer(thisuser.pk)

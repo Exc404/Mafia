@@ -5,33 +5,63 @@
 }
 body{
   display: grid;
-  grid-template-rows: 130px 1fr;
+  grid-template-rows: 110px 1fr;
 
   font-family: sans-serif;
   font-size: 14px;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background-color: #272C34;
   background-image: 
 	linear-gradient(135deg, rgba(0,0,0, 0.2) 0%, rgba(0,0,0, 0.1) 25%, rgba(0,0,0, 0.2) 50%, rgba(0,0,0, 0.1) 75%, rgba(0,0,0, 0.2) 100%), 
 	linear-gradient(90deg, #24303b, #292f39, #5a616b);
 	background-size: 8px 8px, 150%;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+main{
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+
+  width: 100%;
+  height: 100%;
+}
+html {
+  --scrollbarBG: #27303f;
+  --thumbBG: #90A4AE;
+}
+main::-webkit-scrollbar-corner {
+  background: #27303f;
+}
+main::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+main::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+main::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG) ;
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
 }
 /*header region*/
 header{
   grid-row: 1;
 
   display: grid;
-  grid-template-rows: 2.9fr 1fr;
-  position: fixed;
-  width: 100%;
+  grid-template-rows: 3.1fr 1fr;
+  width: auto;
+  min-width: max-content;
+  max-width: 100%;
 }
 /*header-main region*/
 #header-main{
   grid-row: 1;
 
   display: grid;
-  grid-template-columns: 60px 180px 1fr 10% 1fr;
+  grid-template-columns: 60px 180px 1fr 10% 0.5fr;
   background-color:#151719;
 }
 #logo{
@@ -77,16 +107,33 @@ header{
   padding-right: 6px;
   background-color:rgb(41, 45, 61);
   height: 100%;
- 
+  grid-area: 1 / 1;
+  min-width: 160px;
   
+}
+#profile-click{
+  width: 100%;
+  height: 100%;
+  grid-area: 1 / 1;
+  z-index: 10;
+  background:linear-gradient(60deg,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+  rgba(0, 0, 0, 0) border-box;
+  background-size:300% 100%,cover;
+  border-radius: 10px;
+}
+#profile-click:hover{
+  animation:button-game-animation 4s ease infinite;
 }
 #profile-block{
   grid-column: 5;
-  display: flex;
+  display: grid;
   justify-content: flex-end;
   align-items:center;
   margin: auto;
-  margin-right: 4%;
+  margin-right: 3em;
+  min-width: 160px;
+
+
 }
 #profile-Icon{  
   background:linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
@@ -97,6 +144,42 @@ header{
   z-index: 1;
   grid-column: 1;
   grid-row: 1;
+  
+}
+#ViewNotiBlock{
+  background-color: #d93030;
+  border-radius: 100%;
+  width: 19px;
+  height:19px;
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 22;
+  display: flex;
+  justify-self: flex-end;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  color: white;
+  font-size: 12px;
+  transform: translateX(5px) translateY(-5px);
+  display: none;
+}
+#ViewNoti{
+  background-color: #d93030; 
+  border-radius: 100%; 
+  width: 19px;
+  height:19px;
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 22;
+  display: flex;
+  justify-self: flex-end;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  color: white;
+  font-size: 12px;
+  transform: translateX(5px) translateY(-5px);
 }
 #profile-Icon:hover{
   animation:button-game-animation 10s ease infinite;
@@ -145,8 +228,8 @@ header{
 .text-profile{
   display: flex;
   align-items:center;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 1em;
+  margin-right: 1em;
   font-size: 16px;
   font-weight: bold;
   color: white;
@@ -240,9 +323,9 @@ main{
   margin-left: 5%;
   margin-right: 5%;
   background-color: #21252C;
-
   padding: 20px;
+}
 
- 
-
+.dropdown-content{
+  margin-top: 0.3em;
 }

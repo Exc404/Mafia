@@ -1,40 +1,46 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
-from .models import Profile
-from .forms import EditProfileForm
-
-
-# Create your views here.
+from .models import *
+from .forms import EditProfileForm, FriendsSearchForm
 
 
 def profile(request):
     if request.user.is_authenticated:
-        data = {
-            'user_profile': request.user.profile,
-            'login': request.user.username,
-            'edit': True
-        }
-        return render(request, 'profile/profile.html', data)
+        return redirect(show_profile, request.user.profile.slug)
     else:
         return redirect('login')
 
 
 def show_profile(request, slug):
     showed_profile = get_object_or_404(Profile, slug=slug)
-    if request.user.is_authenticated:
-        user_profile = request.user.profile
-        if showed_profile.pk == user_profile.pk:
-            return redirect('profile')
+    data = {'user_profile': showed_profile}
 
-    data = {
-        'user_profile': showed_profile,
-        'login': '',
-        'edit': False
-    }
-    return render(request, 'profile/profile.html', data)
+    if request.user.is_authenticated and showed_profile == request.user.profile:
+        data['login'] = request.user.username
+        data['edit'] = True
+        return render(request, 'profile/profile.html', data)
+    else:
+        data['login'] = ''
+        data['edit'] = False
+        friendship = request.user.friend.friends.all().filter(pk=showed_profile.pk).exists()
+        if friendship:
+            data['friend'] = True
+        else:
+            if request.user.profile.notice_set.all().filter(sender=showed_profile.related_user).filter(
+                    notice_type=Notice.NoticeType.FRIENDSHIP).exists():
+                data['friendship_notice_get'] = request.user.profile.notice_set.all().get(sender=showed_profile.related_user, notice_type=Notice.NoticeType.FRIENDSHIP).pk
+            elif showed_profile.notice_set.all().filter(sender=request.user).filter(
+                    notice_type=Notice.NoticeType.FRIENDSHIP).exists():
+                data['friendship_notice_send'] = True
+            else:
+                data['not_friend'] = True
+
+    return render(request, 'profile/show_profile.html', data)
+
 
 # def edit_profile(request):
 #     if request.user.is_authenticated:
@@ -75,7 +81,7 @@ def edit_profile(request):
             form = EditProfileForm(request.POST, request.FILES, instance=get_profile)
             if form.is_valid():
                 form.save()
-                return redirect('profile')
+                return redirect(get_profile)
 
         form = EditProfileForm(instance=get_profile)
         data['form'] = form
@@ -91,3 +97,146 @@ def settings_profile(request):
         return render(request, 'profile/profile_settings.html', {'request': request})
     else:
         return redirect('login')
+
+
+def friends_search(request):
+    data = {}
+    if request.user.is_authenticated:
+        data['user_profile'] = request.user.profile
+        data['form'] = FriendsSearchForm(initial={'nickname': 'введите никнейм'})
+        if 'nickname' in request.GET:
+            data['form'] = FriendsSearchForm(request.GET)
+            if data['form'].is_valid():
+                search_nickname = data['form'].cleaned_data['nickname']
+                search_result = Profile.objects.filter(nickname__icontains=search_nickname)
+                if search_result.count() > 0:
+                    data['search_result'] = search_result
+                else:
+                    data['search_result'] = False
+                    data['message'] = 'По вашему запросу ничего не найдено'
+        else:
+            data['message'] = 'Здесь будут перечислены найденные профили'
+
+        return render(request, 'profile/friends_search.html', data)
+    else:
+        return redirect('login')
+
+
+def notice(request):
+    if request.user.is_authenticated:
+        data = {}
+        data['notices'] = Notice.objects.filter(addressee=request.user.profile)
+        data['empty'] = (data['notices'].count() == 0)
+        data['notices'] = reversed(data['notices'])
+        return render(request, 'profile/notice.html', data)
+    else:
+        return redirect('login')
+
+
+def friends_list(request):
+    if request.user.is_authenticated:
+        data = {}
+        data['friends'] = Friend.objects.get(related_user=request.user).friends.all()
+        return render(request, 'profile/friends_list.html', data)
+    else:
+        return redirect('login')
+
+
+@csrf_exempt
+def delete_notice(request, record_id):
+    response = {'notice_id': record_id}
+    get_notice = Notice.objects.get(pk=record_id)
+
+    if get_notice.notice_type == Notice.NoticeType.FRIENDSHIP:
+        response_notice = Notice()
+        response_notice.notice_type = Notice.NoticeType.INFO
+        response_notice.text_message = "Ваша заявка в друзья была отклонена!"
+        response_notice.addressee = get_notice.sender.profile
+        response_notice.sender = get_notice.addressee.related_user
+        response_notice.save()
+
+    get_notice.delete()
+    response['message'] = 'Запись успешно удалена.'
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def add_notice(request):
+    response = {'notice_id': request.POST.get("record_id")}
+    try:
+        get_notice = Notice.objects.get(pk=int(request.POST.get("record_id")))
+
+        user1 = get_notice.sender
+        user2 = get_notice.addressee.related_user
+
+        user1.friend.friends.add(user2.profile)
+        user2.friend.friends.add(user1.profile)
+
+        response_notice = Notice()
+        response_notice.notice_type = Notice.NoticeType.INFO
+        response_notice.text_message = "принял вашу заявку в друзья!"
+        response_notice.sender = user2
+        response_notice.addressee = user1.profile
+        response_notice.save()
+
+        get_notice.delete()
+        response['message'] = 'Запись успешно удалена.'
+    except Exception:
+        response['message'] = 'ERROR'
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def add_friendship_notice(request, slug):
+    sender = request.user
+    addressee = Profile.objects.get(slug=slug)
+
+    response_notice = Notice()
+    response_notice.notice_type = Notice.NoticeType.FRIENDSHIP
+    response_notice.text_message = "Заявка отправлена"
+    response_notice.sender = sender
+    response_notice.addressee = addressee
+    response_notice.save()
+
+    response = {'message': 'Уведомление отправлено'}
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def delete_friendship_notice(request, slug):
+    profile1 = request.user.profile
+    profile2 = Profile.objects.get(slug=slug)
+
+    profile1.related_user.friend.friends.remove(profile2)
+    profile2.related_user.friend.friends.remove(profile1)
+
+    response_notice = Notice()
+    response_notice.notice_type = Notice.NoticeType.INFO
+    response_notice.text_message = "Вас удалил из друзей!"
+    response_notice.sender = profile1.related_user
+    response_notice.addressee = profile2
+    response_notice.save()
+
+    response = {'message': 'Уведомление отправлено'}
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def new_notices_check_view(request):
+    if request.method == "POST":
+
+        htmlCode = ""
+        notices = Notice.objects.filter(addressee=request.user.profile)
+
+
+        if (notices.count() > 0):
+            k = notices.count() - 1
+            while k >= 0:
+                htmlCode += render_to_string("profile/notices_pack_ajax.html", {'notice': notices[k]})
+                k -= 1
+        else:
+            htmlCode += "<tr id='notnoticerecord' style='text-align: center;'><td style='text-align: center;'>Уведомлений нет</td><td></td></tr>"
+
+        response = {'message': 'Кол-во проверено', "htmlCode": htmlCode}
+        return JsonResponse(response)

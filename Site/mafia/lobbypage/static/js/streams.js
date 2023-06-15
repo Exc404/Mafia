@@ -1,40 +1,56 @@
 let urlTemp = window.location.host
+
 let url = 'ws://' + urlTemp + '/ws/socket-server/' + room_name + '/'
+
 console.log(url)
+
 const testSocket = new WebSocket(url)
-testSocket.onopen = () => testSocket.send(JSON.stringify({
-    'username': user_name
-}))
+
+testSocket.onopen = function(){
+    console.log("GAME: ROLES", Roles)
+    console.log("GAME: PK", user_pk)
+    if (is_game == 1){
+        chatlock = true
+        votelock = true
+    } 
+    testSocket.send(JSON.stringify({
+        'username': user_name,
+        'pk' : user_pk,
+    }))
+}
 
 let inputForm = document.getElementById('messageInputForm')
+
 inputForm.addEventListener('submit', (e) => {
     e.preventDefault()
-    let message = e.target.messageForm.value
-    if (message === "iliveindarkness") {chatlock = false} // это надо удалить...
-    if (chatlock==false){ 
-        testSocket.send(JSON.stringify({
-            'message': message
-        }))
+    if (chatlock === false){
+        let message = e.target.messageForm.value
+        if(message!="") {
+            message = user_name + ": " + message
+            testSocket.send(JSON.stringify({
+                'message': message
+            }))
+        }
     }
-    else 
-    {
-        message = "<div><p>На данный момент чат вам недоступен! Дождитесь своей очереди!</p></div>"
-        messages.insertAdjacentHTML('beforeend', message)
+    else {
+        messages.insertAdjacentHTML('beforeend', '<div><p style="color:#1D943C"> У вас чатлок!</p></div>')
+        messages.scrollTop = messages.scrollHeight
     }
     inputForm.reset()
 })
+
 window.onload = function () {
-    let startButton = document.getElementById('startgame')          //СТАРТУЮ ИГРУ, отсылаю список юзеров-хуюзеров
+    let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
-        if (is_host) {
-            alert("Вы запустили игру")
-            testSocket.send(JSON.stringify({    
-                'users': UID_ARR,
-                'hostuid': UID
-            }))
+        console.log("GAME: AMOUNT", UID_ARR.length + 1)
+        if (UID_ARR.length + 1 < 1){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!5
+            alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
-        else alert("Вы не являетесь создателем комнаты")
-        return false
+        else{
+        testSocket.send(JSON.stringify({
+            'are_you_host' : "are_you_host"
+        }))
+        }
     }
 }
 
@@ -43,11 +59,7 @@ let CHANNEL = room_name
 let TOKEN = token
 let UID
 let UID_ARR = []
-let chatlock = false
-let votelock = false
-let voted_for = ""
-var votelist = new Map()
-
+let IS_NICK_WRITTEN = []
 
 const client = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'})
 
@@ -60,14 +72,16 @@ let joinAndDisplayLocalStream = async () => {
     client.on('user-left', handleUserLeft)
     alert("Начался шпионаж за твоей жопой!")
     UID = await client.join(APP_ID, CHANNEL, TOKEN, null)
+    setInterval(() => testSocket.send(JSON.stringify({
+        'user_name' : user_name,
+        'uid' : UID,
+        'pk' : user_pk
+    })), 100)
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
     let player = `<div class="video-container" id = "user-container-${UID}">
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
-                    <div class = "icon-wrapper">
-                    <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
-                    </div>
-                    </div>`
+                    <div class = "vote-control" id = "vote-${UID}" style=""/></div>`+``
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
     document.getElementById(`vote-${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
@@ -80,33 +94,33 @@ let handleUserJoined = async (user, mediaType) => {
     if(mediaType === "video") {
         let player = document.getElementById(`user-container-${user.uid}`)
         if(player != null){
+            IS_NICK_WRITTEN[UID_ARR.indexOf(user.uid.toString())] = false
             player.remove()
         }
-        player = `<div class="video-container" id = "user-container-${user.uid}">
-                    <div class="video-player" id = "user-${user.uid}"></div>
-                    <div class = "icon-wrapper">
-                    <img class = "control-icon" id = "vote-${user.uid}" src = "/./static/img/votemark.jpg"/>
-                    </div>
-                </div>`
+        player =`<div class="video-container" id = "user-container-${user.uid}">
+        <div class="video-player" id = "user-${user.uid}"></div>
+        <div class = "vote-control" id = "vote-${user.uid}" style=""/></div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
         document.getElementById(`vote-${user.uid}`).onclick = vote
-        user.videoTrack.play(`user-${user.uid}`)
-        setInterval(function() {testSocket.send(JSON.stringify({
-            'user_name' : user_name,
-            'uid' : UID
-        }))}, 2000)
+        if(!is_game)
+            user.videoTrack.play(`user-${user.uid}`)
     }
     if(mediaType === "audio") {
-        user.audioTrack.play()
+        if(!is_game)
+            user.audioTrack.play()
     }
 }
 
 let handleUserLeft = async (user) => {
-    console.log("VOTE: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
-    UID_ARR = UID_ARR.map(el => el === user.uid ? 0 : el)
+    UID_ARR = UID_ARR.map(el => el === user.uid.toString() ? 0 : el)
+    for(let i = 0; i < UID_ARR.length; i++)
+        if(UID_ARR[i] === 0)
+            IS_NICK_WRITTEN[i] = 0
     UID_ARR = UID_ARR.filter(el => el === 0 ? false : true)
+    IS_NICK_WRITTEN = IS_NICK_WRITTEN.filter(el => el === 0 ? false : true)
     delete remoteUsers[user.uid]
-    document.getElementById(`user-container-${user.uid}`).remove()
+    if(!is_game)
+        document.getElementById(`user-container-${user.uid}`).remove()
 }
 
 let leaveAndRemoveLocalStream = async () => {
@@ -114,7 +128,6 @@ let leaveAndRemoveLocalStream = async () => {
         localTracks[i].stop()
         localTracks[i].close()
     }
-
     await client.leave()
     window.close()
     window.open('/', '_self')
@@ -142,179 +155,324 @@ let toggleMic = async (e) => {
     }
 }
 
-let FullMute = async (e) => {
-    await localTracks[0].setMuted(true)
-    await localTracks[1].setMuted(true)
-}
-
-let FullUnMute = async (e) => {
-    await localTracks[0].setMuted(false)
-    await localTracks[1].setMuted(false)
-}
-
-let vote = function (e) {
-    if (votelock === false){
-        console.log("VOTE: ГОЛОСОВАНИЕ")
-        let votename = e.target.id
-        votelock = true
-        console.log("VOTE votename:",votename)
-        testSocket.send(JSON.stringify({
-            'vote_uid' : votename
-        }))
+let FullMute = async () => {
+    for(let i in remoteUsers) {
+        remoteUsers[i].videoTrack.stop()
+        remoteUsers[i].audioTrack.stop()
     }
-    else {console.log("VOTE: Сейчас не ваше время голосовать.")}
+    localTracks[1].stop()
+}
+
+let RoleUnMute = async () => {
+    for(let i in remoteUsers) {
+        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] != "spec"){
+            if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] === MyRole) {
+                remoteUsers[i].audioTrack.play()
+            }
+            remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
+        }
+    }
+    localTracks[1].play(`user-${UID}`)
+}
+
+let FullUnMute = async () => {
+    for(let i in remoteUsers) {
+        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] != "spec") {
+            remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
+            remoteUsers[i].audioTrack.play()
+        }
+    }
+    localTracks[1].play(`user-${UID}`)
+}
+
+
+//таймер
+timerId=null
+
+function startTimer(duration, display) {
+    if(timerId)clearInterval(timerId);
+    duration*=100
+    var timer = duration, minutes, seconds;
+    console.log('starttick')
+    
+        timerId = setInterval(function () {
+        minutes = parseInt(timer / 6000, 10);
+        seconds = parseInt(timer % 6000/100, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+        stripe = document.getElementById('time-stripe-progress');
+        stripe.style.width=""+(1-timer/duration)*100+"%"
+
+        timer-=1
+        console.log('tick')
+        if(timer == -1)clearInterval(timerId);
+    }, 10);
+
 }
 
 
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
-    //console.log("DATA:", data)
     if (data.type === 'chat') {
-        let messages = document.getElementById('messages')
-        let htmlAdding = '<div><p>' + data.message + '</p></div>'
-        messages.insertAdjacentHTML('beforeend', htmlAdding)
-    }
-    if(data.type === 'user_info') {
-        let super_test = document.getElementById(`user-container-${data.uid}`)
-        if(`user-container-${data.uid}` != `user-container-${UID}` && UID_ARR.indexOf(data.uid) === -1) {
-            super_test.insertAdjacentHTML('afterbegin', `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
-            UID_ARR.push(data.uid)
-        }
-    }
-    if (data.type === 'game_roles') {               //Рассылаем роли игрокам
-        let roles = data.roleslist
-        testSocket.send(JSON.stringify({
-            'roleslist' : roles,
-            'socket_uid' : UID
-        }))
-        GameProcess(roles)
-    }
-    if (data.type === 'vote_sending') {               //Принимаем голоса
-        let vote = data.vote
-        console.log("VOTE: GOT", vote)
-        votelist[vote]++
-        console.log("VOTE votelist:", votelist)
-    }
-}
-
-//я понял что игра в отдельном классе это буллщит.... так что.... она будет здесть... простите...
-
-
-let GameProcess = async (players) => {
-    let playerlist = players
-    for (let a in playerlist){
-        votelist[a] = 0
-    }
-    console.log("VOTE votelist: ", votelist)
-    let voteresult = ""
-    let killresult = ""
-    let healresult = ""
-    let checkresult = ""
-    let rolespath = ["mafia", "doc", "com", "civil"]
-    let rolesnames = ["мафия", "доктор", "комиссар", "гражданские"]
-    let turn = -1;
-    console.log(playerlist)
-    let htmlAdding = '<div><p>Ваша роль - ' + playerlist[UID] + '</p></div>'
-    messages.insertAdjacentHTML('beforeend', htmlAdding)
-    htmlAdding = '<div><p>Начинается ночь! Город засыпает...</p></div>'
-    messages.insertAdjacentHTML('beforeend', htmlAdding)
-    let gametimer = setInterval(function(){
-        voteresult = ""
-        for (let i =0; i<UID_ARR.length;i++){
-            console.log("VOTE button:", document.getElementById(`vote-${UID_ARR[i]}`))
-        }
-        if (turn!=-1)
-        {
-            let tempresult = ""
-            let tempvalue = 0
-            let amount_of_max = 0
-            for(let userid in votelist){
-                if (votelist[userid] > tempvalue) 
-                {
-                    tempvalue = votelist[userid]
-                    tempresult = userid
-                }
-            }
-            console.log("VOTE: tempvalue", tempvalue)
-            for(let userid in votelist){
-                if (votelist[userid] === tempvalue) 
-                {
-                    amount_of_max++
-                }
-            }
-            console.log("VOTE: amount", amount_of_max)
-            if (amount_of_max===1)
-            { 
-                
-                switch(turn) {
-                    case 0: 
-                        killresult = tempresult;
-                        messages.insertAdjacentHTML('beforeend', "<div><p>Мафия выбрала свою цель!</p></div>");
-                        break;
-                    case 1:
-                         healresult = tempresult;
-                         messages.insertAdjacentHTML('beforeend', "<div><p>Доктор выбрал, кого спасать!</p></div>");
-                         break;
-                    case 2: 
-                        checkresult = tempresult;
-                        messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар выбрал, кого проверить этой ночью</p></div>");
-                        break;
-                    case 3:
-                         voteresult = tempresult;
-                         messages.insertAdjacentHTML('beforeend', "<div><p>Голосование проведено! Выбранный будет убит!</p></div>");
-                         break;
-                }
-            }
-            else {
-                messages.insertAdjacentHTML('beforeend', "<div><p>Голосование сорвано! Одинаковое количество голосов!</p></div>");
-            }
-            for (let i in votelist) {votelist[i]=0}
-            };
-        turn+=1
-        if (turn === 4) {
-            turn = 0
-            messages.insertAdjacentHTML('beforeend', "<div><p>На дневном голосовании убили игрока " + voteresult + ". Его роль - " + playerlist[voteresult] + "</p></div>");
-            voteresult = ""
-        }
-        if (turn === 3){
-            if (killresult!="")
-            {
-                if (killresult === healresult){
-                    messages.insertAdjacentHTML('beforeend', "<div><p>Доктор успешно предотвратил убийство! Все живы!</p></div>");
-                }
-                else {
-                    messages.insertAdjacentHTML('beforeend', "<div><p>Мафия убила игрока " + killresult + ". Его роль - " + playerlist[killresult] + "</p></div>");
-                }
-            }
-            else {
-                messages.insertAdjacentHTML('beforeend', "<div><p>Мафия сегодня более благосклонна к жителям... все остались целы</p></div>");
-            }
-            if (checkresult!="")
-            {
-                messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар сделал проверку и выяснил, что роль его подозреваемого - " + playerlist[checkresult] + "</p></div>");  //добавить результат проверки
+        if (chatlock === false){
+            let messages = document.getElementById('messages')
+            if (turn === 0 && MyRole==="mafia"){
+                htmlAdding = '<div><p style="color:#FF0000">' + data.message + '</p></div>'
             }
             else{
-                messages.insertAdjacentHTML('beforeend', "<div><p>Комиссар проспал свою смену... проверок не было</p></div>");
+                htmlAdding = '<div><p>' + data.message + '</p></div>'
             }
-            killresult = ""
-            healresult = ""
-            checkresult = ""
-        } 
-        console.log("TURN: ", turn, rolespath[turn])
-        messages.insertAdjacentHTML('beforeend', '<div><p>сейчас ход: ' + rolesnames[turn] + '</p></div>')
-        if (playerlist[UID] != rolespath[turn] && turn !=3){
-            chatlock = true
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+            messages.insertAdjacentHTML('beforeend', htmlAdding)
+            messages.scrollTop = messages.scrollHeight
+        }
+    }
+    if(data.type === 'user_info' && data.uid != UID.toString()) {
+        if(UID_ARR.indexOf(data.uid) === -1) {
+            UID_ARR.push(data.uid)
+            console.log("GAME: GOT PK + UID", data.pk," ", data.uid, " ", data.user_name)
+            PK_SET['vote-' + data.uid] = data.pk
+            console.log("GAME:", PK_SET)
+            IS_NICK_WRITTEN.push(false)
+        }
+        if(!IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)]) {
+            let user_div = document.getElementById(`user-container-${data.uid}`)
+            if(user_div != null) {
+                user_div.insertAdjacentHTML("afterbegin", `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
+                IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)] = true
+            }
+            let str = 'vote-' + data.uid
+            let res_uid = ''
+            for(let i in PK_SET) {
+                if(PK_SET[i] === data.pk && i != str) {
+                    res_uid = i.substring(5)
+                    let el = document.getElementById(`user-container-${res_uid}`)
+                    if(el != null)
+                        document.getElementById(`user-container-${res_uid}`).remove()
+                    delete PK_SET[i]
+                }
+            }
+        }
+    }
+    if(data.type === 'start_info') {
+        Roles = data.rolelist
+        is_game = true
+        console.log("GAME: ROLES", Roles)
+        MyRole = Roles[user_pk]
+
+        //id="блок роль" class = MyRole
+        document.getElementById('invate').style.display="none"
+        document.getElementById('info-card').style.display="block"
+        if(MyRole == "mafia")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Мафия"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mafiozi.jpg" width="100%"/> '
+        }
+        else if(MyRole == "doc")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Доктор"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/dok.jpg" width="100%"/> '
+        }
+        else if(MyRole == "com")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Комиссар"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/com.jpg" width="100%"/> '
+        }     
+        else if(MyRole == "civil")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Гражданин"
+        if(Math.floor(Math.random() * 2))
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_1.jpg" width="100%"/> '
+        else
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_2.jpg" width="100%"/> '
+        }
+        
+        console.log("GAME: UID", UID)
+        PK_SET['vote-'+UID] = user_pk
+        let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
+        messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
+    }
+    
+    if (data.type === 'update_roles'){
+        Roles = data.rolelist
+        MyRole = data.rolelist[user_pk]
+        if(document.getElementById('my-role') === null)
+            document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">${MyRole}</span>`)
+    }
+
+    if (data.type === "am_i_host"){
+        if (data.is_host === true){
+            testSocket.send(JSON.stringify({
+                'start' : 'ЗАРАБОТАЛО БЛЯТЬ'
+            }))
+        }
+        else alert("Вы не являетесь создателем комнаты")
+        return false
+    }
+
+    if(data.type === 'turn_info'){
+        //60 сек - 3 4, 20 - 0 1 2 
+        //вывод имя фазы
+        var div = document.getElementById('name-event');
+        div.innerHTML = Rolenames[data.turnnumber];
+
+        //запуск таймера
+     
+        var time=20
+        if(data.turnnumber<3)time=20
+        display = document.querySelector('#time');
+        startTimer(time-1, display);
+        
+        
+
+
+        turn = data.turnnumber // - идекс фазы
+        console.log("GAME STAGE: ", turn)
+        chatlock = data.chatlock
+        votelock = data.votelock
+        
+        if(votelock)
+            for(let i in PK_SET)document.getElementById(i).style.display="none"
+        else
+            for(let i in PK_SET)document.getElementById(i).style.display="block"
+        
+
+        
+
+        if(chatlock && Roles[user_pk] != "spec") {
+            console.log("GAME: MUTE", turn)
             FullMute()
-            votelock = true
+        }
+        else if(chatlock && Roles[user_pk] === "spec" && (turn === 3 || turn === 4)) {
+            console.log("GAME: SPEC", turn)
+            FullUnMute()
+        }
+        else if(!chatlock) {
+            console.log("GAME: UNMUTE", turn)
+            FullMute()
+            if(turn != 3 && turn != 4)
+                RoleUnMute()
+            else
+                FullUnMute()
         }
         else {
-            chatlock = false
-            FullUnMute()
-            votelock = false
+            FullMute()
         }
-    },7000)
-}
+        console.log("CHATLOCK:", data.chatlock)
+        let warning = '<div><p style="color:#1D943C"> ТЕКУЩИЙ ХОД: ' + Rolenames[turn] +'</p></div>'
+        messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
+    }
+    
+    // if(data.type === 'vote_result'){
+    //     let resultname = data.resultname
+    //     let warning = '<div><p style="color:#1D943C"> Результат голосования: ' + resultname +'</p></div>'
+    //     resultname = ""
+    //     messages.insertAdjacentHTML('beforeend', warning)
+    // }
 
+
+    if(data.type === 'morning_results'){
+        let killed = data.killtarget
+        let dead_name = data.targetname
+        let if_saved = data.healresult
+        let check = data.checked
+        if (killed === ""){
+            let warning = '<div><p style="color:#1D943C"> УБИЙСТВА НЕ ПРОИЗОШЛО! ВСЕ ЖИВЫ!</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
+        }
+        else {
+            if (if_saved) {
+                let warning = '<div><p style="color:#1D943C"> ДОКТОРУ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! ВСЕ ЖИВЫ!</p></div>'
+                messages.insertAdjacentHTML('beforeend', warning)
+                messages.scrollTop = messages.scrollHeight
+            }
+            else{
+                console.log('GAME: rolelist', Roles)
+                console.log('GAME: killed', killed)
+                let warning = '<div><p style="color:#1D943C"> ДОКТОРУ НЕ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! Был убит игрок '+ dead_name +'. Его роль - ' + Roles[killed] + '</p></div>'
+                Roles[killed] = "spec"
+                for(let i in PK_SET) {
+                    if(PK_SET[i].toString() === killed) {
+                        document.getElementById(i).src = '/./static/img/death.png'
+                    }
+                }
+                if(killed === user_pk.toString()) {
+                    document.getElementById('my-role').remove()
+                    document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">ВЫ МЕРТВЫ(${MyRole})</span>`)
+                }
+                messages.insertAdjacentHTML('beforeend', warning)
+                messages.scrollTop = messages.scrollHeight
+            }
+        }
+        if (check != ""){
+            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
+        }
+        else {
+            let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
+            messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
+        }
+        killed = ""
+        dead_name = ""
+        if_saved = 0
+        check = ""
+    }
+
+    if(data.type === "night_results"){
+        let killed = data.votetarget
+        let killed_name = data.targetname
+        let warning = '<div><p style="color:#1D943C"> В результате дневного голосования был убит игрок '+ killed_name +'. Его роль - ' + Roles[killed] + '</p></div>'
+        Roles[killed] = "spec"
+        for(let i in PK_SET) {
+            if(PK_SET[i].toString() === killed) {
+                document.getElementById(i).src = '/./static/img/death.png'
+            }
+        }
+        if(killed === user_pk.toString()) {
+            document.getElementById('my-role').remove()
+            document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">ВЫ МЕРТВЫ(${MyRole})</span>`)
+        }
+        messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
+    }
+
+    if (data.type === "end_game"){
+        let winner = ""
+        if (data.winner === "0"){
+            winner = "мафии"
+        }
+        else{
+            winner = "мирных"
+        }
+        chatlock = false
+        votelock = true
+        MyRole = ""
+        turn = 924
+        Roles = {}
+        FullUnMute()
+        is_game = false
+        document.getElementById('my-role').remove()
+        let warning = '<div><p style="color:#1D943C">ИГРА ОКОНЧЕНА! Победу одержала сторона ' + winner + '!</p></div>'
+        for(let i in PK_SET) {
+            document.getElementById(i).src = '/./static/img/votemark.jpg'
+            let user_uid = i.substring(5)
+            if(UID_ARR.find(el => el === user_uid) === undefined && user_uid != UID.toString()) {
+                document.getElementById(`user-container-${user_uid}`).remove()
+                delete PK_SET[i]
+            }
+        }
+        messages.insertAdjacentHTML('beforeend', warning)
+    }
+
+}
 
 joinAndDisplayLocalStream()
 

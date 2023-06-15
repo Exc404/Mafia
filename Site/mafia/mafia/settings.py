@@ -30,12 +30,15 @@ SECRET_KEY = 'django-insecure-gy69qla59c&4f147&(%s#morg_j4#dr-2ai2yjonngq^yckm5d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = [] #"26.27.182.247 --- 26.18.69.65 --- 26.55.222.192"
+
 
 # Application definition
 
 INSTALLED_APPS = [
     'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -48,7 +51,6 @@ INSTALLED_APPS = [
     'user_profile.apps.UserProfileConfig',
     'lobbypage.apps.LobbypageConfig',
     'django_cleanup.apps.CleanupConfig',
-    'channels'
 ]
 
 SITE_ID = 1
@@ -120,11 +122,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = 'Europe/Istanbul' #UTC +2
+USE_TZ = True
 USE_I18N = True
 
-USE_TZ = True
 
 STATIC_URL = 'static/'
 

@@ -1,8 +1,95 @@
+/* Я что-то делаю */
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: sans-serif;
+    width:100vw;
+    height: 100vh;
+  
+}
+main{
+    display: flex;
+    width:100%;
+    height: 100%;
+}
+#main-block{
+    width: 100%;
+    height: 100vh;
+    background-color: burlywood;
+    display: flex;
+    flex-direction: column;
+}
+#event{
+    width: 100%;
+    height: 25px;
+    background-color: white;
+
+}
+#time-stripe{
+    width: 100%;
+    height: 10px;
+    background-color: rgb(56, 56, 56);
+}
+
+#time-stripe-progress{
+    width: 0%;
+    height: 10px;
+    background-color: red;
+
+}
+
+
+
+
+
+
+
+#right-block{
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #343f50;
+}
+.buttons{
+    background-color: #252e3c;
+    display: flex;
+    justify-content: flex-end;
+    height: 35px;
+}
+.frends-or-info{
+    width: 100%;
+    height: 365px;
+    background-color: #252e3c;
+}
+#info-card{
+    background-color: rgb(138, 32, 32);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+.card-img{
+    height: 340px;
+    overflow: hidden;
+}
+#chat{
+    width: 100%;
+    height: 500px;
+    background-color: #343f50;
+}
+
+
+
+
 /* стили для камер */
 
-:root {
+/* :root {
     --shaddow:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);
-}
+} */
 
 #room-name-wrapper {
     text-align: center;
@@ -12,29 +99,36 @@
 #video-streams {
     display: flex;
     flex-wrap: wrap;
-    height: 85vh;
-    width: 75%;
-    margin: 0 auto;
+
+    margin: 0;
+
 }
 
 .video-player > * {
-    border-radius: 5px;
+    border-radius: 0px;
 }
 
 .user-name-wrapper {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+
+    width: min-content;
+    height: max-content;
     z-index: 9999;
     background-color: rgba(0, 0, 0, 0.3);
     padding: 10px;
     border-radius: 5px;
     font-size: 14px;
     color: #fff;
+    grid-area: 1 / 1;
+
 }
 
 .video-container {
-    flex-basis: 500px;
+    background-color: aqua;
+    display: grid;
+    width: 25%;
+    aspect-ratio: 3 / 2;
+
+    /* flex-basis: 500px;
     flex-grow: 1;
     max-height: 100%;
     min-height: 350px;
@@ -44,7 +138,7 @@
     background-color: rgba(198, 202, 219, 1);
     position: relative;
 
-    display: grid;
+    display: grid; */
 }
 
 .video-player {
@@ -60,7 +154,18 @@
 }
 
 /* ---- КНОПОЧКИ ----- */
-
+.vote-control{
+    display: none;
+    height: 100%;
+    width: 100%;
+    opacity: 0.5;
+    box-shadow: inset 0px 0px 35px 25px rgba(0, 0, 0, 1);
+    grid-area: 1 / 1;
+    z-index: 3;
+}
+.vote-control:hover{
+    box-shadow: inset 0px 0px 35px 25px rgba(255, 0, 0, 1);
+}
 #controls-wrapper {
     display: flex;
     width: 100%;
@@ -73,19 +178,40 @@
 }
 
 .control-icon {
-    height: 20px;
-    width: 20px;
+
     box-shadow: var(--shadow);
-    background-color: #fff;
+    background-color: #252e3c;
     cursor: pointer;
-    padding: 10px;
+    padding: 3px;
+    margin: 2px;
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+
+    
 }
 
 #leave-btn {
+    margin: 5px;
     background-color: rgb(255, 80, 80, 1);
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 5px;
+    
+    margin-left: auto;
+    margin-right: 0.5em;
+    
 }
-
+#startgame{
+    margin: 5px;
+    background-color: rgb(17, 201, 66);
+    padding-bottom: 3px;
+    text-decoration: none;
+    justify-self: flex-start;
+    margin-left: 0.5em;
+}
 
 .video-player, .icon-wrapper{
     grid-area: 1 / 1;
