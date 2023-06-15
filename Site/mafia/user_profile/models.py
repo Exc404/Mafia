@@ -105,3 +105,8 @@ class Friend(models.Model):
     def save(self, *args, **kwargs):
         super(Friend, self).save(*args, **kwargs)
 
+
+    class Meta:
+        verbose_name = "Друзья"
+        verbose_name_plural = "Друзья"
+

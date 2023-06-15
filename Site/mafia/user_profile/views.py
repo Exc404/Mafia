@@ -32,7 +32,7 @@ def show_profile(request, slug):
         else:
             if request.user.profile.notice_set.all().filter(sender=showed_profile.related_user).filter(
                     notice_type=Notice.NoticeType.FRIENDSHIP).exists():
-                data['friendship_notice_get'] = True
+                data['friendship_notice_get'] = request.user.profile.notice_set.all().get(sender=showed_profile.related_user, notice_type=Notice.NoticeType.FRIENDSHIP).pk
             elif showed_profile.notice_set.all().filter(sender=request.user).filter(
                     notice_type=Notice.NoticeType.FRIENDSHIP).exists():
                 data['friendship_notice_send'] = True
@@ -161,25 +161,29 @@ def delete_notice(request, record_id):
 
 
 @csrf_exempt
-def add_notice(request, record_id):
-    response = {'notice_id': record_id}
-    get_notice = Notice.objects.get(pk=record_id)
+def add_notice(request):
+    response = {'notice_id': request.POST.get("record_id")}
+    try:
+        get_notice = Notice.objects.get(pk=int(request.POST.get("record_id")))
 
-    user1 = get_notice.sender
-    user2 = get_notice.addressee.related_user
+        user1 = get_notice.sender
+        user2 = get_notice.addressee.related_user
 
-    user1.friend.friends.add(user2.profile)
-    user2.friend.friends.add(user1.profile)
+        user1.friend.friends.add(user2.profile)
+        user2.friend.friends.add(user1.profile)
 
-    response_notice = Notice()
-    response_notice.notice_type = Notice.NoticeType.INFO
-    response_notice.text_message = "принял вашу заявку в друзья!"
-    response_notice.sender = user2
-    response_notice.addressee = user1.profile
-    response_notice.save()
+        response_notice = Notice()
+        response_notice.notice_type = Notice.NoticeType.INFO
+        response_notice.text_message = "принял вашу заявку в друзья!"
+        response_notice.sender = user2
+        response_notice.addressee = user1.profile
+        response_notice.save()
 
-    get_notice.delete()
-    response['message'] = 'Запись успешно удалена.'
+        get_notice.delete()
+        response['message'] = 'Запись успешно удалена.'
+    except Exception:
+        response['message'] = 'ERROR'
+
     return JsonResponse(response)
 
 
@@ -221,16 +225,18 @@ def delete_friendship_notice(request, slug):
 @csrf_exempt
 def new_notices_check_view(request):
     if request.method == "POST":
-        notices_count_on_page = int(request.POST.get('notices_count'))
 
         htmlCode = ""
         notices = Notice.objects.filter(addressee=request.user.profile)
 
-        if notices.count() > notices_count_on_page:
+
+        if (notices.count() > 0):
             k = notices.count() - 1
-            while k >= notices_count_on_page:
+            while k >= 0:
                 htmlCode += render_to_string("profile/notices_pack_ajax.html", {'notice': notices[k]})
                 k -= 1
+        else:
+            htmlCode += "<tr id='notnoticerecord' style='text-align: center;'><td style='text-align: center;'>Уведомлений нет</td><td></td></tr>"
 
         response = {'message': 'Кол-во проверено', "htmlCode": htmlCode}
         return JsonResponse(response)

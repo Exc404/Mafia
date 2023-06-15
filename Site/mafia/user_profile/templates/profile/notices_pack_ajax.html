@@ -19,7 +19,9 @@
                 <div class="datatime">{{notice.get_datetime}}</div>
                 <p><a class="links" href="{{ notice.sender.profile.get_absolute_url }}">{{ notice.sender.profile.nickname }}</a> приглашает вас в игру!</p>
               </td>
-              <td></td>
+              <td>
+                <button class="delete-button" data-record-id="{{ notice.id }}">✔</button>
+              </td>
             {% endif %}
             {% if notice.notice_type == 'IF' %}
               <td>
