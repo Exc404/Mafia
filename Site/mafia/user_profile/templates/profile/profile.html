@@ -1,10 +1,11 @@
 {% extends 'profile_base.html' %}
  
 {% block title %}Профиль{% endblock %}
- 
+{% block script %}{% endblock %}
+{% block style %}{% endblock %}
 {% block content %}
 <div id="head">
-	<a class="ExitButton" href="{% url "mainpage" %}">🡸</a>
+	<a class="ExitButton" onclick="javascript:history.back(); return false;">🡸</a>
 	<h1 style="margin-bottom: 0em; margin-top: 0.5em;">Профиль</h1>
 </div>
 <div class="content">
@@ -19,9 +20,39 @@
 					<a id ="EditProfile" href="{% url "edit_profile" %}">Изменить</a>
 				</div>
 			{%else%}
-				<div class="profile_data" style="align-items: center; margin-bottom: auto; margin-top: auto;">
+				{% if friend %}
+				<div class="profile_data" >
 					<p id ="Nickname">{{user_profile.nickname}}</p>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;margin-bottom: 1px;">
+					<button id ="EditProfile" class='delete_friendship-button'>Удалить из друзей &#10134;</button>
+					</div>
 				</div>
+				{% endif %}
+				{% if friendship_notice_get %}
+				<div class="profile_data">
+					<p id ="Nickname">{{user_profile.nickname}}</p>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;">
+						<a id ="EditProfile">Одобрить заявку &#10133;</a>
+					</div>
+					
+				</div>
+				{% endif %}
+				{% if not_friend %}
+				<div class="profile_data">
+					<p id ="Nickname">{{user_profile.nickname}}</p>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;">
+						<button id ="EditProfile" class='friendship-button'>Добавить в друзья</button>
+					</div>
+					
+				</div>
+				{% endif %}
+				{% if friendship_notice_send %}
+				<div class="profile_data">
+					<!-- style="align-items: center; margin-bottom: auto; margin-top: auto;" -->
+					<p id ="Nickname">{{user_profile.nickname}}</p>
+					<div style="height: 26px;display: block;margin-top: auto;align-self:flex-end;"></div>
+				</div>
+				{% endif %}
 			{% endif %}
 	</div>
 </div>

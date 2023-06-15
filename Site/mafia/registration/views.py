@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMessage, send_mail, BadHeaderError
-from user_profile.models import Profile
+from user_profile.models import Profile, Friend
 from .forms import RegistrForm
 from django.contrib.auth.forms import PasswordChangeForm
 from .token import account_activation_token
@@ -92,7 +92,7 @@ def regist(request):
             msg.content_subtype = 'html'
             try:
                 msg.send()
-                #delete_inactive_accounts.apply_async(args=(user.pk,), eta=timezone.now() + timedelta(minutes=5))
+                # delete_inactive_accounts.apply_async(args=(user.pk,), eta=timezone.now() + timedelta(minutes=5))
             except Exception:
                 return render(request, 'registration/send_mail_error.html', {'error_text': 'Ошибка отправки '
                                                                                            'ссылки для сброса '
@@ -119,12 +119,19 @@ def activate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
+
         user.is_active = True
+
         user_profile = Profile()
         user_profile.nickname = random.choice(nicknames_patterns)
         user_profile.related_user = user
+
+        user_friend = Friend()
+        user_friend.related_user = user
+
         user.save()
         user_profile.save()
+        user_friend.save()
 
         login(request, user)
 

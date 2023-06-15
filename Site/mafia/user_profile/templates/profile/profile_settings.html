@@ -1,6 +1,6 @@
 {% extends 'profile_base.html' %}
  
-{% block title %}{% endblock %}
+{% block title %}Настройки{% endblock %}
  
 {% block content %}
 <div id="head">
@@ -27,4 +27,109 @@
 		<button id="stopAudeo" class="VideoBut">Выключить микрофон</button>
 	</div>
 </div>
+<script>
+
+    var video = document.querySelector("#videoElement");
+    var stopVideo = document.querySelector("#stop");
+    var startVideo = document.querySelector("#start");
+
+
+    stopVideo.addEventListener("click", stop, false);
+    startVideo.addEventListener("click", startWebCam, false);
+
+
+    function startWebCam() {
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({video: true})
+                    .then(function (stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function (err0r) {
+                        console.log("Something went wrong!");
+                    });
+        }
+    }
+
+    function stop(e) {
+        var stream = video.srcObject;
+        var tracks = stream.getTracks();
+
+        for (var i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            track.stop();
+        }
+
+        video.srcObject = null;
+    }
+
+
+
+
+
+
+
+    /*Звук*/
+    var audeo = document.querySelector("#AudeoStreem");
+
+    var stopAudeo = document.querySelector("#stopAudeo");
+    var startAudeo = document.querySelector("#startAudeo");
+    stopAudeo.addEventListener("click", stopAudeoL, false);
+    startAudeo.addEventListener("click", startAudeoListener, false);
+
+    var body, num, array, width, context, logo, myElements, analyser, src, height;
+    var exit;
+    body = document.querySelector('#Test-Audeo');
+    num = 40;
+    array = new Uint8Array(num*2);
+    width = 4;
+
+    function startAudeoListener(){
+        exit=0;
+        if(context) {window.requestAnimationFrame(loop);return;}
+
+        for(var i = 0 ; i < num ; i++){
+        logo = document.createElement('div');
+        logo.className = 'logo';
+        logo.style.background = '#594ce5';
+        logo.style.minWidth = width+'px';
+        body.appendChild(logo);
+        }
+
+        myElements = document.getElementsByClassName('logo');
+        context = new AudioContext();
+
+        analyser = context.createAnalyser();
+
+        navigator.mediaDevices.getUserMedia({
+            audio: true
+        }).then(stream => {
+            src = context.createMediaStreamSource(stream);
+            audeo.style.src=src;
+            src.connect(analyser);
+            loop();
+        }).catch(error => {
+            alert(error + '\r\n\ Отклонено. Страница будет обновлена!');
+            location.reload();
+        });
+    }
+
+    function loop() {
+        if(exit==0)window.requestAnimationFrame(loop);
+        else {
+            for(var i = 0 ; i < num ; i++) myElements[i].style.opacity=0;
+            return;
+        }
+
+        analyser.getByteFrequencyData(array);
+        for(var i = 0 ; i < num ; i++){
+            height = array[i+num];
+            myElements[i].style.height = height*0.4+'px';
+            myElements[i].style.maxHeight = 60 +'px';
+            myElements[i].style.opacity = 0.018*height;
+        }
+    }
+    function stopAudeoL(e) {
+        exit=1;
+    }
+</script>
 {% endblock content%}

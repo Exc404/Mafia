@@ -26,7 +26,7 @@ inputForm.addEventListener('submit', (e) => {
     if (chatlock === false){
         let message = e.target.messageForm.value
         if(message!="") {
-            message = user_name + ":" + message
+            message = user_name + ": " + message
             testSocket.send(JSON.stringify({
                 'message': message
             }))
@@ -34,6 +34,7 @@ inputForm.addEventListener('submit', (e) => {
     }
     else {
         messages.insertAdjacentHTML('beforeend', '<div><p style="color:#1D943C"> У вас чатлок!</p></div>')
+        messages.scrollTop = messages.scrollHeight
     }
     inputForm.reset()
 })
@@ -42,7 +43,7 @@ window.onload = function () {
     let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
         console.log("GAME: AMOUNT", UID_ARR.length + 1)
-        if (UID_ARR.length + 1 < 5){
+        if (UID_ARR.length + 1 < 1){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!5
             alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
         else{
@@ -80,10 +81,7 @@ let joinAndDisplayLocalStream = async () => {
     let player = `<div class="video-container" id = "user-container-${UID}">
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
-                    <div class = "icon-wrapper">
-                    <img class = "control-icon" id = "vote-${UID}" src = "/./static/img/votemark.jpg"/>
-                    </div>
-                </div>`
+                    <div class = "vote-control" id = "vote-${UID}" style=""/></div>`+``
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
     document.getElementById(`vote-${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
@@ -99,12 +97,9 @@ let handleUserJoined = async (user, mediaType) => {
             IS_NICK_WRITTEN[UID_ARR.indexOf(user.uid.toString())] = false
             player.remove()
         }
-        player = `<div class="video-container" id = "user-container-${user.uid}">
-                    <div class="video-player" id = "user-${user.uid}"></div>
-                    <div class = "icon-wrapper">
-                    <img class = "control-icon" id = "vote-${user.uid}" src = "/./static/img/votemark.jpg"/>
-                    </div>
-                </div>`
+        player =`<div class="video-container" id = "user-container-${user.uid}">
+        <div class="video-player" id = "user-${user.uid}"></div>
+        <div class = "vote-control" id = "vote-${user.uid}" style=""/></div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
         document.getElementById(`vote-${user.uid}`).onclick = vote
         if(!is_game)
@@ -191,6 +186,34 @@ let FullUnMute = async () => {
 }
 
 
+//таймер
+timerId=null
+
+function startTimer(duration, display) {
+    if(timerId)clearInterval(timerId);
+    duration*=100
+    var timer = duration, minutes, seconds;
+    console.log('starttick')
+    
+        timerId = setInterval(function () {
+        minutes = parseInt(timer / 6000, 10);
+        seconds = parseInt(timer % 6000/100, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+        stripe = document.getElementById('time-stripe-progress');
+        stripe.style.width=""+(1-timer/duration)*100+"%"
+
+        timer-=1
+        console.log('tick')
+        if(timer == -1)clearInterval(timerId);
+    }, 10);
+
+}
+
+
 testSocket.onmessage = function (e) {
     let data = JSON.parse(e.data)
     if (data.type === 'chat') {
@@ -204,6 +227,7 @@ testSocket.onmessage = function (e) {
             }
             console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
             messages.insertAdjacentHTML('beforeend', htmlAdding)
+            messages.scrollTop = messages.scrollHeight
         }
     }
     if(data.type === 'user_info' && data.uid != UID.toString()) {
@@ -238,11 +262,39 @@ testSocket.onmessage = function (e) {
         is_game = true
         console.log("GAME: ROLES", Roles)
         MyRole = Roles[user_pk]
-        document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">${MyRole}</span>`)
+
+        //id="блок роль" class = MyRole
+        document.getElementById('invate').style.display="none"
+        document.getElementById('info-card').style.display="block"
+        if(MyRole == "mafia")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Мафия"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mafiozi.jpg" width="100%"/> '
+        }
+        else if(MyRole == "doc")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Доктор"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/dok.jpg" width="100%"/> '
+        }
+        else if(MyRole == "com")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Комиссар"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/com.jpg" width="100%"/> '
+        }     
+        else if(MyRole == "civil")
+        {
+            document.getElementById('myrole').innerHTML="Роль: Гражданин"
+        if(Math.floor(Math.random() * 2))
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_1.jpg" width="100%"/> '
+        else
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_2.jpg" width="100%"/> '
+        }
+        
         console.log("GAME: UID", UID)
         PK_SET['vote-'+UID] = user_pk
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
     }
     
     if (data.type === 'update_roles'){
@@ -263,10 +315,34 @@ testSocket.onmessage = function (e) {
     }
 
     if(data.type === 'turn_info'){
-        turn = data.turnnumber
+        //60 сек - 3 4, 20 - 0 1 2 
+        //вывод имя фазы
+        var div = document.getElementById('name-event');
+        div.innerHTML = Rolenames[data.turnnumber];
+
+        //запуск таймера
+     
+        var time=20
+        if(data.turnnumber<3)time=20
+        display = document.querySelector('#time');
+        startTimer(time-1, display);
+        
+        
+
+
+        turn = data.turnnumber // - идекс фазы
         console.log("GAME STAGE: ", turn)
         chatlock = data.chatlock
         votelock = data.votelock
+        
+        if(votelock)
+            for(let i in PK_SET)document.getElementById(i).style.display="none"
+        else
+            for(let i in PK_SET)document.getElementById(i).style.display="block"
+        
+
+        
+
         if(chatlock && Roles[user_pk] != "spec") {
             console.log("GAME: MUTE", turn)
             FullMute()
@@ -289,14 +365,16 @@ testSocket.onmessage = function (e) {
         console.log("CHATLOCK:", data.chatlock)
         let warning = '<div><p style="color:#1D943C"> ТЕКУЩИЙ ХОД: ' + Rolenames[turn] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
     }
-
+    
     // if(data.type === 'vote_result'){
     //     let resultname = data.resultname
     //     let warning = '<div><p style="color:#1D943C"> Результат голосования: ' + resultname +'</p></div>'
     //     resultname = ""
     //     messages.insertAdjacentHTML('beforeend', warning)
     // }
+
 
     if(data.type === 'morning_results'){
         let killed = data.killtarget
@@ -306,11 +384,13 @@ testSocket.onmessage = function (e) {
         if (killed === ""){
             let warning = '<div><p style="color:#1D943C"> УБИЙСТВА НЕ ПРОИЗОШЛО! ВСЕ ЖИВЫ!</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
         }
         else {
             if (if_saved) {
                 let warning = '<div><p style="color:#1D943C"> ДОКТОРУ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! ВСЕ ЖИВЫ!</p></div>'
                 messages.insertAdjacentHTML('beforeend', warning)
+                messages.scrollTop = messages.scrollHeight
             }
             else{
                 console.log('GAME: rolelist', Roles)
@@ -327,15 +407,18 @@ testSocket.onmessage = function (e) {
                     document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">ВЫ МЕРТВЫ(${MyRole})</span>`)
                 }
                 messages.insertAdjacentHTML('beforeend', warning)
+                messages.scrollTop = messages.scrollHeight
             }
         }
         if (check != ""){
             let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОВЁЛ РАССЛЕДОВАНИЕ И УЗНАЛ, ЧТО ЕГО ПОДОЗРЕВАЕМЫЙ - ' + check + '</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
         }
         else {
             let warning = '<div><p style="color:#1D943C">КОМИССАР ПРОСПАЛ СВОЮ СМЕНУ. ПРОВЕРОК НЕ БЫЛО!</p></div>'
             messages.insertAdjacentHTML('beforeend', warning)
+            messages.scrollTop = messages.scrollHeight
         }
         killed = ""
         dead_name = ""
@@ -358,6 +441,7 @@ testSocket.onmessage = function (e) {
             document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">ВЫ МЕРТВЫ(${MyRole})</span>`)
         }
         messages.insertAdjacentHTML('beforeend', warning)
+        messages.scrollTop = messages.scrollHeight
     }
 
     if (data.type === "end_game"){

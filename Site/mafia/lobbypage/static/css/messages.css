@@ -1,0 +1,43 @@
+  .messages{
+    background-color: #292e36;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+    padding: 0.5em;
+    height: 16.5em;
+  }
+  .messages>*{
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  html {
+    --scrollbarBG: #27303f;
+    --thumbBG: #90A4AE;
+  }
+  .messages::-webkit-scrollbar-corner {
+    background: #27303f;
+  }
+  .messages::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  .messages::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+  }
+  .messages::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+  }
+  #chatformbg{
+    background-color: #27303f;
+  }
+
+  #messageInputText{
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 0.5em;
+    width: 89%;
+    height: 2em;
+
+  }

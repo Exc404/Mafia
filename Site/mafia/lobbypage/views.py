@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.safestring import mark_safe
 from agora_token_builder import RtcTokenBuilder
+from user_profile.models import Friend
 
 import secrets
 import string
@@ -73,6 +74,7 @@ def TheLobby(request, room_name):
                                'user_pk_json': mark_safe(json.dumps(str(player.pk))),
                                'room_isgame_json' : mark_safe(json.dumps(room.is_game)),
                                'the_host_json': mark_safe(json.dumps(request.user.profile.pk == room.roomhostid)),
+                               'friends': Friend.objects.get(related_user=request.user).friends.all(),
                                'agora_token' : mark_safe(json.dumps(RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs)))
                                })
                 else:
