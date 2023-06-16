@@ -17,30 +17,37 @@ main{
 #main-block{
     width: 100%;
     height: 100vh;
-    background-color: burlywood;
+    background-color: #192133;
+    background: linear-gradient(0deg, rgba(40,93,103,1) 15%, rgba(25,33,51,1) 92%);
     display: flex;
     flex-direction: column;
 }
 #event{
     width: 100%;
     height: 25px;
-    background-color: white;
+    background-color: #29313d;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 2em;
 
 }
 #time-stripe{
     width: 100%;
     height: 10px;
-    background-color: rgb(56, 56, 56);
+    background-color: #151b2a;
 }
 
 #time-stripe-progress{
     width: 0%;
     height: 10px;
-    background-color: red;
+    background-color: rgb(177, 3, 3);
 
 }
-
-
+#time{
+    margin-left: 10px;
+}
 
 
 
@@ -55,7 +62,7 @@ main{
     background-color: #343f50;
 }
 .buttons{
-    background-color: #252e3c;
+    background-color: #1b2431;
     display: flex;
     justify-content: flex-end;
     height: 35px;
@@ -79,7 +86,7 @@ main{
 #chat{
     width: 100%;
     height: 500px;
-    background-color: #343f50;
+    background-color: #2e3643;
 }
 
 
@@ -101,6 +108,7 @@ main{
     flex-wrap: wrap;
 
     margin: 0;
+    
 
 }
 
@@ -114,8 +122,8 @@ main{
     height: max-content;
     z-index: 9999;
     background-color: rgba(0, 0, 0, 0.3);
-    padding: 10px;
-    border-radius: 5px;
+    padding: 5px;
+    border-radius: 0 0 5px 0;
     font-size: 14px;
     color: #fff;
     grid-area: 1 / 1;
@@ -123,10 +131,12 @@ main{
 }
 
 .video-container {
-    background-color: aqua;
+    background-size: cover;
     display: grid;
     width: 25%;
     aspect-ratio: 3 / 2;
+
+
 
     /* flex-basis: 500px;
     flex-grow: 1;
@@ -144,6 +154,7 @@ main{
 .video-player {
     height: 100%;
     width: 100%;
+    
 }
 
 @media screen and (max-width: 1650px){
@@ -158,13 +169,25 @@ main{
     display: none;
     height: 100%;
     width: 100%;
-    opacity: 0.5;
-    box-shadow: inset 0px 0px 35px 25px rgba(0, 0, 0, 1);
+    box-shadow: inset 0px 0px 45px 20px rgba(0, 0, 0, 0.5);
+    grid-area: 1 / 1;
+    z-index: 3;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+}
+.vote-visib{
+    height: 100%;
+    width: 100%;
     grid-area: 1 / 1;
     z-index: 3;
 }
+.p-vote{
+    font-size: 25px;
+    opacity: 0.8;
+}
 .vote-control:hover{
-    box-shadow: inset 0px 0px 35px 25px rgba(255, 0, 0, 1);
+    box-shadow: inset 0px 0px 45px 20px rgba(255, 0, 0, 0.5);
 }
 #controls-wrapper {
     display: flex;
@@ -172,9 +195,7 @@ main{
     justify-content: center;
     column-gap: 1em;
     position: fixed;
-    bottom: 20px;
-
-    
+    bottom: 20px;    
 }
 
 .control-icon {
@@ -195,7 +216,10 @@ main{
 
 #leave-btn {
     margin: 5px;
-    background-color: rgb(255, 80, 80, 1);
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    linear-gradient(45deg, rgb(255, 80, 80, 1) 0%, rgb(215, 31, 31) 60%);
+    background-size:300% 100%,cover;
     padding-left: 6px;
     padding-right: 6px;
     padding-bottom: 5px;
@@ -204,14 +228,34 @@ main{
     margin-right: 0.5em;
     
 }
+#leave-btn:hover{
+    animation:button-game-animation 3s ease;
+  }
 #startgame{
     margin: 5px;
-    background-color: rgb(17, 201, 66);
+    background:
+    linear-gradient(to right,transparent 43%,rgba(255, 255, 255, 0.6),transparent 60%),
+    linear-gradient(45deg, rgb(20, 185, 20) 0%, rgb(50, 169, 112) 60%);
+    background-size:300% 100%,cover;
+    padding: 2px;
     padding-bottom: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
     text-decoration: none;
     justify-self: flex-start;
     margin-left: 0.5em;
+    font-weight: bolder;
 }
+#startgame:hover{
+    animation:button-game-animation 3s ease;
+  }
+  @keyframes button-game-animation {
+  
+    0%{
+        background-position:right,center;
+     }
+     30%{background-position:0 0;}
+  }
 
 .video-player, .icon-wrapper{
     grid-area: 1 / 1;

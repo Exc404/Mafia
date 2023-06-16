@@ -43,7 +43,7 @@ window.onload = function () {
     let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
         console.log("GAME: AMOUNT", UID_ARR.length + 1)
-        if (UID_ARR.length + 1 < 1){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!5
+        if (UID_ARR.length + 1 < 5){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!5
             alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
         else{
@@ -78,12 +78,12 @@ let joinAndDisplayLocalStream = async () => {
         'pk' : user_pk
     })), 100)
     localTracks = await AgoraRTC.createMicrophoneAndCameraTracks()
-    let player = `<div class="video-container" id = "user-container-${UID}">
+    let player = `<div class="video-container" id = "user-container-${UID}" style="background-image: url('/./static/img/cat.jpg');">
                     <div class="user-name-wrapper"><span class="user-name">${user_name}</span></div>
                     <div class="video-player" id = "user-${UID}"></div>
-                    <div class = "vote-control" id = "vote-${UID}" style=""/></div>`+``
+                    <div id = "vote-visible-${UID}" slyle="display: block;" class="vote-visib" ><div class = "vote-control" id = "${UID}" style=""/><p class="p-vote">Выбрать</p></div></div>`+``
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
-    document.getElementById(`vote-${UID}`).onclick = vote
+    document.getElementById(`${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
     await client.publish([localTracks[0], localTracks[1]])
 }
@@ -97,13 +97,19 @@ let handleUserJoined = async (user, mediaType) => {
             IS_NICK_WRITTEN[UID_ARR.indexOf(user.uid.toString())] = false
             player.remove()
         }
-        player =`<div class="video-container" id = "user-container-${user.uid}">
+        player =`<div class="video-container" id = "user-container-${user.uid}" style="background-image: url('/./static/img/cat.jpg');">
         <div class="video-player" id = "user-${user.uid}"></div>
-        <div class = "vote-control" id = "vote-${user.uid}" style=""/></div>`
+        <div id = "vote-visible-${user.uid}" slyle="display: block;" class="vote-visib" ><div class = "vote-control" id = "${user.uid}" style=""/><p class="p-vote">Выбрать</p></div></div>`
         document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
-        document.getElementById(`vote-${user.uid}`).onclick = vote
+        document.getElementById(`${user.uid}`).onclick = vote
         if(!is_game)
             user.videoTrack.play(`user-${user.uid}`)
+        else    
+            if(Roles[PK_SET[user.uid]]==="spec"){
+                document.getElementById("user-container-"+user.uid).style = "background-image: url('/./static/img/card/spec.jpg');"
+                document.getElementById("vote-visible-"+user.uid).style = "display: none;"
+                
+            }
     }
     if(mediaType === "audio") {
         if(!is_game)
@@ -165,8 +171,8 @@ let FullMute = async () => {
 
 let RoleUnMute = async () => {
     for(let i in remoteUsers) {
-        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] != "spec"){
-            if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] === MyRole) {
+        if(Roles[PK_SET[`${remoteUsers[i].uid}`]] != "spec"){
+            if(Roles[PK_SET[`${remoteUsers[i].uid}`]] === MyRole) {
                 remoteUsers[i].audioTrack.play()
             }
             remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
@@ -177,7 +183,7 @@ let RoleUnMute = async () => {
 
 let FullUnMute = async () => {
     for(let i in remoteUsers) {
-        if(Roles[PK_SET[`vote-${remoteUsers[i].uid}`]] != "spec") {
+        if(Roles[PK_SET[`${remoteUsers[i].uid}`]] != "spec") {
             remoteUsers[i].videoTrack.play(`user-${remoteUsers[i].uid}`)
             remoteUsers[i].audioTrack.play()
         }
@@ -234,7 +240,7 @@ testSocket.onmessage = function (e) {
         if(UID_ARR.indexOf(data.uid) === -1) {
             UID_ARR.push(data.uid)
             console.log("GAME: GOT PK + UID", data.pk," ", data.uid, " ", data.user_name)
-            PK_SET['vote-' + data.uid] = data.pk
+            PK_SET[data.uid] = data.pk
             console.log("GAME:", PK_SET)
             IS_NICK_WRITTEN.push(false)
         }
@@ -244,25 +250,39 @@ testSocket.onmessage = function (e) {
                 user_div.insertAdjacentHTML("afterbegin", `<div class="user-name-wrapper"><span class="user-name">${data.user_name}</span></div>`)
                 IS_NICK_WRITTEN[UID_ARR.indexOf(data.uid)] = true
             }
-            let str = 'vote-' + data.uid
+            let str = data.uid
             let res_uid = ''
             for(let i in PK_SET) {
                 if(PK_SET[i] === data.pk && i != str) {
-                    res_uid = i.substring(5)
+                    res_uid = i
                     let el = document.getElementById(`user-container-${res_uid}`)
                     if(el != null)
                         document.getElementById(`user-container-${res_uid}`).remove()
+                    console.log("GAME DEL UID :", i)    
                     delete PK_SET[i]
+    
                 }
             }
         }
     }
     if(data.type === 'start_info') {
+
+        for(let i in UID_ARR)
+        {
+            document.getElementById("user-container-"+i).style = "background-image: url('/./static/img/cat.jpg');"
+            document.getElementById("vote-visible-"+i).style = "display: block;"
+        }
+        document.getElementById("user-container-"+UID).style = "background-image: url('/./static/img/cat.jpg');"
+        document.getElementById("vote-visible-"+UID).style = "display: block;"
+        
+
+            
         Roles = data.rolelist
         is_game = true
         console.log("GAME: ROLES", Roles)
         MyRole = Roles[user_pk]
 
+        document.getElementById('startgame').style.display="none"
         //id="блок роль" class = MyRole
         document.getElementById('invate').style.display="none"
         document.getElementById('info-card').style.display="block"
@@ -291,17 +311,67 @@ testSocket.onmessage = function (e) {
         }
         
         console.log("GAME: UID", UID)
-        PK_SET['vote-'+UID] = user_pk
+        PK_SET[UID] = user_pk
         let warning = '<div><p style="color:#1D943C"> Ваша роль:  ' + Roles[user_pk] +'</p></div>'
         messages.insertAdjacentHTML('beforeend', warning)
         messages.scrollTop = messages.scrollHeight
     }
     
     if (data.type === 'update_roles'){
+        TempRol=data.rolelist
+        for(let i in TempRol)
+        {
+            if(TempRol[i]!=Roles[i] && TempRol[i] === "spec")
+            {
+                for(let j in PK_SET)
+                {
+                    if(PK_SET[j] === i)
+                    {
+                        document.getElementById("user-container-"+j).style = "background-image: url('/./static/img/card/spec.jpg');"
+                        document.getElementById("vote-visible-"+j).style = "display: none;"
+                    }
+                }
+            }
+        }
         Roles = data.rolelist
-        MyRole = data.rolelist[user_pk]
-        if(document.getElementById('my-role') === null)
-            document.getElementById('role-name-wrapper').insertAdjacentHTML('beforeend', `<span id = "my-role">${MyRole}</span>`)
+        console.log("GAME: MyRole", MyRole)
+        if(MyRole==="")
+        {
+
+            console.log("GAME: MyRole-2", MyRole)
+            MyRole = data.rolelist[user_pk]
+            document.getElementById('invate').style.display="none"
+            document.getElementById('info-card').style.display="block"
+            if(MyRole == "mafia")
+            {
+                document.getElementById('myrole').innerHTML="Роль: Мафия"
+                document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mafiozi.jpg" width="100%"/> '
+            }
+            else if(MyRole == "doc")
+            {
+                document.getElementById('myrole').innerHTML="Роль: Доктор"
+                document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/dok.jpg" width="100%"/> '
+            }
+            else if(MyRole == "com")
+            {
+                document.getElementById('myrole').innerHTML="Роль: Комиссар"
+                document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/com.jpg" width="100%"/> '
+            }     
+            else if(MyRole == "civil")
+            {
+                document.getElementById('myrole').innerHTML="Роль: Гражданин"
+            if(Math.floor(Math.random() * 2))
+                document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_1.jpg" width="100%"/> '
+            else
+                document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/mirn_2.jpg" width="100%"/> '
+            }
+            else if(MyRole == "spec")
+            {
+                document.getElementById('myrole').innerHTML="Роль: Наблюдател "
+                document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/spec.jpg" width="100%"/> '
+            }
+        }
+        
     }
 
     if (data.type === "am_i_host"){
@@ -338,7 +408,7 @@ testSocket.onmessage = function (e) {
         if(votelock)
             for(let i in PK_SET)document.getElementById(i).style.display="none"
         else
-            for(let i in PK_SET)document.getElementById(i).style.display="block"
+            for(let i in PK_SET)if(document.getElementById(i)!=null)document.getElementById(i).style.display="flex"
         
 
         
@@ -397,9 +467,15 @@ testSocket.onmessage = function (e) {
                 console.log('GAME: killed', killed)
                 let warning = '<div><p style="color:#1D943C"> ДОКТОРУ НЕ УДАЛОСЬ ПРЕДОТВРАТИТЬ УБИЙСТВО! Был убит игрок '+ dead_name +'. Его роль - ' + Roles[killed] + '</p></div>'
                 Roles[killed] = "spec"
+                if(Roles[killed]===Roles[user_pk.toString()]){
+
+                    document.getElementById('myrole').innerHTML="Роль: Наблюдатель ("+MyRole+")"
+                    document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/spec.jpg" width="100%"/> '
+                }
                 for(let i in PK_SET) {
                     if(PK_SET[i].toString() === killed) {
-                        document.getElementById(i).src = '/./static/img/death.png'
+                        document.getElementById("user-container-"+i).style = "background-image: url('/./static/img/card/spec.jpg');"
+                        document.getElementById("vote-visible-"+i).style = "display: none;"
                     }
                 }
                 if(killed === user_pk.toString()) {
@@ -431,9 +507,16 @@ testSocket.onmessage = function (e) {
         let killed_name = data.targetname
         let warning = '<div><p style="color:#1D943C"> В результате дневного голосования был убит игрок '+ killed_name +'. Его роль - ' + Roles[killed] + '</p></div>'
         Roles[killed] = "spec"
+        if(killed === user_pk.toString()){
+            
+           
+            document.getElementById('myrole').innerHTML="Роль: Наблюдатель ("+MyRole+")"
+            document.getElementById('card').innerHTML='<img class="card-img" src = "/./static/img/card/spec.jpg" width="100%"/> '
+        }
         for(let i in PK_SET) {
             if(PK_SET[i].toString() === killed) {
-                document.getElementById(i).src = '/./static/img/death.png'
+                document.getElementById("user-container-"+i).style = "background-image: url('/./static/img/card/spec.jpg');"
+                document.getElementById("vote-visible-"+i).style = "display: none;"
             }
         }
         if(killed === user_pk.toString()) {
@@ -463,7 +546,7 @@ testSocket.onmessage = function (e) {
         let warning = '<div><p style="color:#1D943C">ИГРА ОКОНЧЕНА! Победу одержала сторона ' + winner + '!</p></div>'
         for(let i in PK_SET) {
             document.getElementById(i).src = '/./static/img/votemark.jpg'
-            let user_uid = i.substring(5)
+            let user_uid = i
             if(UID_ARR.find(el => el === user_uid) === undefined && user_uid != UID.toString()) {
                 document.getElementById(`user-container-${user_uid}`).remove()
                 delete PK_SET[i]
@@ -477,5 +560,5 @@ testSocket.onmessage = function (e) {
 joinAndDisplayLocalStream()
 
 document.getElementById('leave-btn').addEventListener('click', leaveAndRemoveLocalStream)
-document.getElementById('camera-btn').addEventListener('click', toggleCamera)
-document.getElementById('mic-btn').addEventListener('click', toggleMic)
+//document.getElementById('camera-btn').addEventListener('click', toggleCamera)
+//document.getElementById('mic-btn').addEventListener('click', toggleMic)
