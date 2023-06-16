@@ -115,7 +115,7 @@ class ServerConsumer():
                             print("ИГРОКИ В БАЗЕ",  rolelist)
                             for pl in list(rolelist.keys()):
                                 if pl not in players_now:
-                                    print("105ая строка пройдена!")
+                                    print("118ая строка пройдена!")
                                     if Gamepath[self.turn] == rolelist[pl]:
                                         rolelist[pl] = "spec"
                                         print("РОЛИ ИЗМЕНЕНЫ!", rolelist)

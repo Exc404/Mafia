@@ -43,7 +43,7 @@ window.onload = function () {
     let startButton = document.getElementById('startgame')
     startButton.onclick = function () {
         console.log("GAME: AMOUNT", UID_ARR.length + 1)
-        if (UID_ARR.length + 1 < 5){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!5
+        if (UID_ARR.length + 1 < 2){//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!5
             alert("НЕДОСТАТОЧНО ПОЛЬЗОВАТЕЛЕЙ! МИНИМУМ - 5!")
         }
         else{
@@ -85,6 +85,8 @@ let joinAndDisplayLocalStream = async () => {
     document.getElementById('video-streams').insertAdjacentHTML('beforeend', player)
     document.getElementById(`${UID}`).onclick = vote
     localTracks[1].play(`user-${UID}`)
+    if(is_game)
+        PK_SET[UID] = user_pk
     await client.publish([localTracks[0], localTracks[1]])
 }
 
@@ -397,14 +399,13 @@ testSocket.onmessage = function (e) {
         display = document.querySelector('#time');
         startTimer(time-1, display);
         
-        
-
-
         turn = data.turnnumber // - идекс фазы
         console.log("GAME STAGE: ", turn)
         chatlock = data.chatlock
         votelock = data.votelock
         
+        console.log("GAME: 405", PK_SET)
+
         if(votelock)
             for(let i in PK_SET)document.getElementById(i).style.display="none"
         else
@@ -542,7 +543,12 @@ testSocket.onmessage = function (e) {
         Roles = {}
         FullUnMute()
         is_game = false
-        document.getElementById('my-role').remove()
+
+        document.getElementById('startgame').style.display="block"
+        //id="блок роль" class = MyRole
+        document.getElementById('invate').style.display="block"
+        document.getElementById('info-card').style.display="none"
+
         let warning = '<div><p style="color:#1D943C">ИГРА ОКОНЧЕНА! Победу одержала сторона ' + winner + '!</p></div>'
         for(let i in PK_SET) {
             document.getElementById(i).src = '/./static/img/votemark.jpg'

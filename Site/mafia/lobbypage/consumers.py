@@ -140,7 +140,7 @@ class TestConsumer(WebsocketConsumer):
         loop = event['loop_number']
         if (self.role == turn or turn=="civilchat" or turn=="civilvote") and self.role!="spec":
             self.chatlock = False
-            if turn=="civilchat" or loop==0: self.votelock=True
+            if turn=="civilchat": self.votelock=True
             else: self.votelock = False
         else:
             self.chatlock = True
