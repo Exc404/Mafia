@@ -112,6 +112,20 @@
 <div class="content">
 	<div id="GamesHistory" class="list">
 		<table cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					Дата
+				</td>
+				<td style="padding-left: 1em;">
+					Название лобби
+				</td>
+				<td style="padding-left: 2em;">
+					Результат
+				</td>
+				<td style="padding-left: 1em;">
+					Роль
+				</td>
+			</tr>
 			{% for game in user_profile.gamehistory_set.all%}
 				<tr>
 					<td>
@@ -120,7 +134,7 @@
 					<td style="padding-left:1em;">
 						{{game.roomname}}
 					</td>
-					<td style="padding-left:3em;">
+					<td style="padding-left:2em;">
 						{% if game.win == 1 %}
 							Мирные
 						{% else %}
