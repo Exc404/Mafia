@@ -269,8 +269,8 @@ testSocket.onmessage = function (e) {
 
         for(let i in UID_ARR)
         {
-            document.getElementById("user-container-"+i).style = "background-image: url('/./static/img/cat.jpg');"
-            document.getElementById("vote-visible-"+i).style = "display: block;"
+            document.getElementById("user-container-"+UID_ARR[i]).style = "background-image: url('/./static/img/cat.jpg');"
+            document.getElementById("vote-visible-"+UID_ARR[i]).style = "display: block;"
         }
         document.getElementById("user-container-"+UID).style = "background-image: url('/./static/img/cat.jpg');"
         document.getElementById("vote-visible-"+UID).style = "display: block;"
