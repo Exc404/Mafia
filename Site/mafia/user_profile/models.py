@@ -43,6 +43,10 @@ class GameHistory(models.Model):
     playerlist = models.JSONField(null=True, default=dict)
     players = models.ManyToManyField(Profile)
 
+    def get_datetime(self):
+        return self.data.strftime('%d.%m.%y')
+
+
 
 class Notice(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Отправитель')

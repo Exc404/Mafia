@@ -2,7 +2,56 @@
  
 {% block title %}Профиль{% endblock %}
 {% block script %}{% endblock %}
-{% block style %}{% endblock %}
+{% block style %}
+<style>
+	table {
+    	width:100%;
+    	border-collapse:separate; 
+    	border-spacing:0 0.2em;
+	}
+	tr{
+    	/* height:100%; */
+    	background-color: #363d48;
+  	}
+  	td{
+    	/* height: 100%;
+    	width: 100%; */
+    	padding: 0.3em;
+  	}
+  	tr>td {
+    	margin-bottom: 30px;
+  	}
+	.list{
+   		width: 100%;
+    	height: 30em;
+    	background-color: #292e36;
+    	overflow-y: scroll;
+    	margin-bottom: 1em;
+		scrollbar-width: thin;
+		scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+		padding: 0.5em;
+  	}
+	html {
+		--scrollbarBG: #27303f;
+		--thumbBG: #90A4AE;
+	}
+	.list::-webkit-scrollbar-corner {
+		background: #27303f;
+	}
+	.list::-webkit-scrollbar {
+		width: 11px;
+		height: 11px;
+	}
+	.list::-webkit-scrollbar-track {
+		background: var(--scrollbarBG);
+	}
+	.list::-webkit-scrollbar-thumb {
+		background-color: var(--thumbBG) ;
+		border-radius: 6px;
+		border: 3px solid var(--scrollbarBG);
+	}
+</style>
+{% endblock %}
 {% block content %}
 <div id="head">
 	<a class="ExitButton" onclick="javascript:history.back(); return false;">🡸</a>
@@ -61,7 +110,44 @@
 </div>
 <hr>
 <div class="content">
-	<div id="GamesHistory">
+	<div id="GamesHistory" class="list">
+		<table cellspacing="0" cellpadding="0">
+			{% for game in user_profile.gamehistory_set.all%}
+				<tr>
+					<td>
+						{{game.get_datetime}}
+					</td>
+					<td style="padding-left:1em;">
+						{{game.roomname}}
+					</td>
+					<td style="padding-left:3em;">
+						{% if game.win == 1 %}
+							Мирные
+						{% else %}
+							Мафия
+						{% endif %}
+					</td>
+					<td style ="padding-left: 1em;">
+						{% for key, value in game.playerlist.items %}
+							{% if key == user_profile.pk|slugify %}
+								{% if value == 'civil' %}
+									Гражданин
+								{% endif %}
+								{% if value == 'com' %}
+									Комиссар
+								{% endif %}
+								{% if value == 'doc' %}
+									Доктор
+								{% endif %}
+								{% if value == 'mafia' %}
+									Мафиози
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
 	</div>
 </div>
 
